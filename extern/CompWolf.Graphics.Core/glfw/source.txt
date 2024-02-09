@@ -1,0 +1,2 @@
+Download GLFW 3.3 from: https://www.glfw.org/download.html
+Move its various "lib-[...]"-directories (like "lib-vc2022") and its "include" directory to this directory.
