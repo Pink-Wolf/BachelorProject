@@ -2,6 +2,9 @@
 #include "window.h"
 
 #include "private/compwolf_vulkan.h"
+#include <unique_value_lock.h>
+#include <shared_value_lock.h>
+#include <mutex>
 
 namespace CompWolf::Graphics
 {
@@ -20,13 +23,18 @@ namespace CompWolf::Graphics
 	}
 	window::window(window&& other) noexcept
 	{
-		glfw_window = other.glfw_window;
-		other.glfw_window = nullptr;
+		std::scoped_lock lock(glfw_window, other.glfw_window);
+
+		glfw_window.value() = std::move(other.glfw_window.value());
+		other.glfw_window.value() = nullptr;
 	}
 	auto window::operator=(window&& other) noexcept -> window&
 	{
-		glfw_window = other.glfw_window;
-		other.glfw_window = nullptr;
+		std::scoped_lock lock(glfw_window, other.glfw_window);
+
+		glfw_window.value() = std::move(other.glfw_window.value());
+		other.glfw_window.value() = nullptr;
+
 		return *this;
 	}
 	window::~window()
@@ -36,16 +44,24 @@ namespace CompWolf::Graphics
 
 	void window::close() noexcept
 	{
-		if (glfw_window != nullptr)
+		window_close_parameter args;
+
 		{
-			window_close_parameter args;
+			shared_value_lock<glfw_window_type> lock(glfw_window);
+			if (glfw_window.value() == nullptr) return;
+
 			closing(args);
-
-			auto glfwWindow = Private::to_glfw(glfw_window);
-			glfwDestroyWindow(glfwWindow);
-			glfw_window = nullptr;
-
-			closed(args);
 		}
+
+		{
+			unique_value_lock<glfw_window_type> lock(glfw_window);
+			if (glfw_window.value() == nullptr) return;
+
+			auto glfwWindow = Private::to_glfw(glfw_window.value());
+			glfwDestroyWindow(glfwWindow);
+			glfw_window.value() = nullptr;
+		}
+
+		closed(args);
 	}
 }

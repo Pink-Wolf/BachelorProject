@@ -33,6 +33,15 @@
     <ClInclude Include="include\empty_pointer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\shared_value_lock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\unique_value_lock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\value_mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\version_number.h">
       <Filter>Header Files</Filter>
     </ClInclude>

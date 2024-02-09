@@ -5,6 +5,7 @@
 #include "private/vulkan_types.h"
 #include <string>
 #include <event.h>
+#include <value_mutex.h>
 
 namespace CompWolf::Graphics
 {
@@ -13,7 +14,9 @@ namespace CompWolf::Graphics
 
 	};
 
-	/* A window, as in a rectangle that can be drawn onto, and that listens for various events from outside the program (relating to the window). */
+	/* A window, as in a rectangle that can be drawn onto, and that listens for various events from outside the program (relating to the window).
+	 * This class is thread safe.
+	 */
 	class window
 	{
 	public:
@@ -38,11 +41,11 @@ namespace CompWolf::Graphics
 		event<window_close_parameter> closed;
 
 	private:
-		Private::glfw_window* glfw_window;
+		using glfw_window_type = shared_value_mutex<Private::glfw_window*>;
+		glfw_window_type glfw_window;
 	};
 
-	auto inline window::is_open() noexcept -> bool
-		{ return glfw_window != nullptr; }
+	auto inline window::is_open() noexcept -> bool { return glfw_window.get_value_copy_quick() != nullptr; }
 }
 
 #endif // ! COMPWOLF_GRAPHICS_WINDOW_HEADER
