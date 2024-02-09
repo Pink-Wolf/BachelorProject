@@ -9,6 +9,7 @@
 #include <empty_pointer.h>
 #include <memory>
 #include <version_number.h>
+#include <atomic>
 
 namespace CompWolf::Graphics
 {
@@ -36,6 +37,7 @@ namespace CompWolf::Graphics
 
 	/* Manages program-wide logic used to handle graphics and windows.
 	 * Only a single instance of graphics_environment may exist at once in a program.
+	 * This class is thread safe, except its constructor and destructor which must run on the main graphics thread.
 	 */
 	class graphics_environment
 	{
@@ -63,7 +65,7 @@ namespace CompWolf::Graphics
 		using vulkan_debug_handle_type = std::unique_ptr<Private::vulkan_debug_messenger, teardown_vulkan_debug>;
 	private:
 		/* Whether an instance of the environment has already been constructed, which has not yet been destructed. */
-		static bool constructed;
+		static std::atomic_bool constructed;
 
 		/* The settings for the environment. */
 		graphics_environment_settings settings;
@@ -83,7 +85,7 @@ namespace CompWolf::Graphics
 
 	public:
 		/* If not yet set up, sets up program-wide logic.
-		 * Must be called from the thread the main function was called by.
+		 * If not run on the thread running the main function, then this will have undefined behaviour.
 		 * @param A graphics_environment_settings specifying how the environment should behave.
 		 * @typeparam SettingsInputType The type of graphics_environment_settings to pass onto the environment.
 		 * @throws std::logic_error when an instance of graphics_environment already exists.
@@ -114,7 +116,9 @@ namespace CompWolf::Graphics
 		auto setup_debugger() const -> vulkan_debug_handle_type;
 
 	public:
-		/* Handles events received from outside the program. */
+		/* Handles events received from outside the program.
+		 * @throws std::logic_error if not run by the main graphics thread.
+		 */
 		void update();
 		/* Invoked right before the environment handles events received from outside the program.
 		 * @see update()

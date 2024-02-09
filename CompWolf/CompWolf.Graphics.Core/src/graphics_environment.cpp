@@ -61,22 +61,21 @@ namespace CompWolf::Graphics
 		return create_info;
 	}
 
-	bool graphics_environment::constructed(false);
+	std::atomic_bool graphics_environment::constructed(false);
 
 	void graphics_environment::setup()
 	{
-		if (constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
+		auto old_constructed = constructed.exchange(true);
+		if (old_constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
 
 		glfw_handle = setup_glfw();
 		vulkan_handle = setup_vulkan();
 		vulkan_debug_handle = setup_debugger();
 		main_graphics_thread = std::this_thread::get_id();
-
-		constructed = true;
 	}
 	graphics_environment::~graphics_environment()
 	{
-		constructed = false;
+		constructed.store(false);
 	}
 	auto graphics_environment::setup_glfw() const -> glfw_handle_type
 	{
@@ -198,6 +197,8 @@ namespace CompWolf::Graphics
 
 	void graphics_environment::update()
 	{
+		if (!is_this_main_thread()) throw std::logic_error("graphics_environment.update() was called on a thread that is not the main graphics thread.");
+
 		graphics_environment_update_parameter args;
 		updating(args);
 		glfwPollEvents();
