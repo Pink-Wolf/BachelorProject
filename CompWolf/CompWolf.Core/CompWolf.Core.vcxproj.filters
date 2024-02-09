@@ -30,9 +30,15 @@
     <ClInclude Include="include\compwolf_type_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\empty_pointer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\empty_pointer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

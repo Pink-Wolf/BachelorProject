@@ -8,8 +8,12 @@
 
 namespace CompWolf::Graphics::Private
 {
-	inline GLFWwindow* to_glfw(glfw_window* window) { return reinterpret_cast<GLFWwindow*>(window); }
-	inline glfw_window* from_glfw(GLFWwindow* window) { return reinterpret_cast<glfw_window*>(window); }
+#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(library, library_type, compwolf_type)					\
+	inline library_type to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }			\
+	inline compwolf_type from_##library(library_type a) { return reinterpret_cast<compwolf_type>(a); }		\
+	
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window*);
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkInstance, vulkan_instance*);
 }
 
 #endif // ! COMPWOLF_GRAPHICS_PRIVATE_VULKAN_HEADER

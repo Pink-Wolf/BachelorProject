@@ -150,10 +150,12 @@
     <ClInclude Include="header\framework.h" />
     <ClInclude Include="header\pch.h" />
     <ClInclude Include="include\compwolf_type_traits.h" />
+    <ClInclude Include="include\empty_pointer.h" />
     <ClInclude Include="include\event.h" />
     <ClInclude Include="include\value_event_wrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\empty_pointer.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
