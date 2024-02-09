@@ -78,7 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(SolutionDir)CompWolf.Core/include/;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -101,7 +101,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(SolutionDir)CompWolf.Core/include/;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(SolutionDir)CompWolf.Core/include/;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -147,7 +147,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\extern\$(ProjectName)\vulkan\Include;$(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW;$(SolutionDir)CompWolf.Core/include/;$(ProjectDir)include\;$(ProjectDir)header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -165,9 +165,9 @@
   <ItemGroup>
     <ClInclude Include="include\graphics_environment.h" />
     <ClInclude Include="header\framework.h" />
-    <ClInclude Include="header\glfw.h" />
+    <ClInclude Include="header\compwolf_vulkan.h" />
     <ClInclude Include="header\pch.h" />
-    <ClInclude Include="include\glfw_types.h" />
+    <ClInclude Include="include\vulkan_types.h" />
     <ClInclude Include="include\test.h" />
     <ClInclude Include="include\window.h" />
   </ItemGroup>
@@ -184,6 +184,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Project Settings Changes.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CompWolf.Core\CompWolf.Core.vcxproj">
+      <Project>{674e23f8-611a-4c8e-9a25-fd72cbb31e37}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

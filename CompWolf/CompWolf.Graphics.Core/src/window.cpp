@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "window.h"
 
-#include "glfw.h"
+#include "compwolf_vulkan.h"
 
-namespace CompWolf::Graphics::Core
+namespace CompWolf::Graphics
 {
-	window::window(const graphics_environment* environment)
+	window::window(const graphics_environment& environment)
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		auto glfwWindow = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
@@ -34,18 +34,18 @@ namespace CompWolf::Graphics::Core
 		close();
 	}
 
-	void window::update()
-	{
-		glfwPollEvents();
-	}
-
 	void window::close() noexcept
 	{
 		if (glfw_window != nullptr)
 		{
+			window_close_parameter args;
+			closing(args);
+
 			auto glfwWindow = Private::to_glfw(glfw_window);
 			glfwDestroyWindow(glfwWindow);
 			glfw_window = nullptr;
+
+			closed(args);
 		}
 	}
 }

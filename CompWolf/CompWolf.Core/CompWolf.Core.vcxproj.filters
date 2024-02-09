@@ -21,19 +21,13 @@
     <ClInclude Include="header\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\test.h">
+    <ClInclude Include="include\event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\compwolf_vulkan.h">
+    <ClInclude Include="include\value_event_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vulkan_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\graphics_environment.h">
+    <ClInclude Include="include\compwolf_type_traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,17 +35,8 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics_environment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Project Settings Changes.md" />
+    <None Include="Project Settings Changes.md" />
   </ItemGroup>
 </Project>

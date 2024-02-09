@@ -1,13 +1,17 @@
 Base project: Static Library (C++)
 
+Added project reference to:
+- CompWolf.Core
+
 Configuration Properties:
 - C/C++
 - - General
 - - - Additional Include Directories
-- - - - Added $(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW
-- - - - Added $(SolutionDir)..\extern\$(ProjectName)\vulkan\Include
-- - - - Added $(ProjectDir)include\
 - - - - Added $(ProjectDir)header\
+- - - - Added $(ProjectDir)include\
+- - - - Added $(SolutionDir)CompWolf.Core/include/
+- - - - Added $(SolutionDir)..\extern\$(ProjectName)\vulkan\Include
+- - - - Added $(SolutionDir)..\extern\$(ProjectName)\glfw\include\GLFW
 - - Language
 - - - C++ Language Standard
 - - - - Set to ISO C++20 Standard
