@@ -24,13 +24,13 @@
     <ClInclude Include="include\test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\compwolf_vulkan.h">
+    <ClInclude Include="header\private\compwolf_vulkan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\vulkan_types.h">
+    <ClInclude Include="include\private\vulkan_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\graphics_environment.h">

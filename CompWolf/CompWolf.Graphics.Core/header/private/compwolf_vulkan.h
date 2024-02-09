@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_PRIVATE_VULKAN_HEADER
 #define COMPWOLF_GRAPHICS_PRIVATE_VULKAN_HEADER
 
-#include "vulkan_types.h"
+#include "private/vulkan_types.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <glfw3.h>

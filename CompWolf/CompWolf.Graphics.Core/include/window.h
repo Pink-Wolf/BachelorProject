@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_WINDOW_HEADER
 
 #include "graphics_environment.h"
-#include "vulkan_types.h"
+#include "private/vulkan_types.h"
 #include <string>
 #include <event.h>
 

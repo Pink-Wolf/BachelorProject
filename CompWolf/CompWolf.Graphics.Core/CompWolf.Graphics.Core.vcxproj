@@ -165,9 +165,9 @@
   <ItemGroup>
     <ClInclude Include="include\graphics_environment.h" />
     <ClInclude Include="header\framework.h" />
-    <ClInclude Include="header\compwolf_vulkan.h" />
+    <ClInclude Include="header\private\compwolf_vulkan.h" />
     <ClInclude Include="header\pch.h" />
-    <ClInclude Include="include\vulkan_types.h" />
+    <ClInclude Include="include\private\vulkan_types.h" />
     <ClInclude Include="include\test.h" />
     <ClInclude Include="include\window.h" />
   </ItemGroup>

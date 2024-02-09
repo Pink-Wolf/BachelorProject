@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 
-#include "vulkan_types.h"
+#include "private/vulkan_types.h"
 #include <thread>
 #include <vector>
 #include <event.h>

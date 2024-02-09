@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "window.h"
 
-#include "compwolf_vulkan.h"
+#include "private/compwolf_vulkan.h"
 
 namespace CompWolf::Graphics
 {
