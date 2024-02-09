@@ -153,9 +153,11 @@
     <ClInclude Include="include\empty_pointer.h" />
     <ClInclude Include="include\event.h" />
     <ClInclude Include="include\value_event_wrapper.h" />
+    <ClInclude Include="include\version_number.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\empty_pointer.cpp" />
+    <ClCompile Include="src\version_number.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
