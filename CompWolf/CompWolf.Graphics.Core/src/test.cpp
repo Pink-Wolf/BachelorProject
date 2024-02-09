@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "test.h"
 
-#define GLFW_INCLUDE_VULKAN
-#include <glfw3.h>
-
+#include "glfw.h"
 #include <iostream>
 
 void test() {

@@ -163,11 +163,16 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\graphics_environment.h" />
     <ClInclude Include="header\framework.h" />
+    <ClInclude Include="header\glfw.h" />
     <ClInclude Include="header\pch.h" />
+    <ClInclude Include="include\glfw_types.h" />
     <ClInclude Include="include\test.h" />
+    <ClInclude Include="include\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics_environment.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -175,6 +180,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\test.cpp" />
+    <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Project Settings Changes.md" />
