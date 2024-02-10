@@ -169,7 +169,6 @@
     <ClInclude Include="header\compwolf_vulkan.hpp" />
     <ClInclude Include="header\pch.h" />
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
-    <ClInclude Include="include\test.hpp" />
     <ClInclude Include="include\private\graphics\window.hpp" />
     <ClInclude Include="include\vulkan_types" />
   </ItemGroup>
@@ -181,7 +180,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\test.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
