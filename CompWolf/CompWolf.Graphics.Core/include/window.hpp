@@ -1,11 +1,11 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_HEADER
 
-#include "graphics_environment.h"
-#include "private/vulkan_types.h"
+#include "graphics_environment.hpp"
+#include "private/vulkan_types.hpp"
 #include <string>
-#include <event.h>
-#include <value_mutex.h>
+#include <event.hpp>
+#include <value_mutex.hpp>
 
 namespace CompWolf::Graphics
 {

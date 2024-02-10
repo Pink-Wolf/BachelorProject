@@ -21,28 +21,28 @@
     <ClInclude Include="header\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\event.h">
+    <ClInclude Include="include\event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\value_event_wrapper.h">
+    <ClInclude Include="include\value_event_wrapper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\compwolf_type_traits.h">
+    <ClInclude Include="include\compwolf_type_traits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\empty_pointer.h">
+    <ClInclude Include="include\empty_pointer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shared_value_lock.h">
+    <ClInclude Include="include\shared_value_lock.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\unique_value_lock.h">
+    <ClInclude Include="include\unique_value_lock.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\value_mutex.h">
+    <ClInclude Include="include\value_mutex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\version_number.h">
+    <ClInclude Include="include\version_number.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -149,14 +149,14 @@
   <ItemGroup>
     <ClInclude Include="header\framework.h" />
     <ClInclude Include="header\pch.h" />
-    <ClInclude Include="include\compwolf_type_traits.h" />
-    <ClInclude Include="include\empty_pointer.h" />
-    <ClInclude Include="include\event.h" />
-    <ClInclude Include="include\shared_value_lock.h" />
-    <ClInclude Include="include\unique_value_lock.h" />
-    <ClInclude Include="include\value_event_wrapper.h" />
-    <ClInclude Include="include\value_mutex.h" />
-    <ClInclude Include="include\version_number.h" />
+    <ClInclude Include="include\compwolf_type_traits.hpp" />
+    <ClInclude Include="include\empty_pointer.hpp" />
+    <ClInclude Include="include\event.hpp" />
+    <ClInclude Include="include\shared_value_lock.hpp" />
+    <ClInclude Include="include\unique_value_lock.hpp" />
+    <ClInclude Include="include\value_event_wrapper.hpp" />
+    <ClInclude Include="include\value_mutex.hpp" />
+    <ClInclude Include="include\version_number.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\empty_pointer.cpp" />

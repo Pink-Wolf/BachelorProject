@@ -1,8 +1,8 @@
 #ifndef COMPWOLF_VALUE_EVENT_WRAPPER_HEADER
 #define COMPWOLF_VALUE_EVENT_WRAPPER_HEADER
 
-#include "event.h"
-#include "compwolf_type_traits.h"
+#include "event.hpp"
+#include "compwolf_type_traits.hpp"
 
 namespace CompWolf
 {

@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "test.h"
+#include "test.hpp"
 
-#include "private/compwolf_vulkan.h"
+#include "private/compwolf_vulkan.hpp"
 #include <iostream>
 
 void test() {

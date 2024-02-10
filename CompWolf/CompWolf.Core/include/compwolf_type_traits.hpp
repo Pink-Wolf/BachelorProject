@@ -1,9 +1,7 @@
 #ifndef COMPWOLF_TYPE_TRAITS_HEADER
 #define COMPWOLF_TYPE_TRAITS_HEADER
 
-// This file includes <type_traits>
-
-#include "event.h"
+// This file always includes <type_traits>
 #include <type_traits>
 
 namespace CompWolf

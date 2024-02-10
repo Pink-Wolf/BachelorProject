@@ -163,13 +163,13 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\graphics_environment.h" />
+    <ClInclude Include="include\graphics_environment.hpp" />
     <ClInclude Include="header\framework.h" />
-    <ClInclude Include="header\private\compwolf_vulkan.h" />
+    <ClInclude Include="header\private\compwolf_vulkan.hpp" />
     <ClInclude Include="header\pch.h" />
-    <ClInclude Include="include\private\vulkan_types.h" />
-    <ClInclude Include="include\test.h" />
-    <ClInclude Include="include\window.h" />
+    <ClInclude Include="include\private\vulkan_types.hpp" />
+    <ClInclude Include="include\test.hpp" />
+    <ClInclude Include="include\window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics_environment.cpp" />

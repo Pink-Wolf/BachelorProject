@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_SHARED_VALUE_LOCK_HEADER
 #define COMPWOLF_SHARED_VALUE_LOCK_HEADER
 
-#include <value_mutex.h>
+#include <value_mutex.hpp>
 #include <stdexcept>
 #include <type_traits>
 

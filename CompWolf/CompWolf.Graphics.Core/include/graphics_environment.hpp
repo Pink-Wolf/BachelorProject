@@ -1,14 +1,14 @@
 #ifndef COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 
-#include "private/vulkan_types.h"
+#include "private/vulkan_types.hpp"
 #include <string>
 #include <thread>
 #include <vector>
-#include <event.h>
-#include <empty_pointer.h>
+#include <event.hpp>
+#include <empty_pointer.hpp>
 #include <memory>
-#include <version_number.h>
+#include <version_number.hpp>
 #include <atomic>
 
 namespace CompWolf::Graphics

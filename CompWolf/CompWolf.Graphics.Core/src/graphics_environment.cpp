@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "graphics_environment.h"
+#include "graphics_environment.hpp"
 
-#include "private/compwolf_vulkan.h"
+#include "private/compwolf_vulkan.hpp"
 #include <stdexcept>
 #include <memory>
 #include <format>

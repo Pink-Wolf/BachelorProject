@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "empty_pointer.h"
+#include "empty_pointer.hpp"
 
 namespace CompWolf
 {
