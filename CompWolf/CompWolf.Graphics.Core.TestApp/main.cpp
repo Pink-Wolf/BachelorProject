@@ -1,6 +1,5 @@
 #include <iostream>
-#include <graphics_environment.hpp>
-#include <window.hpp>
+#include <graphics>
 
 using namespace CompWolf::Graphics;
 

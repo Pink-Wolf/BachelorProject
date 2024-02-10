@@ -1,9 +1,7 @@
 #include "pch.h"
-#include "window.hpp"
+#include "graphics"
 
-#include "private/compwolf_vulkan.hpp"
-#include <unique_value_lock.hpp>
-#include <shared_value_lock.hpp>
+#include "compwolf_vulkan.hpp"
 #include <mutex>
 
 namespace CompWolf::Graphics

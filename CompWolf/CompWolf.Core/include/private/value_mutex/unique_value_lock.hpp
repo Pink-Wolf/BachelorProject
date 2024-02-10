@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_UNIQUE_VALUE_LOCK_HEADER
 #define COMPWOLF_UNIQUE_VALUE_LOCK_HEADER
 
-#include <value_mutex.hpp>
+#include "value_mutex.hpp"
 #include <stdexcept>
 
 namespace CompWolf

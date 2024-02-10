@@ -2,7 +2,7 @@
 #define COMPWOLF_VALUE_EVENT_WRAPPER_HEADER
 
 #include "event.hpp"
-#include "compwolf_type_traits.hpp"
+#include "compwolf_type_traits"
 
 namespace CompWolf
 {
@@ -50,9 +50,10 @@ namespace CompWolf
 		/* Sets the value. */
 		template <typename ValueType>
 			requires std::is_assignable_v<value_type, ValueType>
-		operator =(ValueType new_value)
+		auto operator =(ValueType new_value)
 			noexcept(std::is_nothrow_assignable_v<value_type, ValueType>
 				&& std::is_nothrow_copy_constructible_v<value_type>)
+			-> const_reference
 		{
 			value_type old_value(value);
 			event_parameter_type update_argument{
@@ -63,24 +64,8 @@ namespace CompWolf
 			updating(update_argument);
 			_value = new_value;
 			updated(update_argument);
-		}
 
-		/* Adds the given delta to the value. */
-		template <typename DeltaType>
-			requires is_addition_assignable_v<value_type, DeltaType>
-		operator +=(DeltaType delta)
-			noexcept(is_nothrow_addition_assignable_v<value_type, DeltaType>
-				&& std::is_nothrow_copy_constructible_v<value_type>)
-		{
-			value_type old_value(value);
-			event_parameter_type update_argument{
-				.old_value = old_value,
-				.new_value = new_value,
-			};
-
-			updating(update_argument);
-			_value += delta;
-			updated(update_argument);
+			return value();
 		}
 	};
 }

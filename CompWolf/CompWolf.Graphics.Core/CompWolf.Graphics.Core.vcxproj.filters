@@ -24,16 +24,22 @@
     <ClInclude Include="include\test.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\private\compwolf_vulkan.hpp">
+    <ClInclude Include="header\compwolf_vulkan.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\window.hpp">
+    <ClInclude Include="include\private\graphics\window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\vulkan_types.hpp">
+    <ClInclude Include="include\private\other\vulkan_types.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\graphics_environment.hpp">
+    <ClInclude Include="include\private\graphics\graphics_environment.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\graphics">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vulkan_types">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

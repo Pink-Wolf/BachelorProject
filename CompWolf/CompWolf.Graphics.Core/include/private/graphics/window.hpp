@@ -2,10 +2,10 @@
 #define COMPWOLF_GRAPHICS_WINDOW_HEADER
 
 #include "graphics_environment.hpp"
-#include "private/vulkan_types.hpp"
+#include "vulkan_types"
 #include <string>
-#include <event.hpp>
-#include <value_mutex.hpp>
+#include <event>
+#include <value_mutex>
 
 namespace CompWolf::Graphics
 {

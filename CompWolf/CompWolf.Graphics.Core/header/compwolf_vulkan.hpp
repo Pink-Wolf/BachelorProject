@@ -1,8 +1,8 @@
 #ifndef COMPWOLF_GRAPHICS_PRIVATE_VULKAN_HEADER
 #define COMPWOLF_GRAPHICS_PRIVATE_VULKAN_HEADER
 
-#include "private/vulkan_types.hpp"
-#include <version_number.hpp>
+#include "vulkan_types"
+#include <version_number>
 
 #define GLFW_INCLUDE_VULKAN
 #include <glfw3.h>
