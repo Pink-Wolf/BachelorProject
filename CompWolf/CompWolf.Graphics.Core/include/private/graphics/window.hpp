@@ -42,10 +42,10 @@ namespace CompWolf::Graphics
 
 	private:
 		using glfw_window_type = shared_value_mutex<Private::glfw_window*>;
-		glfw_window_type glfw_window;
+		glfw_window_type _glfw_window;
 	};
 
-	auto inline window::is_open() noexcept -> bool { return glfw_window.get_value_copy_quick() != nullptr; }
+	auto inline window::is_open() noexcept -> bool { return _glfw_window.get_value_copy_quick() != nullptr; }
 }
 
 #endif // ! COMPWOLF_GRAPHICS_WINDOW_HEADER

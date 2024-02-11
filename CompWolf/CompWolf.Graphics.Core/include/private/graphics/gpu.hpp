@@ -12,7 +12,7 @@ namespace CompWolf::Graphics
 	{
 	public:
 		/* The connection to the gpu. */
-		Private::vulkan_device* vulkan_device;
+		Private::vulkan_device* _vulkan_device;
 
 	public:
 		/* @param device The actual graphics processing unit to make a gpu-object for.

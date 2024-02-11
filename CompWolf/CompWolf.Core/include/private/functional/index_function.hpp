@@ -22,8 +22,8 @@ namespace CompWolf
 	{
 	private:
 		using function_type = std::function<ReturnType(int, ParameterTypes...)>;
-		function_type function;
-		int counter = 0;
+		function_type _function;
+		int _counter = 0;
 
 	public:
 		/* Creates an empty index_function. */
@@ -34,7 +34,7 @@ namespace CompWolf
 			requires std::constructible_from<function_type, InputTypes...>
 		inline index_function(InputTypes... inputs)
 			noexcept(std::is_nothrow_constructible_v<function_type, InputTypes...>)
-			: function(inputs...) {}
+			: _function(inputs...) {}
 
 		/* Sets the callable object the index_function contains. */
 		template<typename InputType>
@@ -43,42 +43,42 @@ namespace CompWolf
 			noexcept(std::is_nothrow_assignable_v<function_type, InputType>)
 			-> index_function
 		{
-			function = new_function;
+			_function = new_function;
 		}
 
 		/* Swaps what callable function the index_function has with another, as well as how many times they have been invoked. */
 		void swap(index_function& other) noexcept
 		{
-			function.swap(other.function);
-			counter.swap(other.counter);
+			_function.swap(other._function);
+			_counter.swap(other._counter);
 		}
 
 		/* Whether the index_function is empty, as in containing no callable object. */
 		inline explicit operator bool() const noexcept
 		{
-			return static_cast<bool>(function);
+			return static_cast<bool>(_function);
 		}
 
 		/* Invokes the contained object with the given arguments. */
 		ReturnType operator()(ParameterTypes... arguments)
 		{
-			auto index = counter++; // index equals the counter before it was incremented
+			auto index = _counter++; // index equals the counter before it was incremented
 
 			if (std::is_void_v<ReturnType>)
-				function(index, arguments...);
+				_function(index, arguments...);
 			else
-				return function(index, arguments...);
+				return _function(index, arguments...);
 		}
 
 		/* Returns the amount of times the index_function has been invoked. */
-		inline int get_counter() noexcept { return counter; }
+		inline int get_counter() noexcept { return _counter; }
 		/* Tells the index_function that it has been invoked the given amount of times.
 		 * @return The amount of times the index_function thought it had been invoked.
 		 */
 		inline int set_counter(int new_count) noexcept
 		{
-			auto old = counter;
-			counter = new_count;
+			auto old = _counter;
+			_counter = new_count;
 			return old;
 		}
 		/* Tells the index_function that it has not been invoked yet.

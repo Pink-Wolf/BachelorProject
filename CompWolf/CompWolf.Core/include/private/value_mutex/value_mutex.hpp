@@ -47,9 +47,9 @@ namespace CompWolf
 		using internal_mutex_type = MutexType;
 	private:
 		/* The value contained by the value_mutex. */
-		value_type value_object;
+		value_type _value;
 		/* The mutex used by the value_mutex. */
-		internal_mutex_type mutex;
+		internal_mutex_type _mutex;
 
 	public:
 		/* Constructs the value_mutex to contain a default-constructed object. */
@@ -60,7 +60,7 @@ namespace CompWolf
 			requires std::is_convertible_v<ValueInputType, value_type>
 		constexpr value_mutex(ValueInputType value)
 			noexcept(std::is_nothrow_convertible_v<ValueInputType, value_type>)
-			: value_object(value), mutex() {}
+			: _value(value), _mutex() {}
 		/* Sets the value the value_mutex contains.
 		 * Is not thread safe if used while not having the value_mutex locked.
 		 */
@@ -69,7 +69,7 @@ namespace CompWolf
 		constexpr value_mutex& operator=(ValueInputType value)
 			noexcept(std::is_nothrow_convertible_v<ValueInputType, value_type>)
 		{
-			value_object = value;
+			_value = value;
 			return *this;
 		}
 
@@ -79,15 +79,15 @@ namespace CompWolf
 		 */
 		value_type& lock() noexcept(noexcept(std::declval<internal_mutex_type>().lock()))
 		{
-			mutex.lock();
-			return value_object;
+			_mutex.lock();
+			return _value;
 		}
 		/* Tries to lock the value_mutex and returns a pointer to the value it contains.
 		 * If it is already locked, fails and instead returns nullptr.
 		 */
 		value_type* try_lock() noexcept(noexcept(std::declval<internal_mutex_type>().try_lock()))
 		{
-			if (mutex.try_lock()) return &value_object;
+			if (_mutex.try_lock()) return &_value;
 			return nullptr;
 		}
 		/* Unlocks the value_mutex.
@@ -95,7 +95,7 @@ namespace CompWolf
 		 */
 		void unlock() noexcept(noexcept(std::declval<internal_mutex_type>().unlock()))
 		{
-			mutex.unlock();
+			_mutex.unlock();
 		}
 
 		/* Returns a reference to the value the value_mutex contains.
@@ -103,7 +103,7 @@ namespace CompWolf
 		 */
 		constexpr value_type& value() noexcept
 		{
-			return value_object;
+			return _value;
 		}
 
 
@@ -113,8 +113,8 @@ namespace CompWolf
 		const value_type& lock_shared() noexcept(noexcept(std::declval<internal_mutex_type>().lock_shared()))
 			requires shared_lockable<internal_mutex_type>
 		{
-			mutex.lock_shared();
-			return value_object;
+			_mutex.lock_shared();
+			return _value;
 		}
 		/* Tries to lock the value_mutex for read-only access, and returns a pointer to the value it contains.
 		 * If it is locked normally, fails and instead returns nullptr.
@@ -122,7 +122,7 @@ namespace CompWolf
 		value_type* try_lock_shared() noexcept(noexcept(std::declval<internal_mutex_type>().try_lock_shared()))
 			requires shared_lockable<internal_mutex_type>
 		{
-			if (mutex.try_lock_shared()) return &value_object;
+			if (_mutex.try_lock_shared()) return &_value;
 			return nullptr;
 		}
 		/* Unlocks the value_mutex from read-only access.
@@ -132,7 +132,7 @@ namespace CompWolf
 		void unlock_shared() noexcept(noexcept(std::declval<internal_mutex_type>().unlock_shared()))
 			requires shared_lockable<internal_mutex_type>
 		{
-			mutex.unlock_shared();
+			_mutex.unlock_shared();
 		}
 
 		/* Returns a const reference to the value the value_mutex contains.
@@ -141,7 +141,7 @@ namespace CompWolf
 		constexpr const value_type& value_shared() noexcept
 			requires shared_lockable<internal_mutex_type>
 		{
-			return value_object;
+			return _value;
 		}
 
 		/* Locks the value_mutex, gets the value, and then unlocks it.
@@ -157,14 +157,14 @@ namespace CompWolf
 			if constexpr (shared_lockable<internal_mutex_type>)
 			{
 				lock_shared();
-				auto result = value_object;
+				auto result = _value;
 				unlock_shared();
 				return result;
 			}
 			else
 			{
 				lock();
-				auto result = value_object;
+				auto result = _value;
 				unlock();
 				return result;
 			}

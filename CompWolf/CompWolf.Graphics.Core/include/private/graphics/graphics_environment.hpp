@@ -66,26 +66,26 @@ namespace CompWolf::Graphics
 		using vulkan_debug_handle_type = std::unique_ptr<Private::vulkan_debug_messenger, teardown_vulkan_debug>;
 	private:
 		/* Whether an instance of the environment has already been constructed, which has not yet been destructed. */
-		static std::atomic_bool constructed;
+		static std::atomic_bool _constructed;
 
 		/* The settings for the environment. */
-		graphics_environment_settings settings;
+		graphics_environment_settings _settings;
 
 		/* The main thread for handling graphics and windows.
 		 * This is the thread the main function was called by.
 		 */
-		std::thread::id main_graphics_thread;
+		std::thread::id _main_graphics_thread;
 
 		// The order of the following data members is important for their destructors to be called in the right order.
 		/* Contains program-wide logic for GLFW. */
-		glfw_handle_type glfw_handle;
+		glfw_handle_type _glfw_handle;
 		/* Contains program-wide logic for Vulkan. */
-		vulkan_handle_type vulkan_handle;
+		vulkan_handle_type _vulkan_handle;
 		/* Contains logic for getting debug messenges from Vulkan. */
-		vulkan_debug_handle_type vulkan_debug_handle;
+		vulkan_debug_handle_type _vulkan_debug_handle;
 
 		/* Connections to the various gpus on the machine. */
-		gpu_manager gpus;
+		gpu_manager _gpus;
 
 	public:
 		/* If not yet set up, sets up program-wide logic.
@@ -97,7 +97,7 @@ namespace CompWolf::Graphics
 		 */
 		template <typename SettingsInputType>
 			requires std::is_convertible_v<SettingsInputType, graphics_environment_settings>
-		graphics_environment(SettingsInputType settings) : settings(settings) { setup(); }
+		graphics_environment(SettingsInputType settings) : _settings(settings) { setup(); }
 		/* If not yet set up, sets up program-wide logic.
 		 * Must be called from the thread the main function was called by.
 		 * @throws std::logic_error when an instance of graphics_environment already exists.
@@ -136,7 +136,7 @@ namespace CompWolf::Graphics
 		/* Returns whether the thread with the given id is the main graphics thread. */
 		inline auto is_main_thread(std::thread::id id) noexcept -> bool
 		{
-			return main_graphics_thread == id;
+			return _main_graphics_thread == id;
 		}
 		/* Returns whether the thread calling this is the main graphics thread. */
 		inline auto is_this_main_thread() noexcept -> bool
@@ -148,7 +148,7 @@ namespace CompWolf::Graphics
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
 		 * Returns the environment's vulkan instance, which handles vulkan-specific logic.
 		 */
-		inline Private::vulkan_instance* get_vulkan_instance() const noexcept { return vulkan_handle.get(); }
+		inline Private::vulkan_instance* get_vulkan_instance() const noexcept { return _vulkan_handle.get(); }
 
 		/* Sends the given message to the environment as an internal debugging message. */
 		void report_debug_message(std::string) const;

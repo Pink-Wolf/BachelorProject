@@ -43,7 +43,7 @@ namespace CompWolf::Graphics
 	};
 	void graphics_environment::report_debug_message(std::string message) const
 	{
-		if (settings.internal_debug_callback) settings.internal_debug_callback(message);
+		if (_settings.internal_debug_callback) _settings.internal_debug_callback(message);
 	}
 	auto get_vulkan_debug_messenger_create_info(const graphics_environment& environment) -> VkDebugUtilsMessengerCreateInfoEXT
 	{
@@ -61,24 +61,24 @@ namespace CompWolf::Graphics
 		return create_info;
 	}
 
-	std::atomic_bool graphics_environment::constructed(false);
+	std::atomic_bool graphics_environment::_constructed(false);
 
 	void graphics_environment::setup()
 	{
-		auto old_constructed = constructed.exchange(true);
+		auto old_constructed = _constructed.exchange(true);
 		if (old_constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
 
-		main_graphics_thread = std::this_thread::get_id();
+		_main_graphics_thread = std::this_thread::get_id();
 
-		glfw_handle = setup_glfw();
-		vulkan_handle = setup_vulkan();
-		vulkan_debug_handle = setup_debugger();
+		_glfw_handle = setup_glfw();
+		_vulkan_handle = setup_vulkan();
+		_vulkan_debug_handle = setup_debugger();
 
-		gpus = gpu_manager(get_vulkan_instance());
+		_gpus = gpu_manager(get_vulkan_instance());
 	}
 	graphics_environment::~graphics_environment()
 	{
-		constructed.store(false);
+		_constructed.store(false);
 	}
 
 	auto graphics_environment::setup_glfw() const -> glfw_handle_type
@@ -101,8 +101,8 @@ namespace CompWolf::Graphics
 	{
 		VkApplicationInfo app_info{
 			.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-			.pApplicationName = settings.program_name.c_str(),
-			.applicationVersion = Private::to_vulkan(settings.program_version),
+			.pApplicationName = _settings.program_name.c_str(),
+			.applicationVersion = Private::to_vulkan(_settings.program_version),
 			.pEngineName = "CompWolf",
 			.engineVersion = Private::to_vulkan(compwolf_version),
 			.apiVersion = VK_API_VERSION_1_3,
@@ -112,13 +112,13 @@ namespace CompWolf::Graphics
 		const char** glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 		std::vector<const char*> extensions(glfw_extensions, glfw_extensions + glfw_extension_count);
 
-		if (settings.internal_debug_callback)
+		if (_settings.internal_debug_callback)
 		{
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 		}
 
 		std::vector<const char*> validation_layers;
-		if (settings.internal_debug_callback)
+		if (_settings.internal_debug_callback)
 		{
 			validation_layers = std::vector<const char*>{
 				"VK_LAYER_KHRONOS_validation"
@@ -129,7 +129,7 @@ namespace CompWolf::Graphics
 
 		VkInstanceCreateInfo create_info{
 			.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-			.pNext = settings.internal_debug_callback ? &debug_messenger_create_info : nullptr,
+			.pNext = _settings.internal_debug_callback ? &debug_messenger_create_info : nullptr,
 			.pApplicationInfo = &app_info,
 			.enabledLayerCount = static_cast<uint32_t>(validation_layers.size()),
 			.ppEnabledLayerNames = validation_layers.data(),
@@ -160,7 +160,7 @@ namespace CompWolf::Graphics
 
 	auto graphics_environment::setup_debugger() const -> vulkan_debug_handle_type
 	{
-		if (!settings.internal_debug_callback)
+		if (!_settings.internal_debug_callback)
 		{
 			return vulkan_debug_handle_type(nullptr);
 		}

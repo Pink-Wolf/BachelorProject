@@ -33,7 +33,7 @@ namespace CompWolf
 
 	private:
 		/* A vector of observers, and possibly some empty functions. */
-		internal_container observers;
+		internal_container _observers;
 
 	public:
 		/* Subscribes the given object to the event. */
@@ -41,20 +41,20 @@ namespace CompWolf
 			requires std::is_convertible_v<ObserverType, value_type>
 		key_type subscribe(ObserverType observer) noexcept(std::is_nothrow_convertible_v<ObserverType, value_type>)
 		{
-			auto key = observers.size();
-			observers.push_back(observer);
+			auto key = _observers.size();
+			_observers.push_back(observer);
 			return key;
 		}
 		/* Unsubscribes the given object from the event. */
 		key_type unsubscribe(key_type observer_key) noexcept
 		{
-			observers[observer_key] = value_type();
+			_observers[observer_key] = value_type();
 		}
 
 		/* Invokes all subscribed objects, passing the given parameters to each. */
 		void invoke(parameter_type& parameter)
 		{
-			for (auto& observer : observers)
+			for (auto& observer : _observers)
 			{
 				if (observer == nullptr) continue;
 				observer(parameter);
@@ -63,7 +63,7 @@ namespace CompWolf
 		/* Invokes all subscribed objects, passing the given parameters to each. */
 		void operator()(parameter_type& parameter)
 		{
-			for (auto& observer : observers)
+			for (auto& observer : _observers)
 			{
 				if (observer == nullptr) continue;
 				observer(parameter);

@@ -30,19 +30,19 @@ namespace CompWolf
 
 	private:
 		/* The associated mutex, or none if the lock has no associated mutex. */
-		mutex_type* mutex_object = nullptr;
+		mutex_type* _mutex = nullptr;
 		/* A pointer to the associated mutex' pointer, or nullptr if the lock is not currently locking the mutex. */
-		value_type* value_object = nullptr;
+		value_type* _value = nullptr;
 	public:
 		/* The mutex the lock is associated with, or nullptr if it has no associated mutex. */
 		inline mutex_type* mutex() const noexcept
 		{
-			return mutex_object;
+			return _mutex;
 		}
 		/* Whether the lock is currently locking the mutex. */
 		inline bool owns_lock() const noexcept
 		{
-			return value_object != nullptr;
+			return _value != nullptr;
 		}
 		/* Whether the lock is currently locking the mutex. */
 		inline explicit operator bool() const noexcept { return owns_lock(); }
@@ -54,10 +54,10 @@ namespace CompWolf
 		 */
 		void lock()
 		{
-			if (mutex_object == nullptr) throw std::logic_error("Called unique_value_lock.lock() with no associated mutex to actually lock.");
+			if (_mutex == nullptr) throw std::logic_error("Called unique_value_lock.lock() with no associated mutex to actually lock.");
 			if (owns_lock()) return;
 
-			value_object = &mutex_object->lock();
+			_value = &_mutex->lock();
 		}
 		/* Locks the associated mutex if possible.
 		 * If the lock is already locking the mutex, returns true immediately.
@@ -66,10 +66,10 @@ namespace CompWolf
 		 */
 		bool try_lock()
 		{
-			if (mutex_object == nullptr) throw std::logic_error("Called unique_value_lock.try_lock() with no associated mutex to actually lock.");
+			if (_mutex == nullptr) throw std::logic_error("Called unique_value_lock.try_lock() with no associated mutex to actually lock.");
 			if (owns_lock()) return true;
 
-			value_object = mutex_object->try_lock();
+			_value = _mutex->try_lock();
 
 			return owns_lock();
 		}
@@ -78,11 +78,11 @@ namespace CompWolf
 		 */
 		void unlock()
 		{
-			if (mutex_object == nullptr) throw std::logic_error("Called unique_value_lock.unlock() with no associated mutex to actually unlock.");
+			if (_mutex == nullptr) throw std::logic_error("Called unique_value_lock.unlock() with no associated mutex to actually unlock.");
 			if (!owns_lock()) throw std::logic_error("Called unique_value_lock.unlock() while it does not actually lock the associated mutex.");
 
-			mutex_object->unlock();
-			value_object = nullptr;
+			_mutex->unlock();
+			_value = nullptr;
 		}
 
 		/* Sets the lock to not have an associated mutex.
@@ -91,9 +91,9 @@ namespace CompWolf
 		 */
 		mutex_type* release() noexcept
 		{
-			auto output = mutex_object;
-			mutex_object = nullptr;
-			value_object = nullptr;
+			auto output = _mutex;
+			_mutex = nullptr;
+			_value = nullptr;
 			return output;
 		}
 
@@ -101,11 +101,11 @@ namespace CompWolf
 		/* Constructs a lock with no associated lock. */
 		unique_value_lock() noexcept = default;
 		/* Constructs a lock for the given mutex, but does not actually lock it yet. */
-		unique_value_lock(mutex_type& mutex, std::defer_lock_t) : mutex_object(&mutex) {}
+		unique_value_lock(mutex_type& mutex, std::defer_lock_t) : _mutex(&mutex) {}
 		/* Constructs a lock for the given mutex, and locks it if possible.
 		 * If it cannot currently lock the mutex, does not lock it.
 		 */
-		unique_value_lock(mutex_type& mutex, std::try_to_lock_t) : mutex_object(&mutex)
+		unique_value_lock(mutex_type& mutex, std::try_to_lock_t) : _mutex(&mutex)
 		{
 			try_lock();
 		}
@@ -113,11 +113,11 @@ namespace CompWolf
 		 * If the current thread is not locking it, is undefined behaviour.
 		 * @param value Reference to the mutex' value; if not actually a reference to the mutex' value, has undefined behaviour.
 		 */
-		unique_value_lock(mutex_type& mutex, std::adopt_lock_t) : mutex_object(&mutex), value_object(&mutex.value()) {}
+		unique_value_lock(mutex_type& mutex, std::adopt_lock_t) : _mutex(&mutex), _value(&mutex.value()) {}
 		/* Constructs a lock for the given mutex, and locks it.
 		 * If it cannot currently lock the mutex, waits until it can.
 		 */
-		explicit unique_value_lock(mutex_type& mutex) : mutex_object(&mutex)
+		explicit unique_value_lock(mutex_type& mutex) : _mutex(&mutex)
 		{
 			lock();
 		}
@@ -137,10 +137,10 @@ namespace CompWolf
 		 */
 		value_type& value() const noexcept
 		{
-			if (mutex_object == nullptr) throw std::logic_error("Called unique_value_lock.get_value() with no associated mutex to actually get the value of.");
+			if (_mutex == nullptr) throw std::logic_error("Called unique_value_lock.get_value() with no associated mutex to actually get the value of.");
 			if (!owns_lock()) throw std::logic_error("Called unique_value_lock.get_value() while it does not actually lock the associated mutex.");
 
-			return *value_object;
+			return *_value;
 		}
 	};
 }

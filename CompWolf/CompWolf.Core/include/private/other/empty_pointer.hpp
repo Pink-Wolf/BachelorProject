@@ -37,24 +37,24 @@ namespace CompWolf
 
 	private:
 		/* Whether the object is not a nullptr. */
-		bool has_value = false;
+		bool _has_value = false;
 
 	public:
 		/* Constructs a non-nullptr empty_pointer. */
 		constexpr inline empty_pointer() noexcept = default;
 		/* @param is_not_nullptr Whether the constructed empty_pointer is not a nullptr. */
-		constexpr inline empty_pointer(bool is_not_nullptr) noexcept : has_value(is_not_nullptr) {}
+		constexpr inline empty_pointer(bool is_not_nullptr) noexcept : _has_value(is_not_nullptr) {}
 		/* Constructs a nullptr empty_pointer. */
 		constexpr inline empty_pointer(std::nullptr_t) noexcept : empty_pointer(false) {}
 
 		/* Whether the empty_pointer is not a nullptr. */
-		constexpr inline operator bool() const noexcept { return has_value; }
+		constexpr inline operator bool() const noexcept { return _has_value; }
 		/* Whether the empty_pointer is a nullptr. */
-		constexpr inline bool is_nullptr() const noexcept { return !has_value; }
+		constexpr inline bool is_nullptr() const noexcept { return !_has_value; }
 		/* Sets whether the empty_pointer is a nullptr. */
-		constexpr inline void set_nullptr(bool is_nullptr = true) noexcept { has_value = !is_nullptr; }
+		constexpr inline void set_nullptr(bool is_nullptr = true) noexcept { _has_value = !is_nullptr; }
 
-		constexpr inline void swap(empty_pointer& other) noexcept { std::swap(has_value, other.has_value); }
+		constexpr inline void swap(empty_pointer& other) noexcept { std::swap(_has_value, other._has_value); }
 
 		/* Returns empty_pointer_element::instance.
 		 * @see empty_pointer_element::instance

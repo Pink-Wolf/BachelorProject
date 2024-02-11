@@ -10,7 +10,7 @@ namespace CompWolf::Graphics
 	{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		auto glfwWindow = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
-		glfw_window = Private::from_glfw(glfwWindow);
+		_glfw_window = Private::from_glfw(glfwWindow);
 
 		glfwSetWindowUserPointer(glfwWindow, this);
 
@@ -21,17 +21,17 @@ namespace CompWolf::Graphics
 	}
 	window::window(window&& other) noexcept
 	{
-		std::scoped_lock lock(glfw_window, other.glfw_window);
+		std::scoped_lock lock(_glfw_window, other._glfw_window);
 
-		glfw_window.value() = std::move(other.glfw_window.value());
-		other.glfw_window.value() = nullptr;
+		_glfw_window.value() = std::move(other._glfw_window.value());
+		other._glfw_window.value() = nullptr;
 	}
 	auto window::operator=(window&& other) noexcept -> window&
 	{
-		std::scoped_lock lock(glfw_window, other.glfw_window);
+		std::scoped_lock lock(_glfw_window, other._glfw_window);
 
-		glfw_window.value() = std::move(other.glfw_window.value());
-		other.glfw_window.value() = nullptr;
+		_glfw_window.value() = std::move(other._glfw_window.value());
+		other._glfw_window.value() = nullptr;
 
 		return *this;
 	}
@@ -45,19 +45,19 @@ namespace CompWolf::Graphics
 		window_close_parameter args;
 
 		{
-			shared_value_lock<glfw_window_type> lock(glfw_window);
-			if (glfw_window.value() == nullptr) return;
+			shared_value_lock<glfw_window_type> lock(_glfw_window);
+			if (_glfw_window.value() == nullptr) return;
 
 			closing(args);
 		}
 
 		{
-			unique_value_lock<glfw_window_type> lock(glfw_window);
-			if (glfw_window.value() == nullptr) return;
+			unique_value_lock<glfw_window_type> lock(_glfw_window);
+			if (_glfw_window.value() == nullptr) return;
 
-			auto glfwWindow = Private::to_glfw(glfw_window.value());
+			auto glfwWindow = Private::to_glfw(_glfw_window.value());
 			glfwDestroyWindow(glfwWindow);
-			glfw_window.value() = nullptr;
+			_glfw_window.value() = nullptr;
 		}
 
 		closed(args);

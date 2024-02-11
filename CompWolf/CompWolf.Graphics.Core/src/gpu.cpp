@@ -61,10 +61,10 @@ namespace CompWolf::Graphics
 		default: throw std::runtime_error("Could not set up a connection to a gpu.");
 		}
 
-		vulkan_device = Private::from_vulkan(logic_device);
+		_vulkan_device = Private::from_vulkan(logic_device);
 	}
 	gpu::~gpu()
 	{
-		vkDestroyDevice(Private::to_vulkan(vulkan_device), nullptr);
+		vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);
 	}
 }
