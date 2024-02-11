@@ -27,9 +27,6 @@
     <ClInclude Include="include\private\event\value_event_wrapper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\other\compwolf_type_traits.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\private\other\empty_pointer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -58,6 +55,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\event">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\functional\index_function.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\compwolf_functional">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\functional\functional.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\type_traits\explicitly_convertible_to.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\type_traits\is_assignable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

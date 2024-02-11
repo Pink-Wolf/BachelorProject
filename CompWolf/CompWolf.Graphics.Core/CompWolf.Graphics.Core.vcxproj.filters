@@ -39,6 +39,12 @@
     <ClInclude Include="include\vulkan_types">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\graphics\gpu_manager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\gpu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -48,6 +54,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics_environment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

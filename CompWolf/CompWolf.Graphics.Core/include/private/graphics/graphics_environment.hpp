@@ -2,6 +2,7 @@
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 
 #include "vulkan_types"
+#include "gpu_manager.hpp"
 #include <string>
 #include <thread>
 #include <vector>
@@ -82,6 +83,9 @@ namespace CompWolf::Graphics
 		vulkan_handle_type vulkan_handle;
 		/* Contains logic for getting debug messenges from Vulkan. */
 		vulkan_debug_handle_type vulkan_debug_handle;
+
+		/* Connections to the various gpus on the machine. */
+		gpu_manager gpus;
 
 	public:
 		/* If not yet set up, sets up program-wide logic.

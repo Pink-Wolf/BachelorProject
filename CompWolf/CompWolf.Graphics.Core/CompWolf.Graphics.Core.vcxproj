@@ -164,6 +164,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\graphics" />
+    <ClInclude Include="include\private\graphics\gpu.hpp" />
+    <ClInclude Include="include\private\graphics\gpu_manager.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment.hpp" />
     <ClInclude Include="header\framework.h" />
     <ClInclude Include="header\compwolf_vulkan.hpp" />
@@ -173,6 +175,8 @@
     <ClInclude Include="include\vulkan_types" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gpu.cpp" />
+    <ClCompile Include="src\gpu_manager.cpp" />
     <ClCompile Include="src\graphics_environment.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -68,15 +68,19 @@ namespace CompWolf::Graphics
 		auto old_constructed = constructed.exchange(true);
 		if (old_constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
 
+		main_graphics_thread = std::this_thread::get_id();
+
 		glfw_handle = setup_glfw();
 		vulkan_handle = setup_vulkan();
 		vulkan_debug_handle = setup_debugger();
-		main_graphics_thread = std::this_thread::get_id();
+
+		gpus = gpu_manager(get_vulkan_instance());
 	}
 	graphics_environment::~graphics_environment()
 	{
 		constructed.store(false);
 	}
+
 	auto graphics_environment::setup_glfw() const -> glfw_handle_type
 	{
 		auto result = glfwInit();

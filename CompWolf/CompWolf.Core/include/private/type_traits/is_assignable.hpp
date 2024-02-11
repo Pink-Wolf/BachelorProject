@@ -1,5 +1,5 @@
-#ifndef COMPWOLF_TYPE_TRAITS_HEADER
-#define COMPWOLF_TYPE_TRAITS_HEADER
+#ifndef COMPWOLF_IS_ASSIGNABLE_HEADER
+#define COMPWOLF_IS_ASSIGNABLE_HEADER
 
 // This file always includes <type_traits>
 #include <type_traits>
@@ -47,4 +47,4 @@ namespace CompWolf
 	COMPWOLF_DEFINE_ASSIGNABLE(bitwise_right_shift, >>=);
 }
 
-#endif // ! COMPWOLF_TYPE_TRAITS_HEADER
+#endif // ! COMPWOLF_IS_ASSIGNABLE_HEADER

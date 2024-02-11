@@ -1,2 +1,4 @@
 #include "private/graphics/graphics_environment.hpp"
+#include "private/graphics/gpu.hpp"
+#include "private/graphics/gpu_manager.hpp"
 #include "private/graphics/window.hpp"

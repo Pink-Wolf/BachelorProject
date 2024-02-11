@@ -152,9 +152,13 @@
     <ClInclude Include="include\compwolf_type_traits" />
     <ClInclude Include="include\empty_pointer" />
     <ClInclude Include="include\event" />
-    <ClInclude Include="include\private\other\compwolf_type_traits.hpp" />
+    <ClInclude Include="include\compwolf_functional" />
     <ClInclude Include="include\private\other\empty_pointer.hpp" />
     <ClInclude Include="include\private\event\event.hpp" />
+    <ClInclude Include="include\private\functional\functional.hpp" />
+    <ClInclude Include="include\private\functional\index_function.hpp" />
+    <ClInclude Include="include\private\type_traits\explicitly_convertible_to.hpp" />
+    <ClInclude Include="include\private\type_traits\is_assignable.hpp" />
     <ClInclude Include="include\private\value_mutex\shared_value_lock.hpp" />
     <ClInclude Include="include\private\value_mutex\unique_value_lock.hpp" />
     <ClInclude Include="include\private\event\value_event_wrapper.hpp" />
