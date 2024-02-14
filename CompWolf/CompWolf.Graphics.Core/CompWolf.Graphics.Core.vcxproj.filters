@@ -39,10 +39,25 @@
     <ClInclude Include="include\vulkan_types">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\gpu_manager.hpp">
+    <ClInclude Include="include\private\graphics\graphics_environment\gpu_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\gpu.hpp">
+    <ClInclude Include="include\private\graphics\graphics_environment\gpu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\graphics_environment\glfw_handle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\graphics_environment\vulkan_handle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\graphics_environment\vulkan_debug_handle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\graphics_environment\graphics_environment_settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\vulkan_debug_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -60,6 +75,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gpu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\glfw_handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vulkan_debug_handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vulkan_handle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

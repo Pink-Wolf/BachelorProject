@@ -1,4 +1,8 @@
+#include "private/graphics/graphics_environment/glfw_handle.hpp"
+#include "private/graphics/graphics_environment/vulkan_handle.hpp"
+#include "private/graphics/graphics_environment/vulkan_debug_handle.hpp"
+#include "private/graphics/graphics_environment/gpu.hpp"
+#include "private/graphics/graphics_environment/gpu_manager.hpp"
 #include "private/graphics/graphics_environment.hpp"
-#include "private/graphics/gpu.hpp"
-#include "private/graphics/gpu_manager.hpp"
+
 #include "private/graphics/window.hpp"

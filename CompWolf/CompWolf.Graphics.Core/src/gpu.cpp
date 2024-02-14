@@ -65,6 +65,6 @@ namespace CompWolf::Graphics
 	}
 	gpu::~gpu()
 	{
-		vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);
+		if (_vulkan_device) vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);
 	}
 }

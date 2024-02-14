@@ -2,7 +2,11 @@
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 
 #include "vulkan_types"
-#include "gpu_manager.hpp"
+#include "graphics_environment/graphics_environment_settings.hpp"
+#include "graphics_environment/glfw_handle.hpp"
+#include "graphics_environment/vulkan_handle.hpp"
+#include "graphics_environment/vulkan_debug_handle.hpp"
+#include "graphics_environment/gpu_manager.hpp"
 #include <string>
 #include <thread>
 #include <vector>
@@ -14,23 +18,6 @@
 
 namespace CompWolf::Graphics
 {
-	struct graphics_environment_settings
-	{
-		/* The type of function that internal_debug_callback is.
-		 * As in, when internal_debug_callback is some type std::function<T>, then this is the T.
-		 */
-		using internal_debug_callback_function_type = void(std::string);
-		/* If non-empty, sets up extra internal debugging-logic for CompWOlf::Graphics and passes messages to this function.
-		 * The message ends with a newline character.
-		 */
-		std::function<internal_debug_callback_function_type> internal_debug_callback;
-
-		/* The name of the program. */
-		std::string program_name = "Compwolf Program";
-		/* The version of the program. */
-		version_number program_version = { 0, 0, 0 };
-	};
-
 	struct graphics_environment_update_parameter
 	{
 
@@ -43,28 +30,6 @@ namespace CompWolf::Graphics
 	class graphics_environment
 	{
 	private:
-		struct teardown_glfw
-		{
-			using pointer = empty_pointer;
-			void operator()(empty_pointer) const;
-		};
-		struct teardown_vulkan
-		{
-			using pointer = Private::vulkan_instance*;
-			void operator()(Private::vulkan_instance*) const;
-		};
-		struct teardown_vulkan_debug
-		{
-			std::function<void(Private::vulkan_debug_messenger*)> teardowner;
-
-			using pointer = Private::vulkan_debug_messenger*;
-			void operator()(Private::vulkan_debug_messenger*) const;
-		};
-
-		using glfw_handle_type = std::unique_ptr<empty_pointer_element, teardown_glfw>;
-		using vulkan_handle_type = std::unique_ptr<Private::vulkan_instance, teardown_vulkan>;
-		using vulkan_debug_handle_type = std::unique_ptr<Private::vulkan_debug_messenger, teardown_vulkan_debug>;
-	private:
 		/* Whether an instance of the environment has already been constructed, which has not yet been destructed. */
 		static std::atomic_bool _constructed;
 
@@ -76,14 +41,14 @@ namespace CompWolf::Graphics
 		 */
 		std::thread::id _main_graphics_thread;
 
+		/* --------------------------------------- The order of the below items is important, so they are destructed in the right order! --------------------------------------- */
 		// The order of the following data members is important for their destructors to be called in the right order.
 		/* Contains program-wide logic for GLFW. */
-		glfw_handle_type _glfw_handle;
+		glfw_handle _glfw_handle;
 		/* Contains program-wide logic for Vulkan. */
-		vulkan_handle_type _vulkan_handle;
+		vulkan_handle _vulkan_handle;
 		/* Contains logic for getting debug messenges from Vulkan. */
-		vulkan_debug_handle_type _vulkan_debug_handle;
-
+		vulkan_debug_handle _vulkan_debug_handle;
 		/* Connections to the various gpus on the machine. */
 		gpu_manager _gpus;
 
@@ -96,8 +61,9 @@ namespace CompWolf::Graphics
 		 * @throws std::runtime_error when something went wrong during setup outside of the program.
 		 */
 		template <typename SettingsInputType>
-			requires std::is_convertible_v<SettingsInputType, graphics_environment_settings>
-		graphics_environment(SettingsInputType settings) : _settings(settings) { setup(); }
+			requires std::is_constructible_v<SettingsInputType, graphics_environment_settings>
+		graphics_environment(SettingsInputType settings) : _settings(settings)
+			{ setup(); }
 		/* If not yet set up, sets up program-wide logic.
 		 * Must be called from the thread the main function was called by.
 		 * @throws std::logic_error when an instance of graphics_environment already exists.
@@ -115,9 +81,6 @@ namespace CompWolf::Graphics
 		auto operator=(graphics_environment&&)->graphics_environment = delete;
 	private:
 		void setup();
-		auto setup_glfw() const -> glfw_handle_type;
-		auto setup_vulkan() const -> vulkan_handle_type;
-		auto setup_debugger() const -> vulkan_debug_handle_type;
 
 	public:
 		/* Handles events received from outside the program.
@@ -146,12 +109,12 @@ namespace CompWolf::Graphics
 
 	public:
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
-		 * Returns the environment's vulkan instance, which handles vulkan-specific logic.
+		 * Returns the vulkan instance, which handles vulkan-specific logic.
 		 */
-		inline Private::vulkan_instance* get_vulkan_instance() const noexcept { return _vulkan_handle.get(); }
-
-		/* Sends the given message to the environment as an internal debugging message. */
-		void report_debug_message(std::string) const;
+		inline Private::vulkan_instance* get_vulkan_instance() const noexcept
+		{
+			return _vulkan_handle.get_vulkan_instance();
+		}
 	};
 
 	extern template graphics_environment::graphics_environment(graphics_environment_settings);

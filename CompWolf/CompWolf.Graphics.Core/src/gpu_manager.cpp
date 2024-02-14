@@ -7,7 +7,7 @@
 
 namespace CompWolf::Graphics
 {
-	gpu_manager::gpu_manager(Private::vulkan_instance* vulkan_instance)
+	gpu_manager::gpu_manager(const graphics_environment_settings&, Private::vulkan_instance* vulkan_instance)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 
