@@ -10,7 +10,7 @@ namespace CompWolf::Graphics
 	class vulkan_handle
 	{
 	private:
-		Private::vulkan_instance* _vulkan_instance;
+		Private::vulkan_instance _vulkan_instance;
 	public:
 		/* Constructs a vulkan_handle without setting up any logic. */
 		vulkan_handle() = default;
@@ -29,7 +29,7 @@ namespace CompWolf::Graphics
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
 		 * Returns the vulkan instance, which handles vulkan-specific logic.
 		 */
-		inline Private::vulkan_instance* get_vulkan_instance() const noexcept
+		inline Private::vulkan_instance get_vulkan_instance() const noexcept
 		{
 			return _vulkan_instance;
 		}

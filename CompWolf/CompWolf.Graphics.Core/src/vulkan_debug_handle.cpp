@@ -7,7 +7,7 @@
 
 namespace CompWolf::Graphics
 {
-	vulkan_debug_handle::vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance* vulkan_instance)
+	vulkan_debug_handle::vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance)
 	{
 		if (!settings.internal_debug_callback)
 		{
@@ -35,7 +35,7 @@ namespace CompWolf::Graphics
 		}
 
 		_messenger = Private::from_vulkan(debug_messenger);
-		_teardowner = [vkDestroyDebugUtilsMessengerEXT, instance](Private::vulkan_debug_messenger* vulkan_messenger)
+		_teardowner = [vkDestroyDebugUtilsMessengerEXT, instance](Private::vulkan_debug_messenger vulkan_messenger)
 			{
 				auto messenger = Private::to_vulkan(vulkan_messenger);
 				vkDestroyDebugUtilsMessengerEXT(instance, messenger, nullptr);

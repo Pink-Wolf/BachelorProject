@@ -41,7 +41,7 @@ namespace CompWolf::Graphics
 		event<window_close_parameter> closed;
 
 	private:
-		using glfw_window_type = shared_value_mutex<Private::glfw_window*>;
+		using glfw_window_type = shared_value_mutex<Private::glfw_window>;
 		glfw_window_type _glfw_window;
 	};
 

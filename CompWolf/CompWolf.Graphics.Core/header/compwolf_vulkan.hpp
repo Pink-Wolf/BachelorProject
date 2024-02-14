@@ -12,15 +12,21 @@
 
 namespace CompWolf::Graphics::Private
 {
-#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(library, library_type, compwolf_type)					\
-	inline library_type to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }			\
-	inline compwolf_type from_##library(library_type a) { return reinterpret_cast<compwolf_type>(a); }		\
+#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(library, library_type, compwolf_type)							\
+	inline library_type to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }					\
+	inline compwolf_type from_##library(library_type a) { return reinterpret_cast<compwolf_type>(a); }				\
 
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkInstance, vulkan_instance*)
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkDebugUtilsMessengerEXT, vulkan_debug_messenger*)
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkPhysicalDevice, vulkan_physical_device*)
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkDevice, vulkan_device*)
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window*)
+#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(library, library_type, compwolf_type)				\
+	inline library_type to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a.value); }			\
+	inline compwolf_type from_##library(library_type a) { return compwolf_type(reinterpret_cast<uint64_t>(a)); }	\
+
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkInstance, vulkan_instance)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkDebugUtilsMessengerEXT, vulkan_debug_messenger)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkPhysicalDevice, vulkan_physical_device)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkDevice, vulkan_device)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window)
+
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSurfaceKHR, vulkan_surface)
 
 	inline uint32_t to_vulkan(version_number a) { return VK_MAKE_API_VERSION(0, a.major, a.minor, a.patch); }
 

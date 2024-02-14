@@ -7,7 +7,7 @@
 
 namespace CompWolf::Graphics
 {
-	void teardown_vulkan(Private::vulkan_instance* vulkan_instance)
+	void teardown_vulkan(Private::vulkan_instance vulkan_instance)
 	{
 		if (vulkan_instance)
 		{

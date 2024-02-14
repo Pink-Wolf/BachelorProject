@@ -111,7 +111,7 @@ namespace CompWolf::Graphics
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
 		 * Returns the vulkan instance, which handles vulkan-specific logic.
 		 */
-		inline Private::vulkan_instance* get_vulkan_instance() const noexcept
+		inline Private::vulkan_instance get_vulkan_instance() const noexcept
 		{
 			return _vulkan_handle.get_vulkan_instance();
 		}

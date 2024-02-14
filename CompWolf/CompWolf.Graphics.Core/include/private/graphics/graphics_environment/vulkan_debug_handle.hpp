@@ -10,8 +10,8 @@ namespace CompWolf::Graphics
 	class vulkan_debug_handle
 	{
 	private:
-		Private::vulkan_debug_messenger* _messenger;
-		std::function<void(Private::vulkan_debug_messenger*)> _teardowner;
+		Private::vulkan_debug_messenger _messenger;
+		std::function<void(Private::vulkan_debug_messenger)> _teardowner;
 	public:
 		/* Constructs an uninitialized vulkan_debug_handle. */
 		vulkan_debug_handle() = default;
@@ -21,7 +21,7 @@ namespace CompWolf::Graphics
 		 * @throws std::logic_error when an instance of vulkan_debug_handle already exists.
 		 * @throws std::runtime_error when something went wrong during setup outside of the program.
 		 */
-		vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance* instance);
+		vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance instance);
 		~vulkan_debug_handle();
 
 		vulkan_debug_handle(vulkan_debug_handle&&) noexcept;

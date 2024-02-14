@@ -9,7 +9,7 @@
 
 namespace CompWolf::Graphics
 {
-	gpu::gpu(Private::vulkan_physical_device* vulkan_physical_device)
+	gpu::gpu(Private::vulkan_physical_device vulkan_physical_device)
 	{
 		auto physical_device = Private::to_vulkan(vulkan_physical_device);
 

@@ -21,7 +21,7 @@ namespace CompWolf::Graphics
 		 * @param settings How the gpu_manager should behave. The object must stay alive throughout gpu_manager's lifetime.
 		 * @param instance The instance of vulkan to create connections to gpus for.
 		 * @throws std::runtime_error when something went wrong during setup outside of the program. */
-		explicit gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance* instance);
+		explicit gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance instance);
 	};
 }
 
