@@ -19,7 +19,15 @@ namespace CompWolf::Graphics
 	 */
 	class window
 	{
+	private:
+		const graphics_environment* environment;
+
+		using glfw_window_type = shared_value_mutex<Private::glfw_window>;
+		glfw_window_type _glfw_window;
+		Private::vulkan_surface _vulkan_surface;
+
 	public:
+		/* @throws std::runtime_error when something went wrong during window creation outside of the program. */
 		window(const graphics_environment& environment);
 		window(window&&) noexcept;
 		auto operator=(window&&) noexcept -> window&;
@@ -27,7 +35,10 @@ namespace CompWolf::Graphics
 
 	public:
 		/* Whether the window is currently open. */
-		auto is_open() noexcept -> bool;
+		inline auto is_open() noexcept -> bool
+		{
+			return _glfw_window.get_value_copy_quick() != nullptr;
+		}
 
 		/* Closes the window. */
 		void close() noexcept;
@@ -39,13 +50,7 @@ namespace CompWolf::Graphics
 		 * @see close()
 		 */
 		event<window_close_parameter> closed;
-
-	private:
-		using glfw_window_type = shared_value_mutex<Private::glfw_window>;
-		glfw_window_type _glfw_window;
 	};
-
-	auto inline window::is_open() noexcept -> bool { return _glfw_window.get_value_copy_quick() != nullptr; }
 }
 
 #endif // ! COMPWOLF_GRAPHICS_WINDOW_HEADER

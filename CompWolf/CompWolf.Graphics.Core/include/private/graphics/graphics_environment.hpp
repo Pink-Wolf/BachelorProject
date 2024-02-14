@@ -55,7 +55,7 @@ namespace CompWolf::Graphics
 	public:
 		/* If not yet set up, sets up program-wide logic.
 		 * If not run on the thread running the main function, then this will have undefined behaviour.
-		 * @param A graphics_environment_settings specifying how the environment should behave.
+		 * @param settings A graphics_environment_settings specifying how the environment should behave.
 		 * @typeparam SettingsInputType The type of graphics_environment_settings to pass onto the environment.
 		 * @throws std::logic_error when an instance of graphics_environment already exists.
 		 * @throws std::runtime_error when something went wrong during setup outside of the program.
