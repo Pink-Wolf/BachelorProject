@@ -48,7 +48,7 @@ namespace CompWolf::Graphics::Private
 		handle_result(getter(input, &size, nullptr));
 		if (size <= 0) return std::vector<T>();
 
-		std::vector<VkPhysicalDevice> data(size);
+		std::vector<T> data(size);
 		handle_result(getter(input, &size, data.data()));
 		data.resize(size);
 
