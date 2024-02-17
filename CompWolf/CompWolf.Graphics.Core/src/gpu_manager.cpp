@@ -21,8 +21,12 @@ namespace CompWolf::Graphics
 				default: throw std::runtime_error("Could not get the machine's graphics card");
 				}
 			});
-		auto vulkan_physical_devices = physical_devices | std::views::transform([](VkPhysicalDevice a) { return Private::from_vulkan(a); });
 
-		_gpus = _gpus_type(vulkan_physical_devices.begin(), vulkan_physical_devices.end());
+		_gpus.reserve(physical_devices.size());
+		for (auto& physical_device : physical_devices)
+		{
+			auto vulkan_device = Private::from_vulkan(physical_device);
+			_gpus.push_back(gpu(vulkan_instance, vulkan_device));
+		}
 	}
 }

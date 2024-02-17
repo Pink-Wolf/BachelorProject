@@ -13,8 +13,9 @@
 
 namespace CompWolf::Graphics
 {
-	gpu::gpu(Private::vulkan_physical_device vulkan_physical_device)
+	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device)
 	{
+		auto instance = Private::to_vulkan(vulkan_instance);
 		auto physical_device = Private::to_vulkan(vulkan_physical_device);
 
 		VkPhysicalDeviceProperties properties;
@@ -56,26 +57,34 @@ namespace CompWolf::Graphics
 		std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
 		{
 			auto queue_families = Private::get_size_and_vector<VkPhysicalDevice, uint32_t, VkQueueFamilyProperties, void>(vkGetPhysicalDeviceQueueFamilyProperties, physical_device);
+
 			queue_create_infos.reserve(queue_families.size());
-			std::transform(queue_families.begin(), queue_families.end(), std::back_inserter(queue_create_infos),
-				index_function<VkDeviceQueueCreateInfo(VkQueueFamilyProperties)>([&queue_priority_item, &queue_priority](int index, VkQueueFamilyProperties queue_family)->VkDeviceQueueCreateInfo
-					{
-						auto is_graphics_family = queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
+			_families.reserve(queue_families.size());
 
-						auto queue_count = queue_family.queueCount;
-						if (queue_priority.size() < queue_count) queue_priority.resize(queue_count, queue_priority_item);
+			for (size_t queue_index = 0; queue_index < queue_families.size(); queue_index++)
+			{
+				auto& queue_family = queue_families[queue_index];
 
-						VkDeviceQueueCreateInfo queue_create_info{
-							.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-							.queueFamilyIndex = static_cast<uint32_t>(index),
-							.queueCount = queue_family.queueCount,
-							.pQueuePriorities = queue_priority.data(),
-						};
+				gpu_thread_family connection;
 
-						return queue_create_info;
-					}
-				)
-			);
+				bool draw_queue = queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
+				if (draw_queue) connection.work_types[gpu_work_type::draw] = true;
+				bool present_queue = glfwGetPhysicalDevicePresentationSupport(instance, physical_device, static_cast<uint32_t>(queue_index));
+				if (present_queue) connection.work_types[gpu_work_type::present] = true;
+
+				connection.size = queue_family.queueCount;
+				if (queue_priority.size() < connection.size) queue_priority.resize(connection.size, queue_priority_item);
+
+				VkDeviceQueueCreateInfo queue_create_info{
+					.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+					.queueFamilyIndex = static_cast<uint32_t>(queue_index),
+					.queueCount = static_cast<uint32_t>(connection.size),
+					.pQueuePriorities = queue_priority.data(),
+				};
+
+				queue_create_infos.push_back(std::move(queue_create_info));
+				_families.push_back(std::move(connection));
+			}
 		}
 
 		VkDeviceCreateInfo create_info{
