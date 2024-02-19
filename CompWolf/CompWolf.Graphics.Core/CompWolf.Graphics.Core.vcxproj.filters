@@ -60,6 +60,12 @@
     <ClInclude Include="header\vulkan_debug_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\graphics\graphics_environment\gpu_job_settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\graphics_environment\gpu_thread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

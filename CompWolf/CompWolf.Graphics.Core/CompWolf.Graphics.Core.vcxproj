@@ -172,6 +172,8 @@
     <ClInclude Include="header\framework.h" />
     <ClInclude Include="header\compwolf_vulkan.hpp" />
     <ClInclude Include="header\pch.h" />
+    <ClInclude Include="include\private\graphics\graphics_environment\gpu_job_settings.hpp" />
+    <ClInclude Include="include\private\graphics\graphics_environment\gpu_thread.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment\graphics_environment_settings.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment\vulkan_handle.hpp" />

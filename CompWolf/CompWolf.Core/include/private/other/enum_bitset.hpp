@@ -44,7 +44,7 @@ namespace CompWolf
 		 */
 		bool test(EnumType pos) const
 		{
-			return test(to_pos(pos));
+			return super::test(to_pos(pos));
 		}
 
 		/* Sets the bit representing the given enum-value to the given value.
@@ -52,7 +52,7 @@ namespace CompWolf
 		 */
 		enum_bitset& set(EnumType pos, bool value = true)
 		{
-			set(to_pos(pos), value);
+			super::set(to_pos(pos), value);
 			return *this;
 		}
 		/* Sets the bit representing the given enum-value to 0.
@@ -68,7 +68,7 @@ namespace CompWolf
 		 */
 		enum_bitset& flip(EnumType pos)
 		{
-			flip(to_pos(pos));
+			super::flip(to_pos(pos));
 			return *this;
 		}
 

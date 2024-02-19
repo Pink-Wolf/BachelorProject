@@ -65,23 +65,29 @@ namespace CompWolf::Graphics
 			{
 				auto& queue_family = queue_families[queue_index];
 
-				gpu_thread_family connection;
+				gpu_thread_family connection{
+					.job_types = 0,
+					.persistent_job_count = 0,
+					.job_count = 0,
+				};
 
 				bool draw_queue = queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
-				if (draw_queue) connection.work_types[gpu_work_type::draw] = true;
+				if (draw_queue) connection.job_types[gpu_job_type::draw] = true;
 				bool present_queue = glfwGetPhysicalDevicePresentationSupport(instance, physical_device, static_cast<uint32_t>(queue_index));
-				if (present_queue) connection.work_types[gpu_work_type::present] = true;
+				if (present_queue) connection.job_types[gpu_job_type::present] = true;
 
-				connection.size = queue_family.queueCount;
-				if (queue_priority.size() < connection.size) queue_priority.resize(connection.size, queue_priority_item);
+				auto queue_count = queue_family.queueCount;
+				connection.threads.resize(queue_count);
+				if (queue_priority.size() < queue_count) queue_priority.resize(queue_count, queue_priority_item);
 
 				VkDeviceQueueCreateInfo queue_create_info{
 					.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
 					.queueFamilyIndex = static_cast<uint32_t>(queue_index),
-					.queueCount = static_cast<uint32_t>(connection.size),
+					.queueCount = static_cast<uint32_t>(queue_count),
 					.pQueuePriorities = queue_priority.data(),
 				};
 
+				_work_types |= connection.job_types;
 				queue_create_infos.push_back(std::move(queue_create_info));
 				_families.push_back(std::move(connection));
 			}
@@ -115,13 +121,20 @@ namespace CompWolf::Graphics
 
 	gpu::gpu(gpu&& other) noexcept
 	{
-		_vulkan_device = other._vulkan_device;
+		_vulkan_device = std::move(other._vulkan_device);
 		other._vulkan_device = nullptr;
+
+		_families = std::move(other._families);
+		_work_types = std::move(other._work_types);
 	}
 	gpu& gpu::operator=(gpu&& other) noexcept
 	{
-		_vulkan_device = other._vulkan_device;
+		_vulkan_device = std::move(other._vulkan_device);
 		other._vulkan_device = nullptr;
+
+		_families = std::move(other._families);
+		_work_types = std::move(other._work_types);
+
 		return *this;
 	}
 }

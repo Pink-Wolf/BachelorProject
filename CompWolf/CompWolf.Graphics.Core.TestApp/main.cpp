@@ -11,6 +11,14 @@ int main()
             .internal_debug_callback = [](std::string m) { std::cerr << m; },
             .program_name = "Test CompWolf Program",
             .program_version = {1, 2, 3},
+            .persistent_jobs = { {
+                    .type = gpu_job_type_set({gpu_job_type::draw}),
+                    .priority = gpu_job_priority::medium,
+                }, {
+                    .type = gpu_job_type_set({gpu_job_type::draw, gpu_job_type::present}),
+                    .priority = gpu_job_priority::high,
+                },
+                },
             });
         window win(environment);
 
