@@ -43,6 +43,11 @@ namespace CompWolf::Graphics
 		size_t persistent_job_count;
 		/* The amount of threads in the family occupied by a job. */
 		size_t job_count;
+
+		/* The owning gpu. */
+		Private::vulkan_physical_device vulkan_physical_device;
+		/* The connection to the owning gpu. */
+		Private::vulkan_device vulkan_device;
 	};
 }
 

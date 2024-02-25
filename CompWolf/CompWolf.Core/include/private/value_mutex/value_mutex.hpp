@@ -53,7 +53,7 @@ namespace CompWolf
 
 	public:
 		/* Constructs the value_mutex to contain a default-constructed object. */
-		constexpr value_mutex() noexcept = default;
+		constexpr value_mutex() noexcept : _value(), _mutex() {}
 
 		/* Constructs the value_mutex with the given value. */
 		template <typename ValueInputType>

@@ -17,7 +17,7 @@ namespace CompWolf::Graphics
 		struct gpu_thread_position
 		{
 			/* The family containing the thread. */
-			gpu_thread_family family;
+			gpu_thread_family* family;
 			/* The index of the thread in the family. */
 			size_t index;
 		};
@@ -41,8 +41,35 @@ namespace CompWolf::Graphics
 		explicit gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance instance);
 
 	public:
+		/* Returns the gpu-connections the manager contains. */
+		auto gpu_container() noexcept -> _gpus_type&
+		{
+			return _gpus;
+		}
+		/* Returns the gpu-connections the manager contains. */
+		auto gpu_container() const noexcept -> const _gpus_type&
+		{
+			return _gpus;
+		}
+
+	public:
+		/* Creates a new persistent job, returning the job's key. */
 		auto new_persistent_job(gpu_job_settings settings) -> persistent_job_key;
+		/* Stops a persistent job.
+		 * Calling this with an invalid key is undefined behaviour.
+		 */
 		void close_persistent_job(persistent_job_key);
+
+		/* Returns the gpu-thread-family that the given job is running on. */
+		inline auto thread_family_for_job(persistent_job_key key) -> gpu_thread_family&
+		{
+			return *persistent_jobs[key].value().family;
+		}
+		/* Returns the gpu-thread-family that the given job is running on. */
+		inline auto thread_family_for_job(persistent_job_key key) const -> const gpu_thread_family&
+		{
+			return *persistent_jobs[key].value().family;
+		}
 	private:
 		auto find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> gpu_thread_family&;
 		auto find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> size_t;

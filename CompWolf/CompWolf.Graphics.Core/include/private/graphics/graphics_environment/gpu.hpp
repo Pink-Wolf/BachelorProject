@@ -11,6 +11,8 @@ namespace CompWolf::Graphics
 	class gpu
 	{
 	private:
+		/* The gpu. */
+		Private::vulkan_physical_device _vulkan_physical_device;
 		/* The connection to the gpu. */
 		Private::vulkan_device _vulkan_device;
 		/* The threads the gpu contains, grouped together in various families. */
@@ -28,8 +30,10 @@ namespace CompWolf::Graphics
 		explicit gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device device);
 		~gpu();
 
-		gpu(gpu&& other) noexcept;
-		gpu& operator=(gpu&& other) noexcept;
+		gpu(const gpu&) = delete;
+		gpu& operator=(const gpu&) = delete;
+		gpu(gpu&&) noexcept;
+		gpu& operator=(gpu&&) noexcept;
 
 	public:
 		/* All of the gpu's threads, split into various "families".
@@ -56,6 +60,13 @@ namespace CompWolf::Graphics
 		inline const gpu_job_type_set& work_types() const
 		{
 			return _work_types;
+		}
+
+	public:
+		/* The gpu. */
+		inline Private::vulkan_physical_device vulkan_physical_device() const
+		{
+			return _vulkan_physical_device;
 		}
 	};
 }

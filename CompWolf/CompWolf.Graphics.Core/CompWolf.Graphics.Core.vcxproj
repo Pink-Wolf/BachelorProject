@@ -163,6 +163,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\present_device_info.hpp" />
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\private\graphics\graphics_environment\glfw_handle.hpp" />
@@ -192,6 +193,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\present_device_info.cpp" />
     <ClCompile Include="src\vulkan_debug_handle.cpp" />
     <ClCompile Include="src\vulkan_handle.cpp" />
     <ClCompile Include="src\window.cpp" />

@@ -107,6 +107,17 @@ namespace CompWolf::Graphics
 			return is_main_thread(std::this_thread::get_id());
 		}
 
+		/* Returns the manager for the connections to the machine's gpus. */
+		inline auto gpus() noexcept -> gpu_manager&
+		{
+			return _gpus;
+		}
+		/* Returns the manager for the connections to the machine's gpus. */
+		inline auto gpus() const noexcept -> const gpu_manager&
+		{
+			return _gpus;
+		}
+
 	public:
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
 		 * Returns the vulkan instance, which handles vulkan-specific logic.

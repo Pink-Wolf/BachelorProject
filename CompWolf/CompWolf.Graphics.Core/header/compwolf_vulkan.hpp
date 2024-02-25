@@ -27,52 +27,27 @@ namespace CompWolf::Graphics::Private
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window)
 
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSurfaceKHR, vulkan_surface)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSwapchainKHR, vulkan_swapchain)
 
 	inline uint32_t to_vulkan(version_number a) { return VK_MAKE_API_VERSION(0, a.major, a.minor, a.patch); }
 
 	/* Invokes the given getter to get the size of its data, and then invokes it again to get the data.
-	 * The getter must take a [input], [size_pointer], and [data_pointer], and return some [return_type], where [size_pointer] and [data_pointer] are pointers to where the getter should read/write the size/data.
-	 * The getter should always output the size.
-	 * If [data_pointer] is not null, the size must not be greater than the given size, and should output the data.
-	 * @param handle_result Invoked immediately after invoking getter, passing along getter's return-value.
-	 * @return The data received by the getter, in a vector.
-	 * @typeparam InputType The type passed as input to the getter. [input] is of the type InputType.
-	 * @typeparam SizeType [size_pointer] is of the type SizeType*.
-	 * @typeparam T The type of data the getter returns an array of. [data_pointer] is of the type T*.
-	 * @typeparam GetterReturnType The type returned by the getter, used to check if it failed.
-	 */
-	template <typename InputType, typename SizeType, typename T, typename GetterReturnType>
-	auto get_size_and_vector(std::function<GetterReturnType(InputType, SizeType*, T*)> getter, InputType input, std::function<void(GetterReturnType)> handle_result) -> std::vector<T>
-	{
-		SizeType size;
-		handle_result(getter(input, &size, nullptr));
-		if (size <= 0) return std::vector<T>();
-
-		std::vector<T> data(size);
-		handle_result(getter(input, &size, data.data()));
-		data.resize(size);
-
-		return data;
-	}
-	/* Invokes the given getter to get the size of its data, and then invokes it again to get the data.
-	 * The getter must take a [input], [size_pointer], and [data_pointer], where [size_pointer] and [data_pointer] are pointers to where the getter should read/write the size/data.
+	 * The getter must take a [size_pointer], and [data_pointer], where [size_pointer] and [data_pointer] are pointers to where the getter should write the size/data respectively.
 	 * The getter should always output the size.
 	 * If [data_pointer] is not null, the size must not be greater than the given size, and should output the data.
 	 * @return The data received by the getter, in a vector.
-	 * @typeparam InputType The type passed as input to the getter. [input] is of the type InputType.
 	 * @typeparam SizeType [size_pointer] is of the type SizeType*.
 	 * @typeparam T The type of data the getter returns an array of. [data_pointer] is of the type T*.
-	 * @typeparam GetterReturnType The type returned by the getter.
 	 */
-	template <typename InputType, typename SizeType, typename T, typename GetterReturnType = void>
-	auto get_size_and_vector(std::function<GetterReturnType(InputType, SizeType*, T*)> getter, InputType input) -> std::vector<T>
+	template <typename SizeType, typename T>
+	auto get_size_and_vector(std::function<void(SizeType*, T*)> getter) -> std::vector<T>
 	{
 		SizeType size;
-		getter(input, &size, nullptr);
+		getter(&size, nullptr);
 		if (size <= 0) return std::vector<T>();
 
 		std::vector<T> data(size);
-		getter(input, &size, data.data());
+		getter(&size, data.data());
 		data.resize(size);
 
 		return data;

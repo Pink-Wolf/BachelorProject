@@ -26,8 +26,10 @@ namespace CompWolf::Graphics::Private
 	struct glfw_window_t {}; using glfw_window = glfw_window_t*;
 
 	// The following types are 64-bit values, even if pointers are only 32 bit long.
+	// In Vulkan, these are non-dispatchable handles.
 
 	using vulkan_surface = vulkan_handle64<0>;
+	using vulkan_swapchain = vulkan_handle64<1>;
 }
 
 #endif // ! COMPWOLF_GRAPHICS_PRIVATE_VULKAN_TYPES_HEADER

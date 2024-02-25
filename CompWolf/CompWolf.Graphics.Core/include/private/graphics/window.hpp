@@ -6,6 +6,7 @@
 #include <string>
 #include <event>
 #include <value_mutex>
+#include "graphics_environment/gpu_thread.hpp"
 
 namespace CompWolf::Graphics
 {
@@ -20,15 +21,18 @@ namespace CompWolf::Graphics
 	class window
 	{
 	private:
-		const graphics_environment* environment;
+		graphics_environment* _environment;
 
 		using glfw_window_type = shared_value_mutex<Private::glfw_window>;
 		glfw_window_type _glfw_window;
 		Private::vulkan_surface _vulkan_surface;
+		Private::vulkan_swapchain _swapchain;
+
+		persistent_job_key _draw_present_job;
 
 	public:
 		/* @throws std::runtime_error when something went wrong during window creation outside of the program. */
-		window(const graphics_environment& environment);
+		window(graphics_environment& environment);
 		window(window&&) noexcept;
 		auto operator=(window&&) noexcept -> window&;
 		~window();

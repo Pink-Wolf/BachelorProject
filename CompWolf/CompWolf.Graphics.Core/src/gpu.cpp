@@ -13,7 +13,7 @@
 
 namespace CompWolf::Graphics
 {
-	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device)
+	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device) : _vulkan_physical_device(vulkan_physical_device)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 		auto physical_device = Private::to_vulkan(vulkan_physical_device);
@@ -23,10 +23,10 @@ namespace CompWolf::Graphics
 		VkPhysicalDeviceFeatures features;
 		vkGetPhysicalDeviceFeatures(physical_device, &features);
 
-		auto extension_properties = Private::get_size_and_vector<VkPhysicalDevice, uint32_t, VkExtensionProperties, VkResult>(
-			[](VkPhysicalDevice a, uint32_t* b, VkExtensionProperties* c) { return vkEnumerateDeviceExtensionProperties(a, nullptr, b, c); },
-			physical_device, [](VkResult result)
+		auto extension_properties = Private::get_size_and_vector<uint32_t, VkExtensionProperties>(
+			[physical_device](uint32_t* size, VkExtensionProperties* data)
 			{
+				auto result = vkEnumerateDeviceExtensionProperties(physical_device, nullptr, size, data);
 				switch (result)
 				{
 				case VK_SUCCESS:
@@ -36,19 +36,11 @@ namespace CompWolf::Graphics
 				}
 			}
 		);
-		auto extension_properties_names_vector = extension_properties | std::views::transform([](VkExtensionProperties a)->const char* { return a.extensionName; });
-		std::set <
-			const char*,
-			decltype([](const char* const& a, const char* const& b) { return strcmp(a, b) < 0; })
-		>
-			extension_properties_names(extension_properties_names_vector.begin(), extension_properties_names_vector.end());
-
 		std::vector<const char*> enabled_extensions;
-		bool is_present_device;
-		{
-			is_present_device = extension_properties_names.contains(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-			if (is_present_device) enabled_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-		}
+		bool has_swapchain_extension = std::any_of(extension_properties.cbegin(), extension_properties.cend(), [](VkExtensionProperties a) { return 0 == strcmp(a.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME); });
+
+		bool is_present_device = has_swapchain_extension;
+		if (is_present_device) enabled_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 		const float queue_priority_item = .5f;
 		std::vector<float> queue_priority(8, queue_priority_item);
@@ -56,7 +48,9 @@ namespace CompWolf::Graphics
 
 		std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
 		{
-			auto queue_families = Private::get_size_and_vector<VkPhysicalDevice, uint32_t, VkQueueFamilyProperties, void>(vkGetPhysicalDeviceQueueFamilyProperties, physical_device);
+			auto queue_families = Private::get_size_and_vector<uint32_t, VkQueueFamilyProperties>(
+				[physical_device](uint32_t* size, VkQueueFamilyProperties* data) { vkGetPhysicalDeviceQueueFamilyProperties(physical_device, size, data); }
+			);
 
 			queue_create_infos.reserve(queue_families.size());
 			_families.reserve(queue_families.size());
@@ -69,11 +63,14 @@ namespace CompWolf::Graphics
 					.job_types = 0,
 					.persistent_job_count = 0,
 					.job_count = 0,
+					.vulkan_physical_device = vulkan_physical_device,
 				};
 
 				bool draw_queue = queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
 				if (draw_queue) connection.job_types[gpu_job_type::draw] = true;
-				bool present_queue = glfwGetPhysicalDevicePresentationSupport(instance, physical_device, static_cast<uint32_t>(queue_index));
+
+				bool present_queue = is_present_device
+					&& glfwGetPhysicalDevicePresentationSupport(instance, physical_device, static_cast<uint32_t>(queue_index));
 				if (present_queue) connection.job_types[gpu_job_type::present] = true;
 
 				auto queue_count = queue_family.queueCount;
@@ -113,6 +110,10 @@ namespace CompWolf::Graphics
 		}
 
 		_vulkan_device = Private::from_vulkan(logic_device);
+		for (auto& family : _families)
+		{
+			family.vulkan_device = _vulkan_device;
+		}
 	}
 	gpu::~gpu()
 	{
@@ -124,6 +125,7 @@ namespace CompWolf::Graphics
 		_vulkan_device = std::move(other._vulkan_device);
 		other._vulkan_device = nullptr;
 
+		_vulkan_physical_device = other._vulkan_physical_device;
 		_families = std::move(other._families);
 		_work_types = std::move(other._work_types);
 	}
@@ -132,6 +134,7 @@ namespace CompWolf::Graphics
 		_vulkan_device = std::move(other._vulkan_device);
 		other._vulkan_device = nullptr;
 
+		_vulkan_physical_device = other._vulkan_physical_device;
 		_families = std::move(other._families);
 		_work_types = std::move(other._work_types);
 

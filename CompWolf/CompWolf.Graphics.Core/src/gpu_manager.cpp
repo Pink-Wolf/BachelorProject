@@ -15,8 +15,10 @@ namespace CompWolf::Graphics
 		auto instance = Private::to_vulkan(vulkan_instance);
 
 		{
-			auto physical_devices = Private::get_size_and_vector<VkInstance, uint32_t, VkPhysicalDevice, VkResult>(vkEnumeratePhysicalDevices, instance, [](VkResult result)
+			auto physical_devices = Private::get_size_and_vector<uint32_t, VkPhysicalDevice>(
+				[instance](uint32_t* size, VkPhysicalDevice* data)
 				{
+					auto result = vkEnumeratePhysicalDevices(instance, size, data);
 					switch (result)
 					{
 					case VK_SUCCESS:
@@ -24,7 +26,8 @@ namespace CompWolf::Graphics
 						break;
 					default: throw std::runtime_error("Could not get the machine's graphics card");
 					}
-				});
+				}
+			);
 
 			_gpus.reserve(physical_devices.size());
 			for (auto& physical_device : physical_devices)
@@ -44,11 +47,11 @@ namespace CompWolf::Graphics
 
 	auto gpu_manager::new_persistent_job(gpu_job_settings settings) -> persistent_job_key
 	{
-		auto family = find_job_family(settings, true);
+		auto& family = find_job_family(settings, true);
 		auto index_in_family = find_job_thread_in_family(settings, true, family);
-		auto thread = family.threads[index_in_family];
+		auto& thread = family.threads[index_in_family];
 		gpu_thread_position position{
-			.family = family,
+			.family = &family,
 			.index = index_in_family,
 		};
 
@@ -83,15 +86,24 @@ namespace CompWolf::Graphics
 
 		gpu_thread_family* best_family = nullptr;
 		float best_family_score = std::numeric_limits<float>::lowest();
+		float best_family_score_custom = 0;
 		for (auto& gpu_item : _gpus)
 		{
 			auto additional_work_types_for_gpu = gpu_item.work_types() ^ settings.type;
 			if ((additional_work_types_for_gpu & settings.type).any()) continue;
 
+			std::optional<float> custom_gpu_score_container = settings.gpu_scorer ? settings.gpu_scorer(gpu_item) : std::optional<float>(0.f);
+			if (!custom_gpu_score_container.has_value()) continue;
+			auto custom_gpu_score = custom_gpu_score_container.value();
+
 			for (auto& family : gpu_item.families())
 			{
 				auto additional_work_types = family.job_types ^ settings.type;
 				if ((additional_work_types & settings.type).any()) continue;
+
+				std::optional<float> custom_score_container = settings.family_scorer ? settings.family_scorer(family) : std::optional<float>(0.f);
+				if (!custom_score_container.has_value()) continue;
+				auto custom_score = custom_gpu_score + custom_score_container.value();
 
 				float score = 0.f;
 				{
@@ -103,13 +115,18 @@ namespace CompWolf::Graphics
 
 					auto old_job_count = is_persistent_job ? family.persistent_job_count : family.job_count;
 					score -= old_job_count;
-					score -= (old_job_count % family.threads.size()) * (massive_score_addition * 2);
+					if (old_job_count > family.threads.size()) score -= (old_job_count - family.threads.size()) * (massive_score_addition * 2);
 				}
 
-				if (score > best_family_score)
+				constexpr float very_small_score_difference = .1f / static_cast<float>(gpu_job_type::size);
+				bool is_better = score > best_family_score + very_small_score_difference;
+				if (best_family_score - score < very_small_score_difference) is_better = is_better || custom_score > best_family_score_custom;
+
+				if (is_better)
 				{
 					best_family = &family;
 					best_family_score = score;
+					best_family_score_custom = custom_score;
 				}
 			}
 		}
