@@ -5,7 +5,7 @@
 #include <functional>
 #include <variant>
 #include <version_number>
-#include <type_traits>
+#include <compwolf_type_traits>
 
 #define GLFW_INCLUDE_VULKAN
 #include <glfw3.h>
@@ -28,6 +28,7 @@ namespace CompWolf::Graphics::Private
 
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSurfaceKHR, vulkan_surface)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSwapchainKHR, vulkan_swapchain)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkImageView, vulkan_image_view)
 
 	inline uint32_t to_vulkan(version_number a) { return VK_MAKE_API_VERSION(0, a.major, a.minor, a.patch); }
 
@@ -38,9 +39,11 @@ namespace CompWolf::Graphics::Private
 	 * @return The data received by the getter, in a vector.
 	 * @typeparam SizeType [size_pointer] is of the type SizeType*.
 	 * @typeparam T The type of data the getter returns an array of. [data_pointer] is of the type T*.
+	 * @typeparam GetterType The type of the getter.
 	 */
-	template <typename SizeType, typename T>
-	auto get_size_and_vector(std::function<void(SizeType*, T*)> getter) -> std::vector<T>
+	template <typename SizeType, typename T, typename GetterType>
+		requires callable<GetterType, void, SizeType*, T*>
+	auto get_size_and_vector(GetterType getter) -> std::vector<T>
 	{
 		SizeType size;
 		getter(&size, nullptr);

@@ -4,6 +4,7 @@
 #include "graphics_environment.hpp"
 #include "vulkan_types"
 #include "graphics_environment/gpu_thread.hpp"
+#include <vector>
 
 namespace CompWolf::Graphics
 {
@@ -15,6 +16,7 @@ namespace CompWolf::Graphics
 
 		Private::vulkan_surface _vulkan_surface;
 		Private::vulkan_swapchain _swapchain;
+		std::vector<Private::vulkan_image_view> _swapchain_images;
 
 		persistent_job_key _draw_present_job;
 

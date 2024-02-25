@@ -30,6 +30,7 @@ namespace CompWolf::Graphics::Private
 
 	using vulkan_surface = vulkan_handle64<0>;
 	using vulkan_swapchain = vulkan_handle64<1>;
+	using vulkan_image_view = vulkan_handle64<2>;
 }
 
 #endif // ! COMPWOLF_GRAPHICS_PRIVATE_VULKAN_TYPES_HEADER
