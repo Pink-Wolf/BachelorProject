@@ -146,7 +146,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="compile.bat" />
+    <None Include="frag.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="pixel.frag" />
     <None Include="Project Settings Changes.md" />
+    <None Include="vertex.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="vertex.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -21,5 +21,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Project Settings Changes.md" />
+    <None Include="vertex.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="pixel.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="compile.bat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertex.spv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="frag.spv">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
