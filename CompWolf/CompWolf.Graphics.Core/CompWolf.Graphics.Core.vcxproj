@@ -178,6 +178,7 @@
     <ClInclude Include="include\private\graphics\graphics_environment\graphics_environment_settings.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment\vulkan_handle.hpp" />
+    <ClInclude Include="include\private\graphics\window_surface.hpp" />
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
     <ClInclude Include="include\private\graphics\window.hpp" />
     <ClInclude Include="include\vulkan_types" />
@@ -197,6 +198,7 @@
     <ClCompile Include="src\vulkan_debug_handle.cpp" />
     <ClCompile Include="src\vulkan_handle.cpp" />
     <ClCompile Include="src\window.cpp" />
+    <ClCompile Include="src\window_surface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Project Settings Changes.md" />

@@ -9,4 +9,5 @@
 #include "private/graphics/graphics_environment/gpu_manager.hpp"
 #include "private/graphics/graphics_environment.hpp"
 
+#include "private/graphics/window_surface.hpp"
 #include "private/graphics/window.hpp"
