@@ -165,27 +165,45 @@
   <ItemGroup>
     <ClInclude Include="header\present_device_info.hpp" />
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
+    <ClInclude Include="include\gpu" />
     <ClInclude Include="include\graphics" />
-    <ClInclude Include="include\private\graphics\graphics_environment\glfw_handle.hpp" />
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu.hpp" />
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu_manager.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_fence.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_semaphore.hpp" />
+    <ClInclude Include="include\private\graphics\environment_user.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_user.hpp" />
+    <ClInclude Include="include\private\graphics\glfw_handle.hpp" />
+    <ClInclude Include="include\private\gpu\gpu.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_manager.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment.hpp" />
     <ClInclude Include="header\framework.h" />
     <ClInclude Include="header\compwolf_vulkan.hpp" />
     <ClInclude Include="header\pch.h" />
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu_job_settings.hpp" />
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu_thread.hpp" />
-    <ClInclude Include="include\private\graphics\graphics_environment\graphics_environment_settings.hpp" />
-    <ClInclude Include="include\private\graphics\graphics_environment\vulkan_debug_handle.hpp" />
-    <ClInclude Include="include\private\graphics\graphics_environment\vulkan_handle.hpp" />
-    <ClInclude Include="include\private\graphics\window_surface.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_job_settings.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_thread.hpp" />
+    <ClInclude Include="include\private\graphics\graphics_environment_settings.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_job.hpp" />
+    <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
+    <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
+    <ClInclude Include="include\private\window\window_swapchain.hpp" />
+    <ClInclude Include="include\private\window\window_surface.hpp" />
+    <ClInclude Include="include\private\shader\gpu_command.hpp" />
+    <ClInclude Include="include\private\shader\gpu_draw_program.hpp" />
+    <ClInclude Include="include\private\shader\shader.hpp" />
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
-    <ClInclude Include="include\private\graphics\window.hpp" />
+    <ClInclude Include="include\private\window\window.hpp" />
+    <ClInclude Include="include\private\shader\draw_pipeline.hpp" />
+    <ClInclude Include="include\private\window\window_user.hpp" />
+    <ClInclude Include="include\shader" />
     <ClInclude Include="include\vulkan_types" />
+    <ClInclude Include="include\window" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glfw_handle.cpp" />
     <ClCompile Include="src\gpu.cpp" />
+    <ClCompile Include="src\gpu_command.cpp" />
+    <ClCompile Include="src\gpu_draw_program.cpp" />
+    <ClCompile Include="src\gpu_fence.cpp" />
+    <ClCompile Include="src\gpu_job.cpp" />
     <ClCompile Include="src\gpu_manager.cpp" />
     <ClCompile Include="src\graphics_environment.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -195,10 +213,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\present_device_info.cpp" />
+    <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\draw_pipeline.cpp" />
     <ClCompile Include="src\vulkan_debug_handle.cpp" />
     <ClCompile Include="src\vulkan_handle.cpp" />
+    <ClCompile Include="src\gpu_semaphore.cpp" />
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="src\window_surface.cpp" />
+    <ClCompile Include="src\window_swapchain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Project Settings Changes.md" />

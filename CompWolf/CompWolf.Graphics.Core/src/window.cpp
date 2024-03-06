@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "graphics"
+#include "window"
 
 #include "compwolf_vulkan.hpp"
 #include "present_device_info.hpp"
@@ -9,15 +9,17 @@
 
 namespace CompWolf::Graphics
 {
-	window::window(graphics_environment& environment_input) : _environment(&environment_input)
+	window::window(graphics_environment& environment)
 	{
-		auto instance = Private::to_vulkan(_environment->get_vulkan_instance());
+		auto instance = Private::to_vulkan(environment.vulkan_instance());
 
 		try
 		{
+			_pixel_size = std::make_pair(640, 480);
+
 			{
 				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-				auto glfwWindow = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
+				auto glfwWindow = glfwCreateWindow(_pixel_size.value().first, _pixel_size.value().second, "Window", nullptr, nullptr);
 				if (!glfwWindow) switch (glfwGetError(NULL))
 				{
 				case GLFW_API_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right API.");
@@ -35,7 +37,8 @@ namespace CompWolf::Graphics
 					});
 			}
 
-			_surface = window_surface(*_environment, _glfw_window.value());
+			_surface = window_surface(environment, _glfw_window.value());
+			_swapchain = window_swapchain(_glfw_window.value(), _surface);
 		}
 		catch (...)
 		{
@@ -45,14 +48,15 @@ namespace CompWolf::Graphics
 		}
 
 	}
-	window::window(window&& other) noexcept : _environment(other._environment)
+	window::window(window&& other) noexcept
 	{
 		std::scoped_lock lock(_glfw_window, other._glfw_window);
 
-		_environment = std::move(other._environment);
+		close();
 
 		_glfw_window.value() = std::move(other._glfw_window.value());
 		_surface = std::move(other._surface);
+		_swapchain = std::move(other._swapchain);
 
 		other._glfw_window.value() = nullptr;
 	}
@@ -60,10 +64,11 @@ namespace CompWolf::Graphics
 	{
 		std::scoped_lock lock(_glfw_window, other._glfw_window);
 
-		_environment = std::move(other._environment);
+		close();
 
 		_glfw_window.value() = std::move(other._glfw_window.value());
 		_surface = std::move(other._surface);
+		_swapchain = std::move(other._swapchain);
 
 		other._glfw_window.value() = nullptr;
 
@@ -85,12 +90,13 @@ namespace CompWolf::Graphics
 			closing(args);
 		}
 
-		auto instance = Private::to_vulkan(_environment->get_vulkan_instance());
+		auto instance = Private::to_vulkan(device().vulkan_instance());
 
 		{
 			unique_value_lock<glfw_window_type> lock(_glfw_window);
 			if (_glfw_window.value() == nullptr) return;
 
+			_swapchain.destroy();
 			_surface.destroy();
 
 			auto glfwWindow = Private::to_glfw(_glfw_window.value());

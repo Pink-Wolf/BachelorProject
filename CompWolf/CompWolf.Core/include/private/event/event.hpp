@@ -52,7 +52,7 @@ namespace CompWolf
 		}
 
 		/* Invokes all subscribed objects, passing the given parameters to each. */
-		void invoke(parameter_type& parameter)
+		void invoke(parameter_type& parameter) const
 		{
 			for (auto& observer : _observers)
 			{
@@ -61,13 +61,9 @@ namespace CompWolf
 			}
 		}
 		/* Invokes all subscribed objects, passing the given parameters to each. */
-		void operator()(parameter_type& parameter)
+		inline void operator()(parameter_type& parameter) const
 		{
-			for (auto& observer : _observers)
-			{
-				if (observer == nullptr) continue;
-				observer(parameter);
-			}
+			invoke(parameter);
 		}
 	};
 }

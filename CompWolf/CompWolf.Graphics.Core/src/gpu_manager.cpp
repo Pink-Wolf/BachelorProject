@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "graphics"
+#include "gpu"
 
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>
@@ -10,7 +10,7 @@
 
 namespace CompWolf::Graphics
 {
-	gpu_manager::gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance) : _thread_family_count(0), persistent_jobs(), closed_jobs_in_persistent_jobs(0)
+	gpu_manager::gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance) : _thread_family_count(0)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 
@@ -38,53 +38,16 @@ namespace CompWolf::Graphics
 				_gpus.push_back(std::move(new_gpu));
 			}
 		}
-
-		for (auto& persistent_job : settings.persistent_jobs)
-		{
-			new_persistent_job(persistent_job);
-		}
 	}
 
-	auto gpu_manager::new_persistent_job(gpu_job_settings settings) -> persistent_job_key
-	{
-		auto& family = find_job_family(settings, true);
-		auto index_in_family = find_job_thread_in_family(settings, true, family);
-		auto& thread = family.threads[index_in_family];
-		gpu_thread_position position{
-			.family = &family,
-			.index = index_in_family,
-		};
-
-		occupy_thread_for_job(settings, true, family, index_in_family);
-
-		auto job_index = persistent_jobs.size();
-		if (closed_jobs_in_persistent_jobs == 0)
-		{
-			persistent_jobs.push_back(std::move(position));
-		}
-		else
-		{
-			do { --job_index; } while (persistent_jobs[job_index].has_value());
-
-			persistent_jobs[job_index] = std::move(position);
-			--closed_jobs_in_persistent_jobs;
-		}
-
-		return job_index;
-	}
-	void gpu_manager::close_persistent_job(persistent_job_key key)
-	{
-		persistent_jobs[key] = std::nullopt;
-		++closed_jobs_in_persistent_jobs;
-	}
-
-	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> gpu_thread_family&
+	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, size_t>
 	{
 		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
 		static auto is_occupied_nonpersistent = [](gpu_thread a) { return a.job_count > 0; };
 		auto is_occupied = is_persistent_job ? is_occupied_persistent : is_occupied_nonpersistent;
 
-		gpu_thread_family* best_family = nullptr;
+		gpu* best_gpu = nullptr;
+		size_t best_family_index = 0;
 		float best_family_score = std::numeric_limits<float>::lowest();
 		float best_family_score_custom = 0;
 		for (auto& gpu_item : _gpus)
@@ -96,8 +59,10 @@ namespace CompWolf::Graphics
 			if (!custom_gpu_score_container.has_value()) continue;
 			auto custom_gpu_score = custom_gpu_score_container.value();
 
-			for (auto& family : gpu_item.families())
+			for (size_t family_index = 0; family_index < gpu_item.families().size(); ++family_index)
 			{
+				auto& family = gpu_item.families()[family_index];
+
 				auto additional_work_types = family.job_types ^ settings.type;
 				if ((additional_work_types & settings.type).any()) continue;
 
@@ -124,19 +89,20 @@ namespace CompWolf::Graphics
 
 				if (is_better)
 				{
-					best_family = &family;
+					best_gpu = &gpu_item;
+					best_family_index = best_family_index;
 					best_family_score = score;
 					best_family_score_custom = custom_score;
 				}
 			}
 		}
 
-		if (best_family == nullptr)
+		if (best_gpu == nullptr)
 		{
 			throw std::runtime_error("The machine's GPUs could not perform a required job because of the type of work it requires.");
 		}
 
-		return *best_family;
+		return { best_gpu, best_family_index };
 	}
 	auto gpu_manager::find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> size_t
 	{
@@ -199,17 +165,14 @@ namespace CompWolf::Graphics
 		return thread_index;
 	}
 
-	void gpu_manager::occupy_thread_for_job(const gpu_job_settings& settings, bool is_persistent_job, gpu_thread_family& family, size_t index_in_family)
+	auto gpu_manager::new_persistent_job(gpu_job_settings settings) -> gpu_job
 	{
-		auto& thread = family.threads[index_in_family];
+		auto [gpu_pointer, family_index] = find_job_family(settings, true);
+		auto& gpu_device = *gpu_pointer; auto& family = gpu_device.families()[family_index];
 
-		if (is_persistent_job) ++family.persistent_job_count;
-		++family.job_count;
+		auto thread_index = find_job_thread_in_family(settings, true, family);
+		auto& thread = family.threads[thread_index];
 
-		if (is_persistent_job) ++thread.persistent_job_count;
-		++thread.job_count;
-
-		if (thread.occupation != gpu_thread_occupation::persistent_occupied)
-			thread.occupation = is_persistent_job ? gpu_thread_occupation::persistent_occupied : gpu_thread_occupation::occupied;
+		return gpu_job(gpu_device, family_index, thread_index, true);
 	}
 }

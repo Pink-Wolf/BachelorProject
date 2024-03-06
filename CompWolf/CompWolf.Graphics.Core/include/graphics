@@ -1,13 +1,6 @@
-#include "private/graphics/graphics_environment/gpu_job_settings.hpp"
-#include "private/graphics/graphics_environment/graphics_environment_settings.hpp"
-
-#include "private/graphics/graphics_environment/glfw_handle.hpp"
-#include "private/graphics/graphics_environment/vulkan_handle.hpp"
-#include "private/graphics/graphics_environment/vulkan_debug_handle.hpp"
-#include "private/graphics/graphics_environment/gpu_thread.hpp"
-#include "private/graphics/graphics_environment/gpu.hpp"
-#include "private/graphics/graphics_environment/gpu_manager.hpp"
+#include "private/graphics/graphics_environment_settings.hpp"
+#include "private/graphics/glfw_handle.hpp"
+#include "private/graphics/vulkan_handle.hpp"
+#include "private/graphics/vulkan_debug_handle.hpp"
 #include "private/graphics/graphics_environment.hpp"
-
-#include "private/graphics/window_surface.hpp"
-#include "private/graphics/window.hpp"
+#include "private/graphics/environment_user.hpp"

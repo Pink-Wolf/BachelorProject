@@ -2,11 +2,11 @@
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER
 
 #include "vulkan_types"
-#include "graphics_environment/graphics_environment_settings.hpp"
-#include "graphics_environment/glfw_handle.hpp"
-#include "graphics_environment/vulkan_handle.hpp"
-#include "graphics_environment/vulkan_debug_handle.hpp"
-#include "graphics_environment/gpu_manager.hpp"
+#include "gpu"
+#include "graphics_environment_settings.hpp"
+#include "glfw_handle.hpp"
+#include "vulkan_handle.hpp"
+#include "vulkan_debug_handle.hpp"
 #include <string>
 #include <thread>
 #include <vector>
@@ -122,9 +122,9 @@ namespace CompWolf::Graphics
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
 		 * Returns the vulkan instance, which handles vulkan-specific logic.
 		 */
-		inline Private::vulkan_instance get_vulkan_instance() const noexcept
+		inline Private::vulkan_instance vulkan_instance() const noexcept
 		{
-			return _vulkan_handle.get_vulkan_instance();
+			return _vulkan_handle.vulkan_instance();
 		}
 	};
 

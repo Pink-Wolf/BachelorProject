@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "graphics"
+#include "gpu"
 
 #include "compwolf_vulkan.hpp"
 #include <vector>
@@ -10,10 +10,11 @@
 #include <string.h>
 #include <set>
 #include <map>
+#include <exception>
 
 namespace CompWolf::Graphics
 {
-	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device) : _vulkan_physical_device(vulkan_physical_device)
+	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device) : _vulkan_instance(vulkan_instance), _vulkan_physical_device(vulkan_physical_device)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 		auto physical_device = Private::to_vulkan(vulkan_physical_device);
@@ -63,7 +64,6 @@ namespace CompWolf::Graphics
 					.job_types = 0,
 					.persistent_job_count = 0,
 					.job_count = 0,
-					.vulkan_physical_device = vulkan_physical_device,
 				};
 
 				bool draw_queue = queue_family.queueFlags & VK_QUEUE_GRAPHICS_BIT;
@@ -110,9 +110,18 @@ namespace CompWolf::Graphics
 		}
 
 		_vulkan_device = Private::from_vulkan(logic_device);
-		for (auto& family : _families)
+
+		for (uint32_t family_index = 0; family_index < _families.size(); ++family_index)
 		{
-			family.vulkan_device = _vulkan_device;
+			auto& family = _families[family_index];
+			for (uint32_t thread_index = 0; thread_index < family.threads.size(); ++thread_index)
+			{
+				auto& thread = family.threads[thread_index];
+
+				VkQueue queue;
+				vkGetDeviceQueue(logic_device, family_index, thread_index, &queue);
+				thread.queue = Private::from_vulkan(queue);
+			}
 		}
 	}
 	gpu::~gpu()
@@ -122,22 +131,33 @@ namespace CompWolf::Graphics
 
 	gpu::gpu(gpu&& other) noexcept
 	{
+		_vulkan_instance = std::move(other._vulkan_instance);
 		_vulkan_device = std::move(other._vulkan_device);
-		other._vulkan_device = nullptr;
-
 		_vulkan_physical_device = other._vulkan_physical_device;
 		_families = std::move(other._families);
 		_work_types = std::move(other._work_types);
+
+		other._vulkan_device = nullptr;
 	}
 	gpu& gpu::operator=(gpu&& other) noexcept
 	{
+		_vulkan_instance = std::move(other._vulkan_instance);
 		_vulkan_device = std::move(other._vulkan_device);
-		other._vulkan_device = nullptr;
-
 		_vulkan_physical_device = other._vulkan_physical_device;
 		_families = std::move(other._families);
 		_work_types = std::move(other._work_types);
 
+		other._vulkan_device = nullptr;
+
 		return *this;
+	}
+
+	auto gpu::index_of_family(const gpu_thread_family& target) const -> size_t
+	{
+		for (size_t i = 0; i < _families.size(); ++i)
+		{
+			if (&_families[i] == &target) return i;
+		}
+		throw std::invalid_argument("Tried getting the index of a family in a gpu, which is not actually in the gpu.");
 	}
 }

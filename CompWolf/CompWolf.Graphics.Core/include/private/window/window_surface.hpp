@@ -1,24 +1,22 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_SURFACE_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_SURFACE_HEADER
 
-#include "graphics_environment.hpp"
 #include "vulkan_types"
-#include "graphics_environment/gpu_thread.hpp"
+#include "gpu"
+#include "graphics"
 #include <vector>
 
 namespace CompWolf::Graphics
 {
 	/* The part of a window one can draw on. */
-	class window_surface
+	class window_surface : public basic_gpu_user
 	{
 	private:
-		graphics_environment* _environment;
+		Private::vulkan_surface _vulkan_surface = nullptr;
 
-		Private::vulkan_surface _vulkan_surface;
-		Private::vulkan_swapchain _swapchain;
-		std::vector<Private::vulkan_image_view> _swapchain_images;
+		Private::surface_format_handle _format;
 
-		persistent_job_key _draw_present_job;
+		gpu_job _draw_present_job;
 
 	public:
 		/* Constructs a surface that is already destroyed. */
@@ -29,6 +27,9 @@ namespace CompWolf::Graphics
 		auto operator=(window_surface&&) noexcept -> window_surface&;
 		~window_surface();
 
+		window_surface(const window_surface&) = delete;
+		auto operator=(const window_surface&) -> window_surface& = delete;
+
 	public:
 		/* Whether the surface has already been destroyed. */
 		inline auto is_destroyed() noexcept -> bool
@@ -38,6 +39,25 @@ namespace CompWolf::Graphics
 
 		/* Destroys the surface. */
 		void destroy() noexcept;
+
+		inline auto surface() const noexcept
+		{
+			return _vulkan_surface;
+		}
+
+		inline auto format() const noexcept -> Private::const_surface_format_handle
+		{
+			return _format;
+		}
+
+		inline auto draw_present_job() noexcept -> gpu_job&
+		{
+			return _draw_present_job;
+		}
+		inline auto draw_present_job() const noexcept -> const gpu_job&
+		{
+			return _draw_present_job;
+		}
 	};
 }
 

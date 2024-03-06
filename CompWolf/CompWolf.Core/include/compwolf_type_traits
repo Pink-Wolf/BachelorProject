@@ -4,3 +4,4 @@
 #include "private/type_traits/explicitly_convertible_to.hpp"
 #include "private/type_traits/is_assignable.hpp"
 #include "private/type_traits/type_list.hpp"
+#include "private/type_traits/for_each.hpp"

@@ -24,7 +24,7 @@
     <ClInclude Include="header\compwolf_vulkan.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\window.hpp">
+    <ClInclude Include="include\private\window\window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\other\vulkan_types.hpp">
@@ -39,37 +39,79 @@
     <ClInclude Include="include\vulkan_types">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu_manager.hpp">
+    <ClInclude Include="include\private\gpu\gpu_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu.hpp">
+    <ClInclude Include="include\private\gpu\gpu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\glfw_handle.hpp">
+    <ClInclude Include="include\private\graphics\glfw_handle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\vulkan_handle.hpp">
+    <ClInclude Include="include\private\graphics\vulkan_handle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\vulkan_debug_handle.hpp">
+    <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\graphics_environment_settings.hpp">
+    <ClInclude Include="include\private\graphics\graphics_environment_settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\vulkan_debug_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu_job_settings.hpp">
+    <ClInclude Include="include\private\gpu\gpu_job_settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\graphics_environment\gpu_thread.hpp">
+    <ClInclude Include="include\private\gpu\gpu_thread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\present_device_info.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\window_surface.hpp">
+    <ClInclude Include="include\private\window\window_surface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shader\shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shader\draw_pipeline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shader\gpu_command.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shader\gpu_draw_program.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\window\window_swapchain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\graphics\environment_user.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu\gpu_user.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu\gpu_job.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\window">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gpu">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\window\window_user.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu\gpu_fence.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu\gpu_semaphore.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,6 +144,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\window_surface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_draw_program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window_swapchain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_job.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_fence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_semaphore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

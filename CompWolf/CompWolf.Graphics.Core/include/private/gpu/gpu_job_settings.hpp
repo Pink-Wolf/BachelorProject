@@ -55,9 +55,6 @@ namespace CompWolf::Graphics
 		 */
 		std::function<std::optional<float>(const gpu_thread_family&)> family_scorer;
 	};
-
-	/* An identifier for a persistent job on a gpu. */
-	using persistent_job_key = size_t;
 }
 
 #endif // ! COMPWOLF_GRAPHICS_GPU_THREAD_SETTINGS_HEADER

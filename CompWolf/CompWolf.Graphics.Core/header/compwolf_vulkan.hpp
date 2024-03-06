@@ -12,23 +12,41 @@
 
 namespace CompWolf::Graphics::Private
 {
-#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(library, library_type, compwolf_type)							\
-	inline library_type to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }					\
-	inline compwolf_type from_##library(library_type a) { return reinterpret_cast<compwolf_type>(a); }				\
+#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(library, library_type, compwolf_type)					\
+	inline auto to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }					\
+	inline auto from_##library(library_type a) { return reinterpret_cast<compwolf_type>(a); }				\
 
-#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(library, library_type, compwolf_type)				\
-	inline library_type to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a.value); }			\
-	inline compwolf_type from_##library(library_type a) { return compwolf_type(reinterpret_cast<uint64_t>(a)); }	\
+#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_POINTER_CONVERTERS(library, library_type, compwolf_type)			\
+	inline auto to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }					\
+	inline auto to_##library(const compwolf_type a) { return reinterpret_cast<const library_type>(a); }		\
+	inline auto from_##library(library_type a) { return reinterpret_cast<compwolf_type>(a); }				\
+	inline auto from_##library(const library_type a) { return reinterpret_cast<const compwolf_type>(a); }	\
+
+#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(library, library_type, compwolf_type)		\
+	inline auto to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a.value); }			\
+	inline auto from_##library(library_type a) { return compwolf_type(reinterpret_cast<uint64_t>(a)); }		\
+
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkFence, vulkan_fence)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSemaphore, vulkan_semaphore)
 
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkInstance, vulkan_instance)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkDebugUtilsMessengerEXT, vulkan_debug_messenger)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkPhysicalDevice, vulkan_physical_device)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkDevice, vulkan_device)
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkQueue, vulkan_queue);
 
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSurfaceKHR, vulkan_surface)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSwapchainKHR, vulkan_swapchain)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkImageView, vulkan_image_view)
+
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkShaderModule, vulkan_shader)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkPipelineLayout, vulkan_pipeline_layout)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkRenderPass, vulkan_render_pass)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkPipeline, vulkan_pipeline)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkFramebuffer, vulkan_frame_buffer)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkCommandPool, vulkan_command_pool)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkCommandBuffer, vulkan_command)
 
 	inline uint32_t to_vulkan(version_number a) { return VK_MAKE_API_VERSION(0, a.major, a.minor, a.patch); }
 

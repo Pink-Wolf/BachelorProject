@@ -1,0 +1,4 @@
+#include "private/shader/shader.hpp"
+#include "private/shader/draw_pipeline.hpp"
+#include "private/shader/gpu_command.hpp"
+#include "private/shader/gpu_draw_program.hpp"

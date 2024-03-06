@@ -20,8 +20,8 @@ namespace CompWolf::Graphics
 
 		_glfw_handle = glfw_handle(_settings);
 		_vulkan_handle = vulkan_handle(_settings);
-		_vulkan_debug_handle = vulkan_debug_handle(_settings, get_vulkan_instance());
-		_gpus = gpu_manager(_settings, get_vulkan_instance());
+		_vulkan_debug_handle = vulkan_debug_handle(_settings, vulkan_instance());
+		_gpus = gpu_manager(_settings, vulkan_instance());
 	}
 	graphics_environment::~graphics_environment()
 	{

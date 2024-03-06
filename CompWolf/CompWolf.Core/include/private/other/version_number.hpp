@@ -1,8 +1,6 @@
 #ifndef COMPWOLF_VERSION_NUMBER_HEADER
 #define COMPWOLF_VERSION_NUMBER_HEADER
 
-#include <regex>
-
 namespace CompWolf
 {
 	/* A number denoting the version of a program, split into a major-, minor-, and patch-integer. */

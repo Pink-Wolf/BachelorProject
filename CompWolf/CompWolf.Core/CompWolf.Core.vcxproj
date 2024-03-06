@@ -159,14 +159,17 @@
     <ClInclude Include="include\private\functional\functional.hpp" />
     <ClInclude Include="include\private\functional\index_function.hpp" />
     <ClInclude Include="include\private\other\enum_bitset.hpp" />
+    <ClInclude Include="include\private\other\reference_container.hpp" />
     <ClInclude Include="include\private\type_traits\explicitly_convertible_to.hpp" />
     <ClInclude Include="include\private\type_traits\is_assignable.hpp" />
     <ClInclude Include="include\private\type_traits\type_list.hpp" />
+    <ClInclude Include="include\private\type_traits\for_each.hpp" />
     <ClInclude Include="include\private\value_mutex\shared_value_lock.hpp" />
     <ClInclude Include="include\private\value_mutex\unique_value_lock.hpp" />
     <ClInclude Include="include\private\event\value_event_wrapper.hpp" />
     <ClInclude Include="include\private\value_mutex\value_mutex.hpp" />
     <ClInclude Include="include\private\other\version_number.hpp" />
+    <ClInclude Include="include\reference_container" />
     <ClInclude Include="include\value_mutex" />
     <ClInclude Include="include\version_number" />
   </ItemGroup>

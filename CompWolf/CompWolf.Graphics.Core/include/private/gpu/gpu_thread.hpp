@@ -1,6 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_THREAD_HEADER
 #define COMPWOLF_GRAPHICS_GPU_THREAD_HEADER
 
+#include "vulkan_types"
 #include "gpu_job_settings.hpp"
 #include <vector>
 
@@ -21,11 +22,12 @@ namespace CompWolf::Graphics
 	 */
 	struct gpu_thread
 	{
-		gpu_thread_occupation occupation = gpu_thread_occupation::free;
 		/* The amount of jobs running on the thread. */
 		size_t job_count = 0;
 		/* The amount of persistent jobs running on the thread. */
 		size_t persistent_job_count = 0;
+
+		Private::vulkan_queue queue;
 	};
 
 	/* A collection of thread which can do the same type of work.
@@ -43,11 +45,6 @@ namespace CompWolf::Graphics
 		size_t persistent_job_count;
 		/* The amount of threads in the family occupied by a job. */
 		size_t job_count;
-
-		/* The owning gpu. */
-		Private::vulkan_physical_device vulkan_physical_device;
-		/* The connection to the owning gpu. */
-		Private::vulkan_device vulkan_device;
 	};
 }
 

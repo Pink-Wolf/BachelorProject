@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_SETTINGS_HEADER
 
 #include "vulkan_types"
-#include "gpu_job_settings.hpp"
+#include "../gpu/gpu_job_settings.hpp"
 #include <string>
 #include <functional>
 #include <version_number>
