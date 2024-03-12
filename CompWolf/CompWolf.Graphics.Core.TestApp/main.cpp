@@ -53,7 +53,6 @@ int main()
         auto vertex_shader = shader(environment, load_shader("vertex.spv"));
         auto frag_shader = shader(environment, load_shader("frag.spv"));
         auto pipeline = draw_pipeline(draw_pipeline_settings{
-            .target_window = &win,
             .vertex_shader = &vertex_shader,
             .fragment_shader = &frag_shader,
             }
@@ -66,7 +65,7 @@ int main()
 
         while (win.is_open())
         {
-            draw_program.draw();
+            draw_program.draw(win);
             environment.update();
         }
 

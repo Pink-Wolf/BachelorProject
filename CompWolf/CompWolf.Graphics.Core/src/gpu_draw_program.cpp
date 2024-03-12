@@ -11,18 +11,18 @@ namespace CompWolf::Graphics::Private
 {
 	/******************************** constructors ********************************/
 
-	auto gpu_draw_program_frame_data::new_frameset(draw_pipeline& pipeline, gpu_command& command) -> frameset_type
+	auto gpu_draw_program_frame_data::new_frameset(window_specific_pipeline& pipeline, gpu_command* command) -> frameset_type
 	{
 		auto size = pipeline.target_window().swapchain().frames().size();
 		frameset_type data;
-		//data.reserve(size);
+		data.reserve(size);
 		for (size_t i = 0; i < size; ++i)
 		{
 			data.emplace_back(pipeline, command, i);
 		}
 		return data;
 	}
-	gpu_draw_program_frame_data::gpu_draw_program_frame_data(draw_pipeline& pipeline, gpu_command& command, size_t index)
+	gpu_draw_program_frame_data::gpu_draw_program_frame_data(window_specific_pipeline& pipeline, gpu_command* command, size_t index)
 	{
 		_pipeline = &pipeline;
 		_index = index;
@@ -80,7 +80,7 @@ namespace CompWolf::Graphics::Private
 					VkRenderPassBeginInfo renderpass_info{
 						.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 						.renderPass = Private::to_vulkan(_pipeline->vulkan_render_pass()),
-						.framebuffer = Private::to_vulkan(_pipeline->vulkan_frame_buffer()[index]),
+						.framebuffer = Private::to_vulkan(_pipeline->vulkan_frame_buffer(index)),
 						.renderArea = {
 							.offset = {0, 0},
 							.extent = {
@@ -106,7 +106,7 @@ namespace CompWolf::Graphics::Private
 						vkCmdSetViewport(command_buffer, 0, 1, &viewport);
 						vkCmdSetScissor(command_buffer, 0, 1, &renderpass_info.renderArea);
 
-						command.compile(Private::from_vulkan(command_buffer));
+						command->compile(Private::from_vulkan(command_buffer));
 					}
 					vkCmdEndRenderPass(command_buffer);
 				}

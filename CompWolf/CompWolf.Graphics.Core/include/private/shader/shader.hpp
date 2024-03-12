@@ -42,7 +42,7 @@ namespace CompWolf::Graphics
 			return *_environment;
 		}
 
-		auto shader_module(const gpu&) const->Private::vulkan_shader;
+		auto shader_module(const gpu&) const -> Private::vulkan_shader;
 
 	public: // constructors
 		shader() = default;
