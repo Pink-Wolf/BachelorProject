@@ -114,7 +114,7 @@ namespace CompWolf::Graphics
 			window_draw_program(window_specific_pipeline& pipeline, gpu_command* command)
 				: _pipeline(&pipeline)
 				, _window_closing_key(target_window().closing.subscribe(
-					[this](event<window_close_parameter>& sender, window_close_parameter& args) { free(); }
+					[this](const event<window_close_parameter>& sender, window_close_parameter& args) { free(); }
 				))
 				, _programs_for_frames(frame_data::new_frameset(pipeline, command)) {}
 

@@ -37,7 +37,7 @@ namespace CompWolf::Graphics
 	window_specific_pipeline::window_specific_pipeline(window& target, const draw_pipeline_settings& settings, const Private::gpu_specific_pipeline& gpu_data)
 	{
 		if (&target.device() != &gpu_data.device()) throw std::invalid_argument("Tried creating window-specific pipeline logic with gpu-data for a gpu other than the window's");
-		_target_window = &target;
+		set_dependent(&target);
 
 		auto& gpu_device = target_window().device();
 		auto& thread_family = target_window().draw_present_job().family();
@@ -294,6 +294,8 @@ namespace CompWolf::Graphics
 
 		auto vulkan_device = to_vulkan(device().vulkan_device());
 		if (_layout) vkDestroyPipelineLayout(vulkan_device, Private::to_vulkan(_layout), nullptr);
+
+		_device = nullptr;
 	}
 
 	void window_specific_pipeline::free() noexcept
@@ -306,5 +308,7 @@ namespace CompWolf::Graphics
 		_frame_buffers.clear();
 		if (_pipeline) vkDestroyPipeline(vulkan_device, Private::to_vulkan(_pipeline), nullptr);
 		if (_render_pass) vkDestroyRenderPass(vulkan_device, Private::to_vulkan(_render_pass), nullptr);
+
+		set_dependent(nullptr);
 	}
 }

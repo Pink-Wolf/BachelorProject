@@ -3,62 +3,83 @@
 
 #include "freeable"
 #include "event"
+#include <concepts>
 #include <optional>
 
 namespace CompWolf
 {
-	/* A Freeable who has events for being freed. */
-	template <typename T>
-	concept FreeableWithEvents = Freeable<T> && requires (T t)
-	{
-		typename T::freeing_parameter_type;
-
-		{ t.freeing() } -> std::derived_from<event<typename T::freeing_parameter_type>>;
-	};
-	/* A Freeable who has events for being freed. */
-	template <typename T>
-	struct is_freeable_with_events : std::false_type {};
-	template <FreeableWithEvents T>
-	struct is_freeable_with_events<T> : std::true_type {};
-	/* A Freeable who has events for being freed. */
-	template <FreeableWithEvents T>
-	static constexpr bool is_freeable_with_events = FreeableWithEvents<T>;
-
-	template <FreeableWithEvents DependentType>
+	template <Freeable DependentType>
+		requires std::derived_from<decltype(DependentType::freeing), event<typename DependentType::freeing_parameter_type>>
 	struct free_on_dependent_freed : public virtual freeable
 	{
 	private: // fields
+		DependentType* _dependent;
+
 		using referenced_freeing_parameter_type = DependentType::freeing_parameter_type;
 		using referenced_freeing_type = event<referenced_freeing_parameter_type>;
 		using referenced_freeing_key_type = referenced_freeing_type::key_type;
 		std::optional<referenced_freeing_key_type> _referenced_freeing_key;
-	private: // event handlers
-		void on_dependent_freeing(referenced_freeing_type&, referenced_freeing_parameter_type&);
-	protected: // other methods
+
+	protected: // getters
 		inline auto is_subscribed_to_dependent() const -> bool
 		{
-			return _referenced_freeing_key;
+			return _referenced_freeing_key.has_value();
 		}
-		void subscribe_to_dependent(DependentType& a)
+
+		void get_dependent(DependentType*& dependent)
 		{
-			_referenced_freeing_key = a.freeing.subscribe(on_dependent_freeing);
+			dependent = _dependent;
 		}
-		void unsubscribe_from_dependent(DependentType& a)
+		void get_dependent(const DependentType*& dependent) const
 		{
-			a.freeing.unsubscribe(_referenced_freeing_key);
+			dependent = _dependent;
+		}
+
+	protected: // setters
+		void set_dependent(DependentType* dependent)
+		{
+			if (is_subscribed_to_dependent()) _dependent->freeing.unsubscribe(_referenced_freeing_key.value());
+			_dependent = dependent;
+			if (!_dependent)
+				_referenced_freeing_key = std::nullopt;
+			else
+				_referenced_freeing_key = _dependent->freeing.subscribe([this](const referenced_freeing_type&, referenced_freeing_parameter_type&)
+					{
+						free();
+						set_dependent(nullptr);
+					}
+			);
 		}
 	public: // constructors
-		basic_association_relationship() = default;
-	};
+		free_on_dependent_freed() = default;
+		free_on_dependent_freed(free_on_dependent_freed& other)
+		{
+			set_dependent(other._dependent);
+		}
+		auto operator=(free_on_dependent_freed& other) -> free_on_dependent_freed&
+		{
+			set_dependent(other._dependent);
+		}
+		free_on_dependent_freed(free_on_dependent_freed&& other)
+		{
+			set_dependent(other._dependent);
+			other.set_dependent(nullptr);
+		}
+		auto operator=(free_on_dependent_freed&& other) -> free_on_dependent_freed&
+		{
+			set_dependent(other._dependent);
+			other.set_dependent(nullptr);
+		}
+		~free_on_dependent_freed()
+		{
+			set_dependent(nullptr);
+		}
 
-	template <FreeableWithEvents DependentType>
-	void free_on_dependent_freed<DependentType>::on_dependent_freeing(
-		referenced_freeing_type& sender,
-		referenced_freeing_parameter_type& a)
-	{
-		free();
-		unsubscribe_from_dependent(sender);
-	}
+		free_on_dependent_freed(DependentType& dependent)
+		{
+			set_dependent(&dependent);
+		}
+	};
 }
 
 #endif // ! COMPWOLF_FREE_ON_DEPENDENT_FREED_HEADER

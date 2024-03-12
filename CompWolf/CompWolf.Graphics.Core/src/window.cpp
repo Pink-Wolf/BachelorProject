@@ -57,10 +57,17 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto instance = Private::to_vulkan(device().vulkan_instance());
-		window_close_parameter args;
+		for (auto& frame : swapchain().frames())
+		{
+			frame.drawing_fence.wait();
+		}
 
-		closing(args);
+		auto instance = Private::to_vulkan(device().vulkan_instance());
+		window_close_parameter close_args;
+		window_free_parameter free_args;
+
+		closing(close_args);
+		freeing(free_args);
 
 		_swapchain.free();
 		_surface.free();
@@ -69,6 +76,7 @@ namespace CompWolf::Graphics
 		glfwDestroyWindow(glfwWindow);
 		_glfw_window = nullptr;
 
-		closed(args);
+		closed(close_args);
+		freed(free_args);
 	}
 }

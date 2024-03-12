@@ -9,6 +9,7 @@
 #include <owned>
 #include <freeable>
 #include <map>
+#include <free_on_dependent_freed>
 
 namespace CompWolf::Graphics
 {
@@ -49,21 +50,30 @@ namespace CompWolf::Graphics
 		};
 	}
 
-	class window_specific_pipeline : public basic_freeable
+	class window_specific_pipeline : public basic_freeable, private free_on_dependent_freed<window>
 	{
 	private: // fields
-		owned_ptr<window*> _target_window;
 		Private::vulkan_render_pass _render_pass;
 		Private::vulkan_pipeline _pipeline;
 		std::vector<Private::vulkan_frame_buffer> _frame_buffers;
 
 	public: // getters
-		auto target_window() noexcept -> window& { return *_target_window; }
-		auto target_window() const noexcept -> const window& { return *_target_window; }
+		inline auto target_window() noexcept -> window&
+		{
+			window* p;
+			get_dependent(p);
+			return *p;
+		}
+		inline auto target_window() const noexcept -> const window&
+		{
+			const window* p;
+			get_dependent(p);
+			return *p;
+		}
 
-		auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass { return _render_pass; }
-		auto vulkan_pipeline() const noexcept -> Private::vulkan_pipeline { return _pipeline; }
-		auto vulkan_frame_buffer(size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }
+		inline auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass { return _render_pass; }
+		inline auto vulkan_pipeline() const noexcept -> Private::vulkan_pipeline { return _pipeline; }
+		inline auto vulkan_frame_buffer(size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }
 
 	public: // constructor
 		window_specific_pipeline() = default;
@@ -76,7 +86,7 @@ namespace CompWolf::Graphics
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
 		{
-			return !_target_window;
+			return !is_subscribed_to_dependent();
 		}
 		void free() noexcept final;
 	};
@@ -118,7 +128,7 @@ namespace CompWolf::Graphics
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
 		{
-			return !_gpu_data.empty();
+			return _gpu_data.empty();
 		}
 		void free() noexcept final
 		{

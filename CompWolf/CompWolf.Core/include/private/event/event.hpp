@@ -20,7 +20,7 @@ namespace CompWolf
 		using parameter_type = std::remove_cvref_t<ParameterType>;
 
 		/* The type of callable object that can listen to this event. */
-		using value_type = std::function<void(event<ParameterType>&, parameter_type&)>;
+		using value_type = std::function<void(const event<ParameterType>&, parameter_type&)>;
 		/* The type of callable object that can listen to this event, as a reference type. */
 		using reference = value_type&;
 		/* The type of callable object that can listen to this event, as a const reference type. */
@@ -52,16 +52,16 @@ namespace CompWolf
 		}
 
 		/* Invokes all subscribed objects, passing the given parameters to each. */
-		void invoke(parameter_type& parameter)
+		void invoke(parameter_type& parameter) const
 		{
-			for (auto& observer : _observers)
+			for (auto& observer : internal_container(_observers))
 			{
 				if (observer == nullptr) continue;
 				observer(*this, parameter);
 			}
 		}
 		/* Invokes all subscribed objects, passing the given parameters to each. */
-		inline void operator()(parameter_type& parameter)
+		inline void operator()(parameter_type& parameter) const
 		{
 			invoke(parameter);
 		}

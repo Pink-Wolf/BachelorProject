@@ -18,6 +18,10 @@ namespace CompWolf::Graphics
 	{
 
 	};
+	struct window_free_parameter
+	{
+
+	};
 
 	/* A window, as in a rectangle that can be drawn onto, and that listens for various events from outside the program (relating to the window).
 	 * This class is thread safe.
@@ -89,16 +93,16 @@ namespace CompWolf::Graphics
 		{
 			free();
 		}
-		using closing_type = event<window_close_parameter>;
 		/* Invoked right before the window closes.
 		 * @see close()
 		 */
-		closing_type closing;
-		using closed_type = event<window_close_parameter>;
+		event<window_close_parameter> closing;
+		using closing_parameter_type = window_close_parameter;
 		/* Invoked right after the window closes.
 		 * @see close()
 		 */
-		closed_type closed;
+		event<window_close_parameter> closed;
+		using closed_parameter_type = window_close_parameter;
 
 	public: // constructors
 		/* Constructs a window that is already closed. */
@@ -119,6 +123,17 @@ namespace CompWolf::Graphics
 			return !_glfw_window;
 		}
 		void free() noexcept final;
+
+		/* Invoked right before the window's data is freed.
+		 * @see free()
+		 */
+		event<window_free_parameter> freeing;
+		using freeing_parameter_type = window_free_parameter;
+		/* Invoked right after the window's data is freed.
+		 * @see free()
+		 */
+		event<window_free_parameter> freed;
+		using freed_parameter_type = window_free_parameter;
 	};
 }
 
