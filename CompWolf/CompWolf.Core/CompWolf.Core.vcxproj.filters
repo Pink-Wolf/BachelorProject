@@ -63,9 +63,6 @@
     <ClInclude Include="include\compwolf_functional">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\functional\functional.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\private\type_traits\explicitly_convertible_to.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,13 +78,28 @@
     <ClInclude Include="include\enum_bitset">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\other\reference_container.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\reference_container">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\private\type_traits\for_each.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\other\freeable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\other\free_on_dependent_freed.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\freeable">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\free_on_dependent_freed">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\owned">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\other\owned.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\type_traits\dereferenceable_to.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

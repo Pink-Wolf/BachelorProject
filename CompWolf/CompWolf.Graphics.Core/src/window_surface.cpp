@@ -9,6 +9,8 @@
 
 namespace CompWolf::Graphics
 {
+	/******************************** constructors ********************************/
+
 	window_surface::window_surface(graphics_environment& environment, Private::glfw_window& window)
 	{
 		auto instance = Private::to_vulkan(environment.vulkan_instance());
@@ -46,44 +48,22 @@ namespace CompWolf::Graphics
 			auto device = Private::to_vulkan(gpu_device.vulkan_device());
 
 			_format = Private::from_private(new Private::surface_format_info(std::move(job_info)));
-			set_device(gpu_device);
+			_target_gpu = &gpu_device;
 		}
 		catch (...)
 		{
-			destroy(); // Make sure to release data
+			free(); // Make sure to release data
 
 			throw;
 		}
 
 	}
-	window_surface::window_surface(window_surface&& other) noexcept
-	{
-		set_device(other.device());
-		_vulkan_surface = std::move(other._vulkan_surface);
-		_draw_present_job = std::move(other._draw_present_job);
-		_format = std::move(other._format);
 
-		other._vulkan_surface = nullptr;
-	}
-	auto window_surface::operator=(window_surface&& other) noexcept -> window_surface&
-	{
-		set_device(other.device());
-		_vulkan_surface = std::move(other._vulkan_surface);
-		_draw_present_job = std::move(other._draw_present_job);
-		_format = std::move(other._format);
+	/******************************** CompWolf::freeable ********************************/
 
-		other._vulkan_surface = nullptr;
-
-		return *this;
-	}
-	window_surface::~window_surface()
+	void window_surface::free() noexcept
 	{
-		destroy();
-	}
-
-	void window_surface::destroy() noexcept
-	{
-		if (is_destroyed()) return;
+		if (empty()) return;
 
 		auto instance = Private::to_vulkan(device().vulkan_instance());
 		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
@@ -91,6 +71,6 @@ namespace CompWolf::Graphics
 		if (_format) delete Private::to_private(_format);
 		if (_vulkan_surface) vkDestroySurfaceKHR(instance, Private::to_vulkan(_vulkan_surface), nullptr);
 
-		_vulkan_surface = nullptr;
+		_target_gpu = nullptr;
 	}
 }

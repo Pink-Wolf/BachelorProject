@@ -9,12 +9,28 @@
 
 namespace CompWolf::Graphics
 {
-	std::atomic_bool graphics_environment::_constructed(false);
+	/******************************** fields ********************************/
+
+	bool graphics_environment::_constructed(false);
+
+	/******************************** other methods ********************************/
+
+	void graphics_environment::update()
+	{
+		if (!is_this_main_thread()) throw std::logic_error("graphics_environment.update() was called on a thread that is not the main graphics thread.");
+
+		graphics_environment_update_parameter args;
+		updating(args);
+		glfwPollEvents();
+		updated(args);
+	}
+
+	/******************************** constructors ********************************/
 
 	void graphics_environment::setup()
 	{
-		auto old_constructed = _constructed.exchange(true);
-		if (old_constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
+		if (_constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
+		_constructed = true;
 
 		_main_graphics_thread = std::this_thread::get_id();
 
@@ -25,17 +41,7 @@ namespace CompWolf::Graphics
 	}
 	graphics_environment::~graphics_environment()
 	{
-		_constructed.store(false);
-	}
-
-	void graphics_environment::update()
-	{
-		if (!is_this_main_thread()) throw std::logic_error("graphics_environment.update() was called on a thread that is not the main graphics thread.");
-
-		graphics_environment_update_parameter args;
-		updating(args);
-		glfwPollEvents();
-		updated(args);
+		_constructed = false;
 	}
 
 	template graphics_environment::graphics_environment(graphics_environment_settings);

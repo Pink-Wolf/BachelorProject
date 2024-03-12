@@ -6,6 +6,8 @@
 #include "window"
 #include "shader.hpp"
 #include <vector>
+#include <owned>
+#include <freeable>
 
 namespace CompWolf::Graphics
 {
@@ -16,48 +18,27 @@ namespace CompWolf::Graphics
 		shader* fragment_shader;
 	};
 
-	class draw_pipeline : window_user
+	class draw_pipeline : public basic_freeable
 	{
-	private:
+	private: // fields
 		draw_pipeline_settings _settings;
 
-		Private::vulkan_pipeline_layout _layout = nullptr;
+		owned_ptr<Private::vulkan_pipeline_layout> _layout;
 		Private::vulkan_render_pass _render_pass;
 		Private::vulkan_pipeline _vulkan_pipeline;
 
 		std::vector<Private::vulkan_frame_buffer> _frame_buffers;
 
-	private:
-		void setup();
-	public:
-		void clear() noexcept;
-	public:
-		draw_pipeline() = default;
-
-		template<typename T>
-			requires std::convertible_to<T, draw_pipeline_settings>
-		draw_pipeline(T settings) : _settings(std::forward<draw_pipeline_settings>(settings))
+	public: // getters
+		inline auto target_window() -> window&
 		{
-			setup();
+			return *_settings.target_window;
+		}
+		inline auto target_window() const -> const window&
+		{
+			return *_settings.target_window;
 		}
 
-		draw_pipeline(draw_pipeline&&) noexcept;
-		auto operator =(draw_pipeline&&) noexcept -> draw_pipeline&;
-		draw_pipeline(const draw_pipeline&) noexcept = delete;
-		auto operator =(const draw_pipeline&) noexcept -> draw_pipeline & = delete;
-
-		~draw_pipeline()
-		{
-			clear();
-		}
-
-	public:
-		inline auto empty() const noexcept -> bool
-		{
-			return !_layout;
-		}
-
-	public:
 		inline auto vulkan_render_pass() const noexcept
 		{
 			return _render_pass;
@@ -71,12 +52,30 @@ namespace CompWolf::Graphics
 			return _vulkan_pipeline;
 		}
 
+	private: // constructors
+		void setup();
 	public:
-		inline auto target_window() -> window& final
+		draw_pipeline() = default;
+		draw_pipeline(draw_pipeline&&) = default;
+		auto operator =(draw_pipeline&&) -> draw_pipeline& = default;
+		inline ~draw_pipeline() noexcept
 		{
-			return *_settings.target_window;
+			free();
 		}
-		inline auto target_window() const -> const window& final { return window_user::target_window(); }
+
+		template<typename T>
+			requires std::convertible_to<T, draw_pipeline_settings>
+		draw_pipeline(T&& settings) : _settings(std::forward<draw_pipeline_settings>(settings))
+		{
+			setup();
+		}
+
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
+		{
+			return !_layout;
+		}
+		void free() noexcept final;
 	};
 }
 

@@ -1,6 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_HEADER
 
+#include <gpu>
 #include "graphics"
 #include "vulkan_types"
 #include "window_surface.hpp"
@@ -8,6 +9,8 @@
 #include <event>
 #include <value_mutex>
 #include <utility>
+#include <freeable>
+#include <owned>
 
 namespace CompWolf::Graphics
 {
@@ -19,10 +22,10 @@ namespace CompWolf::Graphics
 	/* A window, as in a rectangle that can be drawn onto, and that listens for various events from outside the program (relating to the window).
 	 * This class is thread safe.
 	 */
-	class window : public gpu_user
+	class window : public basic_freeable
 	{
-	private:
-		using glfw_window_type = shared_value_mutex<Private::glfw_window>;
+	private: // fields
+		using glfw_window_type = owned_ptr<Private::glfw_window>;
 		glfw_window_type _glfw_window;
 
 		window_surface _surface;
@@ -30,16 +33,23 @@ namespace CompWolf::Graphics
 
 		value_event_wrapper<std::pair<int, int>> _pixel_size;
 
-	public:
-		/* Constructs a window that is already closed. */
-		window() = default;
-		/* @throws std::runtime_error when something went wrong during window creation outside of the program. */
-		window(graphics_environment& environment);
-		window(window&&) noexcept;
-		auto operator=(window&&) noexcept -> window&;
-		~window();
+	public: // getters
 
-	public:
+		/* Whether the window is currently open. */
+		inline auto is_open() const noexcept -> bool
+		{
+			return !empty();
+		}
+
+		auto device() noexcept -> gpu&
+		{
+			return _surface.device();
+		}
+		auto device() const noexcept -> const gpu&
+		{
+			return _surface.device();
+		}
+
 		inline auto surface() noexcept -> window_surface&
 		{
 			return _surface;
@@ -67,21 +77,18 @@ namespace CompWolf::Graphics
 			return surface().draw_present_job();
 		}
 
-		inline auto pixel_size() -> const_value_event_wrapper<std::pair<int, int>>&
+		inline auto pixel_size() const -> const_value_event_wrapper<std::pair<int, int>>&
 		{
 			return _pixel_size.const_wrapper();
 		}
 
-	public:
-		/* Whether the window is currently open. */
-		inline auto is_open() noexcept -> bool
-		{
-			return _glfw_window.get_value_copy_quick() != nullptr;
-		}
+	public: // other methods
 
 		/* Closes the window. */
-		void close() noexcept;
-
+		inline void close() noexcept
+		{
+			free();
+		}
 		using closing_type = event<window_close_parameter>;
 		/* Invoked right before the window closes.
 		 * @see close()
@@ -93,12 +100,25 @@ namespace CompWolf::Graphics
 		 */
 		closed_type closed;
 
-	public:
-		inline auto device() -> gpu& final
+	public: // constructors
+		/* Constructs a window that is already closed. */
+		window() = default;
+		window(window&&) = default;
+		auto operator=(window&&) -> window& = default;
+		inline ~window() noexcept
 		{
-			return _surface.device();
+			free();
 		}
-		inline auto device() const -> const gpu& final { return gpu_user::device(); }
+
+		/* @throws std::runtime_error when something went wrong during window creation outside of the program. */
+		window(graphics_environment& environment);
+
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
+		{
+			return !_glfw_window;
+		}
+		void free() noexcept final;
 	};
 }
 

@@ -2,7 +2,6 @@
 #define COMPWOLF_INDEX_FUNCTION_HEADER
 
 #include <functional>
-#include "functional.hpp"
 #include <concepts>
 #include "compwolf_type_traits"
 
@@ -38,9 +37,9 @@ namespace CompWolf
 
 		/* Sets the callable object the index_function contains. */
 		template<typename InputType>
-			requires std::assignable_from<function_type, InputType>
+			requires std::assignable_from<function_type&, InputType>
 		inline auto operator =(InputType new_function)
-			noexcept(std::is_nothrow_assignable_v<function_type, InputType>)
+			noexcept(std::is_nothrow_assignable_v<function_type&, InputType>)
 			-> index_function
 		{
 			_function = new_function;

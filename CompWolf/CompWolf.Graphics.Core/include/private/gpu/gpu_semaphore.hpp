@@ -3,40 +3,44 @@
 
 #include "vulkan_types"
 #include "gpu.hpp"
-#include "gpu_user.hpp"
+#include <freeable>
+#include <owned>
 
 namespace CompWolf::Graphics
 {
-	class gpu_semaphore : public basic_const_gpu_user
+	class gpu_semaphore : public basic_freeable
 	{
-	private:
-		Private::vulkan_semaphore _vulkan_semaphore = nullptr;
+	private: // fields
+		const gpu* _device;
+		owned_ptr<Private::vulkan_semaphore> _vulkan_semaphore = nullptr;
 
-	public:
-		inline auto empty() const noexcept
+	public: // getters
+		inline auto device() const noexcept -> const gpu&
 		{
-			return !_vulkan_semaphore;
+			return *_device;
 		}
-
 		inline auto vulkan_semaphore() const noexcept
 		{
 			return _vulkan_semaphore;
 		}
 
-	public:
+	public: // constructors
 		gpu_semaphore() = default;
-		gpu_semaphore(const gpu_semaphore&) = delete;
-		auto operator=(const gpu_semaphore&)->gpu_semaphore & = delete;
-		gpu_semaphore(gpu_semaphore&&);
-		auto operator=(gpu_semaphore&&)->gpu_semaphore&;
+		gpu_semaphore(gpu_semaphore&&) = default;
+		auto operator=(gpu_semaphore&&) -> gpu_semaphore& = default;
+		inline ~gpu_semaphore() noexcept
+		{
+			free();
+		}
 
 		gpu_semaphore(const gpu& target_gpu);
 
-		void clear() noexcept;
-		inline ~gpu_semaphore()
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
 		{
-			clear();
+			return !_vulkan_semaphore;
 		}
+		void free() noexcept final;
 	};
 }
 

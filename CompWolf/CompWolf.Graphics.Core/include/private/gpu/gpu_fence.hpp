@@ -3,43 +3,47 @@
 
 #include "vulkan_types"
 #include "gpu.hpp"
-#include "gpu_user.hpp"
+#include <freeable>
+#include <owned>
 
 namespace CompWolf::Graphics
 {
-	class gpu_fence : public basic_const_gpu_user
+	class gpu_fence : public basic_freeable
 	{
-	private:
-		Private::vulkan_fence _vulkan_fence = nullptr;
+	private: // fields
+		const gpu* _device;
+		owned_ptr<Private::vulkan_fence> _vulkan_fence;
 
-	public:
-		inline auto empty() const noexcept
+	public: // getters
+		inline auto device() const noexcept -> const gpu&
 		{
-			return !_vulkan_fence;
+			return *_device;
 		}
-
 		inline auto vulkan_fence() const noexcept
 		{
 			return _vulkan_fence;
 		}
 
-	public:
+	public: // other methods
+		void wait() const;
+
+	public: // constructors
 		gpu_fence() = default;
-		gpu_fence(const gpu_fence&) = delete;
-		auto operator=(const gpu_fence&) -> gpu_fence& = delete;
-		gpu_fence(gpu_fence&&);
-		auto operator=(gpu_fence&&) -> gpu_fence&;
+		gpu_fence(gpu_fence&&) = default;
+		auto operator=(gpu_fence&&) -> gpu_fence& = default;
+		inline ~gpu_fence() noexcept
+		{
+			free();
+		}
 
 		gpu_fence(const gpu& target_gpu);
 
-		void clear() noexcept;
-		inline ~gpu_fence()
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
 		{
-			clear();
+			return !_vulkan_fence;
 		}
-
-	public:
-		void wait() const;
+		void free() noexcept final;
 	};
 }
 

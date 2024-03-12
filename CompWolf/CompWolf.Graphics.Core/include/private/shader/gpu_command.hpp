@@ -35,7 +35,7 @@ namespace CompWolf::Graphics
 	public:
 		inline void compile(Private::vulkan_command a) final
 		{
-			for_each_in<std::tuple<TCommands...>>::invoke<Private::compile_gpu_command_function>(*static_cast<std::tuple<TCommands...>*>(this), a);
+			for_each_in<std::tuple<TCommands...>>::template invoke<Private::compile_gpu_command_function>(*static_cast<std::tuple<TCommands...>*>(this), a);
 		}
 	};
 

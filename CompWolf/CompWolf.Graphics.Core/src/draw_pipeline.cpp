@@ -8,6 +8,8 @@
 
 namespace CompWolf::Graphics
 {
+	/******************************** constructors ********************************/
+
 	void draw_pipeline::setup()
 	{
 		auto& gpu_device = target_window().device();
@@ -246,35 +248,14 @@ namespace CompWolf::Graphics
 		}
 		catch (...)
 		{
-			clear();
+			free();
 			throw;
 		}
 	}
 
-	draw_pipeline::draw_pipeline(draw_pipeline&& other) noexcept
-	{
-		_settings = std::move(_settings);
-		_layout = std::move(other._layout);
-		_render_pass = std::move(other._render_pass);
-		_vulkan_pipeline = std::move(other._vulkan_pipeline);
+	/******************************** CompWolf::freeable ********************************/
 
-		other._layout = nullptr;
-	}
-	auto draw_pipeline::operator=(draw_pipeline&& other) noexcept -> draw_pipeline&
-	{
-		clear();
-
-		_settings = std::move(_settings);
-		_layout = std::move(other._layout);
-		_render_pass = std::move(other._render_pass);
-		_vulkan_pipeline = std::move(other._vulkan_pipeline);
-
-		other._layout = nullptr;
-
-		return *this;
-	}
-
-	void draw_pipeline::clear() noexcept
+	void draw_pipeline::free() noexcept
 	{
 		if (empty()) return;
 

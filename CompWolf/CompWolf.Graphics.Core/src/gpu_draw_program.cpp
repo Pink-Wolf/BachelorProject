@@ -9,14 +9,16 @@
 
 namespace CompWolf::Graphics::Private
 {
+	/******************************** constructors ********************************/
+
 	auto gpu_draw_program_frame_data::new_frameset(draw_pipeline& pipeline, gpu_command& command) -> frameset_type
 	{
 		auto size = pipeline.target_window().swapchain().frames().size();
 		frameset_type data;
-		data.reserve(size);
+		//data.reserve(size);
 		for (size_t i = 0; i < size; ++i)
 		{
-			data.push_back(gpu_draw_program_frame_data(pipeline, command, i));
+			data.emplace_back(pipeline, command, i);
 		}
 		return data;
 	}
@@ -122,12 +124,15 @@ namespace CompWolf::Graphics::Private
 		}
 		catch (...)
 		{
-			clear();
+			free();
 
 			throw;
 		}
 	}
-	void gpu_draw_program_frame_data::clear() noexcept
+
+	/******************************** CompWolf::freeable ********************************/
+
+	void gpu_draw_program_frame_data::free() noexcept
 	{
 		if (empty()) return;
 
@@ -143,24 +148,7 @@ namespace CompWolf::Graphics::Private
 		vkFreeCommandBuffers(device, Private::to_vulkan(vulkan_command_pool()), 1, &command);
 	}
 
-	gpu_draw_program_frame_data::gpu_draw_program_frame_data(gpu_draw_program_frame_data&& other) noexcept
-	{
-		_pipeline = std::move(other._pipeline);
-		_index = std::move(other._index);
-		_vulkan_command = std::move(other._vulkan_command);
-
-		other._pipeline = nullptr;
-	}
-	auto gpu_draw_program_frame_data::operator =(gpu_draw_program_frame_data&& other) noexcept -> gpu_draw_program_frame_data&
-	{
-		_pipeline = std::move(other._pipeline);
-		_index = std::move(other._index);
-		_vulkan_command = std::move(other._vulkan_command);
-
-		other._pipeline = nullptr;
-
-		return *this;
-	}
+	/******************************** other methods ********************************/
 
 	auto gpu_draw_program_frame_data::next_frame(frameset_type& frameset) -> gpu_draw_program_frame_data&
 	{

@@ -100,6 +100,9 @@ namespace CompWolf
 	public:
 		/* Constructs a lock with no associated lock. */
 		unique_value_lock() noexcept = default;
+		unique_value_lock(unique_value_lock&&) = default;
+		auto operator=(unique_value_lock&&) -> unique_value_lock& = default;
+
 		/* Constructs a lock for the given mutex, but does not actually lock it yet. */
 		unique_value_lock(mutex_type& mutex, std::defer_lock_t) : _mutex(&mutex) {}
 		/* Constructs a lock for the given mutex, and locks it if possible.
@@ -128,8 +131,6 @@ namespace CompWolf
 			if (owns_lock()) unlock();
 		}
 
-		unique_value_lock(const unique_value_lock&) = delete;
-		auto operator=(const unique_value_lock&)->unique_value_lock & = delete;
 
 	public:
 		/* Returns the associated mutex' value.

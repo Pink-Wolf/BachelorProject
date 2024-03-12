@@ -3,6 +3,5 @@
 #include "private/gpu/gpu.hpp"
 #include "private/gpu/gpu_job.hpp"
 #include "private/gpu/gpu_manager.hpp"
-#include "private/gpu/gpu_user.hpp"
 #include "private/gpu/gpu_fence.hpp"
 #include "private/gpu/gpu_semaphore.hpp"

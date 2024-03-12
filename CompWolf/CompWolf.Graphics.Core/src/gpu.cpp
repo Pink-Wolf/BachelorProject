@@ -14,7 +14,22 @@
 
 namespace CompWolf::Graphics
 {
-	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device) : _vulkan_instance(vulkan_instance), _vulkan_physical_device(vulkan_physical_device)
+	/******************************** getters ********************************/
+
+	auto gpu::index_of_family(const gpu_thread_family& target) const -> size_t
+	{
+		for (size_t i = 0; i < _families.size(); ++i)
+		{
+			if (&_families[i] == &target) return i;
+		}
+		throw std::invalid_argument("Tried getting the index of a family in a gpu, which is not actually in the gpu.");
+	}
+
+	/******************************** constructors ********************************/
+
+	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device) :
+		_vulkan_instance(vulkan_instance),
+		_vulkan_physical_device(vulkan_physical_device)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 		auto physical_device = Private::to_vulkan(vulkan_physical_device);
@@ -124,40 +139,13 @@ namespace CompWolf::Graphics
 			}
 		}
 	}
-	gpu::~gpu()
+
+	/******************************** CompWolf::freeable ********************************/
+
+	void gpu::free() noexcept
 	{
-		if (_vulkan_device) vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);
-	}
-
-	gpu::gpu(gpu&& other) noexcept
-	{
-		_vulkan_instance = std::move(other._vulkan_instance);
-		_vulkan_device = std::move(other._vulkan_device);
-		_vulkan_physical_device = other._vulkan_physical_device;
-		_families = std::move(other._families);
-		_work_types = std::move(other._work_types);
-
-		other._vulkan_device = nullptr;
-	}
-	gpu& gpu::operator=(gpu&& other) noexcept
-	{
-		_vulkan_instance = std::move(other._vulkan_instance);
-		_vulkan_device = std::move(other._vulkan_device);
-		_vulkan_physical_device = other._vulkan_physical_device;
-		_families = std::move(other._families);
-		_work_types = std::move(other._work_types);
-
-		other._vulkan_device = nullptr;
-
-		return *this;
-	}
-
-	auto gpu::index_of_family(const gpu_thread_family& target) const -> size_t
-	{
-		for (size_t i = 0; i < _families.size(); ++i)
-		{
-			if (&_families[i] == &target) return i;
-		}
-		throw std::invalid_argument("Tried getting the index of a family in a gpu, which is not actually in the gpu.");
+		if (empty()) return;
+		vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);
+		_vulkan_device = nullptr;
 	}
 }

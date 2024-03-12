@@ -6,10 +6,7 @@
 
 namespace CompWolf::Graphics
 {
-	void shader::setup()
-	{
-		// setup() exists in case it is needed in the future
-	}
+	/******************************** getters ********************************/
 
 	auto shader::shader_module(const gpu& vulkan_device) const -> Private::vulkan_shader
 	{
@@ -48,11 +45,15 @@ namespace CompWolf::Graphics
 		return shader_module_pointer;
 	}
 
-	shader::~shader()
+	/******************************** CompWolf::freeable ********************************/
+
+	void shader::free() noexcept
 	{
 		for (auto& [vulkan_device, shader_module] : _compiled_shader)
 		{
 			vkDestroyShaderModule(Private::to_vulkan(vulkan_device->vulkan_device()), Private::to_vulkan(shader_module), nullptr);
 		}
+
+		_environment = nullptr;
 	}
 }

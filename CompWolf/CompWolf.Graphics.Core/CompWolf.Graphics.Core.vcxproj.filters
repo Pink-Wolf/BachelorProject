@@ -90,12 +90,6 @@
     <ClInclude Include="include\private\window\window_swapchain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\graphics\environment_user.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_user.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\private\gpu\gpu_job.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,9 +97,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\gpu">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\window\window_user.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\gpu\gpu_fence.hpp">

@@ -9,7 +9,7 @@
 namespace CompWolf::Graphics
 {
 	template <typename OnMessageType>
-		requires callable<OnMessageType, void, std::string>
+		requires std::invocable<OnMessageType, std::string>
 	VkBool32 vulkan_debug_callback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
 		VkDebugUtilsMessageTypeFlagsEXT message_type,
@@ -43,7 +43,7 @@ namespace CompWolf::Graphics
 		return VK_FALSE; // Debug callback should always return VK_FALSE
 	};
 	template <typename OnMessageType>
-		requires callable<OnMessageType, void, std::string>
+		requires std::invocable<OnMessageType, std::string>
 	inline constexpr auto vulkan_debug_messenger_create_info(OnMessageType* reporter) -> VkDebugUtilsMessengerCreateInfoEXT
 	{
 		VkDebugUtilsMessengerCreateInfoEXT create_info{

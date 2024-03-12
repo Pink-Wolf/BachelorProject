@@ -5,42 +5,36 @@
 #include "graphics"
 #include "gpu_command.hpp"
 #include "draw_pipeline.hpp"
+#include <type_traits>
 #include <concepts>
 #include <tuple>
 #include <utility>
 #include <vector>
 #include <optional>
+#include <freeable>
+#include <owned>
 
 namespace CompWolf::Graphics
 {
 	namespace Private
 	{
-		class gpu_draw_program_frame_data : public window_user
+		class gpu_draw_program_frame_data : public basic_freeable
 		{
-		private:
-			draw_pipeline* _pipeline = nullptr;
+		public: // fields
+			using frameset_type = std::vector<gpu_draw_program_frame_data>;
+		public:
+			owned_ptr<draw_pipeline*> _pipeline;
 			size_t _index;
 			Private::vulkan_command _vulkan_command;
 
-		public:
-			gpu_draw_program_frame_data() = default;
-			gpu_draw_program_frame_data(const gpu_draw_program_frame_data&) noexcept = delete;
-			auto operator =(const gpu_draw_program_frame_data&) noexcept -> gpu_draw_program_frame_data & = delete;
-			gpu_draw_program_frame_data(gpu_draw_program_frame_data&& other) noexcept;
-			auto operator =(gpu_draw_program_frame_data&&) noexcept -> gpu_draw_program_frame_data&;
-
-			gpu_draw_program_frame_data(draw_pipeline& pipeline, gpu_command& command, size_t index);
-
-			void clear() noexcept;
-			inline ~gpu_draw_program_frame_data()
+		public: // getters
+			inline auto target_window() -> window&
 			{
-				clear();
+				return _pipeline->target_window();
 			}
-
-		public:
-			inline auto empty() const noexcept -> bool
+			inline auto target_window() const -> const window&
 			{
-				return !_pipeline;
+				return _pipeline->target_window();
 			}
 
 			inline auto vulkan_command() const
@@ -52,34 +46,38 @@ namespace CompWolf::Graphics
 				return _pipeline->target_window().swapchain().frames()[_index].command_pool;
 			}
 
-			inline auto target_window() -> window& final
-			{
-				return _pipeline->target_window();
-			}
-			inline auto target_window() const -> const window& final
-			{
-				return _pipeline->target_window();
-			}
-
 			inline auto frame() -> swapchain_frame&
 			{
 				return target_window().swapchain().frames()[_index];
 			}
 
-		public:
+		public: // other methods
+			static auto next_frame(frameset_type&) -> gpu_draw_program_frame_data&;
 			void draw();
 
-			using frameset_type = std::vector<gpu_draw_program_frame_data>;
+		public: // constructors
+			gpu_draw_program_frame_data() = default;
+			gpu_draw_program_frame_data(gpu_draw_program_frame_data&&) = default;
+			auto operator=(gpu_draw_program_frame_data&&) -> gpu_draw_program_frame_data& = default;
+
+			gpu_draw_program_frame_data(draw_pipeline& pipeline, gpu_command& command, size_t index);
+
 			static auto new_frameset(draw_pipeline& pipeline, gpu_command& command) -> frameset_type;
-			static auto next_frame(frameset_type&) -> gpu_draw_program_frame_data&;
+
+		public: // CompWolf::freeable
+			inline auto empty() const noexcept -> bool final
+			{
+				return !_pipeline;
+			}
+			void free() noexcept final;
 		};
 	}
 
 	template <typename CommandType>
 		requires std::is_base_of_v<gpu_command, CommandType>
-	class gpu_draw_program : public window_user
+	class gpu_draw_program : public basic_freeable
 	{
-	public:
+	public: // fields
 		using command_type = CommandType;
 	private:
 		using frame_data = Private::gpu_draw_program_frame_data;
@@ -89,12 +87,14 @@ namespace CompWolf::Graphics
 
 		frame_data::frameset_type _programs_for_frames;
 
-	public:
-		inline auto target_window() -> window & final
+		event<window_close_parameter>::key_type _window_closing_key;
+
+	public: // getters
+		inline auto target_window() -> window&
 		{
 			return pipeline().target_window();
 		}
-		inline auto target_window() const -> const window & final
+		inline auto target_window() const -> const window&
 		{
 			return pipeline().target_window();
 		}
@@ -117,56 +117,41 @@ namespace CompWolf::Graphics
 			return _command;
 		}
 
-	public:
-		inline auto empty() const noexcept -> bool
+	public: // other methods
+		void draw()
 		{
-			return _programs_for_frames.empty();
+			frame_data::next_frame(_programs_for_frames).draw();
 		}
 
-	public:
-		inline void clear() noexcept
-		{
-			_programs_for_frames.clear();
-		}
-	private:
-		inline void on_window_close(window_close_parameter&)
-		{
-			clear();
-		}
-	public:
-
+	public: // constructors
 		gpu_draw_program() = default;
+
 		template <typename TInput>
 			requires std::is_constructible_v<command_type, TInput>
 		gpu_draw_program(draw_pipeline& pipeline, TInput&& command) :
 			_pipeline(&pipeline),
 			_command(std::forward<TInput>(command)),
-			_programs_for_frames(frame_data::new_frameset(pipeline, _command))
+			_programs_for_frames(std::move(frame_data::new_frameset(pipeline, _command)))
 		{
-
+			/*
+			_window_closing_key = target_window().closing.subscribe([this](event<window_close_parameter>& sender, window_close_parameter& args)
+				{
+					this->free();
+				}
+			);
+			*/
 		}
 
-		gpu_draw_program(gpu_draw_program&& other) noexcept
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
 		{
-			_pipeline = std::move(other._pipeline);
-			_command = std::move(other._command);
-			_programs_for_frames = std::move(other._programs_for_frames);
+			return _programs_for_frames.empty();
 		}
-		auto operator=(gpu_draw_program&& other) noexcept -> gpu_draw_program&
+		void free() noexcept final
 		{
-			clear();
-
-			_pipeline = std::move(other._pipeline);
-			_command = std::move(other._command);
-			_programs_for_frames = std::move(other._programs_for_frames);
-
-			return *this;
-		}
-
-	public:
-		void draw()
-		{
-			frame_data::next_frame(_programs_for_frames).draw();
+			if (empty()) return;
+			_programs_for_frames.clear();
+			target_window().closing.unsubscribe(_window_closing_key);
 		}
 	};
 

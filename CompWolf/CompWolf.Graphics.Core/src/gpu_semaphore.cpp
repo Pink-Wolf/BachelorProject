@@ -7,8 +7,11 @@
 
 namespace CompWolf::Graphics
 {
-	gpu_semaphore::gpu_semaphore(const gpu& target_gpu) : basic_const_gpu_user(target_gpu)
+	/******************************** constructors ********************************/
+
+	gpu_semaphore::gpu_semaphore(const gpu& target_gpu)
 	{
+		_device = &target_gpu;
 		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
 
 		VkSemaphoreCreateInfo create_info{
@@ -26,29 +29,16 @@ namespace CompWolf::Graphics
 
 		_vulkan_semaphore = Private::from_vulkan(semaphore);
 	}
-	void gpu_semaphore::clear() noexcept
+
+	/******************************** CompWolf::freeable ********************************/
+
+	void gpu_semaphore::free() noexcept
 	{
 		if (empty()) return;
 
 		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
-
 		vkDestroySemaphore(vulkan_device, Private::to_vulkan(_vulkan_semaphore), nullptr);
-	}
 
-	gpu_semaphore::gpu_semaphore(gpu_semaphore&& other)
-	{
-		set_device(other.device());
-		_vulkan_semaphore = std::move(other._vulkan_semaphore);
-
-		other._vulkan_semaphore = nullptr;
-	}
-	auto gpu_semaphore::operator=(gpu_semaphore&& other) -> gpu_semaphore&
-	{
-		set_device(other.device());
-		_vulkan_semaphore = std::move(other._vulkan_semaphore);
-
-		other._vulkan_semaphore = nullptr;
-
-		return *this;
+		_vulkan_semaphore = nullptr;
 	}
 }

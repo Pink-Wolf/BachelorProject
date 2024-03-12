@@ -2,6 +2,7 @@
 #define COMPWOLF_TYPE_TRAIT_HEADER
 
 #include <type_traits>
+#include <stddef.h>
 
 namespace CompWolf
 {

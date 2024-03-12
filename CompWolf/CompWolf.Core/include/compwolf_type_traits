@@ -1,6 +1,7 @@
 // This file always includes <type_traits>
 #include <type_traits>
 
+#include "private/type_traits/dereferenceable_to.hpp"
 #include "private/type_traits/explicitly_convertible_to.hpp"
 #include "private/type_traits/is_assignable.hpp"
 #include "private/type_traits/type_list.hpp"

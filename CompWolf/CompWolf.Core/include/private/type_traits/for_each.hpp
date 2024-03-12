@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <tuple>
+#include <stddef.h>
 
 namespace CompWolf
 {
@@ -23,7 +24,7 @@ namespace CompWolf
 		template <template <typename> typename Function, typename... TArgs>
 		static inline void invoke(TArgs... args)
 		{
-			Function<T>::invoke(args...);
+			Function<T>::template invoke(args...);
 			for_each<TRest... >::template invoke<Function, TArgs...>(args...);
 		}
 	};
@@ -38,7 +39,7 @@ namespace CompWolf
 		{
 			if constexpr (InclusiveStart < ExclusiveEnd)
 			{
-				Function<InclusiveStart>::invoke(args...);
+				Function<InclusiveStart>::template invoke(args...);
 				for_each_index<InclusiveStart + 1, ExclusiveEnd>::template invoke<Function, TArgs...>(args...);
 			}
 		}

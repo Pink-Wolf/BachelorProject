@@ -9,6 +9,8 @@
 
 namespace CompWolf::Graphics
 {
+	/******************************** constructors ********************************/
+
 	window::window(graphics_environment& environment)
 	{
 		auto instance = Private::to_vulkan(environment.vulkan_instance());
@@ -37,72 +39,35 @@ namespace CompWolf::Graphics
 					});
 			}
 
-			_surface = window_surface(environment, _glfw_window.value());
-			_swapchain = window_swapchain(_glfw_window.value(), _surface);
+			_surface = std::move(window_surface(environment, _glfw_window));
+			_swapchain = std::move(window_swapchain(_glfw_window, _surface));
 		}
 		catch (...)
 		{
-			close(); // Make sure to release data
+			free(); // Make sure to release data
 
 			throw;
 		}
 
 	}
-	window::window(window&& other) noexcept
+
+	/******************************** CompWolf::freeable ********************************/
+
+	void window::free() noexcept
 	{
-		std::scoped_lock lock(_glfw_window, other._glfw_window);
-
-		close();
-
-		_glfw_window.value() = std::move(other._glfw_window.value());
-		_surface = std::move(other._surface);
-		_swapchain = std::move(other._swapchain);
-
-		other._glfw_window.value() = nullptr;
-	}
-	auto window::operator=(window&& other) noexcept -> window&
-	{
-		std::scoped_lock lock(_glfw_window, other._glfw_window);
-
-		close();
-
-		_glfw_window.value() = std::move(other._glfw_window.value());
-		_surface = std::move(other._surface);
-		_swapchain = std::move(other._swapchain);
-
-		other._glfw_window.value() = nullptr;
-
-		return *this;
-	}
-	window::~window()
-	{
-		close();
-	}
-
-	void window::close() noexcept
-	{
-		window_close_parameter args;
-
-		{
-			shared_value_lock<glfw_window_type> lock(_glfw_window);
-			if (_glfw_window.value() == nullptr) return;
-
-			closing(args);
-		}
+		if (empty()) return;
 
 		auto instance = Private::to_vulkan(device().vulkan_instance());
+		window_close_parameter args;
 
-		{
-			unique_value_lock<glfw_window_type> lock(_glfw_window);
-			if (_glfw_window.value() == nullptr) return;
+		closing(args);
 
-			_swapchain.destroy();
-			_surface.destroy();
+		_swapchain.free();
+		_surface.free();
 
-			auto glfwWindow = Private::to_glfw(_glfw_window.value());
-			glfwDestroyWindow(glfwWindow);
-			_glfw_window.value() = nullptr;
-		}
+		auto glfwWindow = Private::to_glfw(_glfw_window);
+		glfwDestroyWindow(glfwWindow);
+		_glfw_window = nullptr;
 
 		closed(args);
 	}

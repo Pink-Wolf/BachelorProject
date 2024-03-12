@@ -101,6 +101,9 @@ namespace CompWolf
 	public:
 		/* Constructs a lock with no associated lock. */
 		shared_value_lock() noexcept = default;
+		shared_value_lock(shared_value_lock&&) = default;
+		auto operator=(shared_value_lock&&) -> shared_value_lock& = default;
+
 		/* Constructs a lock for the given mutex, but does not actually lock it yet. */
 		shared_value_lock(mutex_type& mutex, std::defer_lock_t) : _mutex(&mutex) {}
 		/* Constructs a lock for the given mutex, and locks it if possible.
@@ -128,9 +131,6 @@ namespace CompWolf
 		{
 			if (owns_lock()) unlock();
 		}
-
-		shared_value_lock(const shared_value_lock&) = delete;
-		auto operator=(const shared_value_lock&)->shared_value_lock & = delete;
 
 	public:
 		/* Returns the associated mutex' value.

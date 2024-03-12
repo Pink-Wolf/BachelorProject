@@ -169,8 +169,6 @@
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\private\gpu\gpu_fence.hpp" />
     <ClInclude Include="include\private\gpu\gpu_semaphore.hpp" />
-    <ClInclude Include="include\private\graphics\environment_user.hpp" />
-    <ClInclude Include="include\private\gpu\gpu_user.hpp" />
     <ClInclude Include="include\private\graphics\glfw_handle.hpp" />
     <ClInclude Include="include\private\gpu\gpu.hpp" />
     <ClInclude Include="include\private\gpu\gpu_manager.hpp" />
@@ -192,7 +190,6 @@
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
     <ClInclude Include="include\private\window\window.hpp" />
     <ClInclude Include="include\private\shader\draw_pipeline.hpp" />
-    <ClInclude Include="include\private\window\window_user.hpp" />
     <ClInclude Include="include\shader" />
     <ClInclude Include="include\vulkan_types" />
     <ClInclude Include="include\window" />

@@ -9,13 +9,15 @@
 
 namespace CompWolf::Graphics
 {
-	window_swapchain::window_swapchain(Private::glfw_window window, window_surface& window_surface) : basic_gpu_user(window_surface.device())
+	/******************************** constructors ********************************/
+
+	window_swapchain::window_swapchain(Private::glfw_window window, window_surface& window_surface)
 	{
 		auto glfwWindow = Private::to_glfw(window);
 
-		auto& gpu_device = window_surface.device();
-		auto instance = Private::to_vulkan(gpu_device.vulkan_instance());
-		auto device = Private::to_vulkan(gpu_device.vulkan_device());
+		_target_gpu = &window_surface.device();
+		auto instance = Private::to_vulkan(device().vulkan_instance());
+		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
 
 		auto surface = Private::to_vulkan(window_surface.surface());
 		auto& surface_format = *Private::to_private(window_surface.format());
@@ -60,7 +62,7 @@ namespace CompWolf::Graphics
 					.oldSwapchain = VK_NULL_HANDLE,
 				};
 
-				auto result = vkCreateSwapchainKHR(device, &create_info, nullptr, &swapchain);
+				auto result = vkCreateSwapchainKHR(vulkan_device, &create_info, nullptr, &swapchain);
 
 				switch (result)
 				{
@@ -74,9 +76,9 @@ namespace CompWolf::Graphics
 
 			// Swapchain images
 			{
-				auto images = Private::get_size_and_vector<uint32_t, VkImage>([device, swapchain](uint32_t* size, VkImage* data)
+				auto images = Private::get_size_and_vector<uint32_t, VkImage>([vulkan_device, swapchain](uint32_t* size, VkImage* data)
 					{
-						auto result = vkGetSwapchainImagesKHR(device, swapchain, size, data);
+						auto result = vkGetSwapchainImagesKHR(vulkan_device, swapchain, size, data);
 						switch (result)
 						{
 						case VK_SUCCESS:
@@ -113,7 +115,7 @@ namespace CompWolf::Graphics
 					};
 
 					VkImageView view;
-					auto result = vkCreateImageView(device, &create_info, nullptr, &view);
+					auto result = vkCreateImageView(vulkan_device, &create_info, nullptr, &view);
 
 					switch (result)
 					{
@@ -121,12 +123,12 @@ namespace CompWolf::Graphics
 					default: throw std::runtime_error("Could not get connection to a window's swapchain-images");
 					}
 
-					_frames.push_back(swapchain_frame{
+					_frames.push_back(std::move(swapchain_frame{
 						.image = Private::from_vulkan(view),
-						.drawing_fence = gpu_fence(gpu_device),
-						.drawing_semaphore = gpu_semaphore(gpu_device),
+						.drawing_fence = gpu_fence(device()),
+						.drawing_semaphore = gpu_semaphore(device()),
 						}
-					);
+					));
 				}
 
 				for (auto& frame : _frames)
@@ -134,11 +136,11 @@ namespace CompWolf::Graphics
 					VkCommandPoolCreateInfo create_info{
 						.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 						.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-						.queueFamilyIndex = static_cast<uint32_t>(gpu_device.index_of_family(job.family())),
+						.queueFamilyIndex = static_cast<uint32_t>(device().index_of_family(job.family())),
 					};
 
 					VkCommandPool command_pool;
-					auto result = vkCreateCommandPool(device, &create_info, nullptr, &command_pool);
+					auto result = vkCreateCommandPool(vulkan_device, &create_info, nullptr, &command_pool);
 
 					switch (result)
 					{
@@ -152,36 +154,17 @@ namespace CompWolf::Graphics
 		}
 		catch (...)
 		{
-			destroy(); // Make sure to release data
+			free(); // Make sure to release data
 
 			throw;
 		}
-
-	}
-	window_swapchain::window_swapchain(window_swapchain&& other) noexcept
-	{
-		set_device(other.device());
-		_vulkan_swapchain = std::move(other._vulkan_swapchain);
-		_frames = std::move(other._frames);
-
-		other._vulkan_swapchain = nullptr;
-	}
-	auto window_swapchain::operator=(window_swapchain&& other) noexcept -> window_swapchain&
-	{
-		destroy();
-
-		set_device(other.device());
-		_vulkan_swapchain = std::move(other._vulkan_swapchain);
-		_frames = std::move(other._frames);
-
-		other._vulkan_swapchain = nullptr;
-
-		return *this;
 	}
 
-	void window_swapchain::destroy() noexcept
+	/******************************** CompWolf::freeable ********************************/
+
+	void window_swapchain::free() noexcept
 	{
-		if (is_destroyed()) return;
+		if (empty()) return;
 
 		auto instance = Private::to_vulkan(device().vulkan_instance());
 		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
@@ -196,6 +179,6 @@ namespace CompWolf::Graphics
 		_frames.clear();
 		if (_vulkan_swapchain) vkDestroySwapchainKHR(vulkan_device, Private::to_vulkan(_vulkan_swapchain), nullptr);
 
-		_vulkan_swapchain = nullptr;
+		_target_gpu = nullptr;
 	}
 }

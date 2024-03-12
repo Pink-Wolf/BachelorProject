@@ -7,14 +7,7 @@
 
 namespace CompWolf::Graphics
 {
-	void teardown_vulkan(Private::vulkan_instance vulkan_instance)
-	{
-		if (vulkan_instance)
-		{
-			auto instance = Private::to_vulkan(vulkan_instance);
-			vkDestroyInstance(instance, nullptr);
-		}
-	}
+	/******************************** constructors ********************************/
 
 	vulkan_handle::vulkan_handle(const graphics_environment_settings& settings)
 	{
@@ -70,22 +63,13 @@ namespace CompWolf::Graphics
 
 		_vulkan_instance = Private::from_vulkan(instance);
 	}
-	vulkan_handle::~vulkan_handle()
-	{
-		teardown_vulkan(_vulkan_instance);
-	}
 
-	vulkan_handle::vulkan_handle(vulkan_handle&& other) noexcept
-	{
-		_vulkan_instance = other._vulkan_instance;
-		other._vulkan_instance = nullptr;
-	}
-	vulkan_handle& vulkan_handle::operator=(vulkan_handle&& other) noexcept
-	{
-		teardown_vulkan(_vulkan_instance);
-		_vulkan_instance = other._vulkan_instance;
-		other._vulkan_instance = nullptr;
+	/******************************** CompWolf::freeable ********************************/
 
-		return *this;
+	void vulkan_handle::free() noexcept
+	{
+		if (empty()) return;
+		vkDestroyInstance(Private::to_vulkan(_vulkan_instance), nullptr);
+		_vulkan_instance = nullptr;
 	}
 }

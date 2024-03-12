@@ -7,6 +7,8 @@
 
 namespace CompWolf::Graphics
 {
+	/******************************** constructors ********************************/
+
 	vulkan_debug_handle::vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance)
 	{
 		if (!settings.internal_debug_callback)
@@ -40,26 +42,5 @@ namespace CompWolf::Graphics
 				auto messenger = Private::to_vulkan(vulkan_messenger);
 				vkDestroyDebugUtilsMessengerEXT(instance, messenger, nullptr);
 			};
-	}
-	vulkan_debug_handle::~vulkan_debug_handle()
-	{
-		if (_teardowner) _teardowner(_messenger);
-	}
-
-	vulkan_debug_handle::vulkan_debug_handle(vulkan_debug_handle&& other) noexcept
-	{
-		_messenger = other._messenger;
-		_teardowner = other._teardowner;
-		other._teardowner = nullptr;
-	}
-	vulkan_debug_handle& vulkan_debug_handle::operator=(vulkan_debug_handle&& other) noexcept
-	{
-		if (_teardowner) _teardowner(_messenger);
-
-		_messenger = other._messenger;
-		_teardowner = other._teardowner;
-		other._teardowner = nullptr;
-
-		return *this;
 	}
 }

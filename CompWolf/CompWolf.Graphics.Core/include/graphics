@@ -3,4 +3,3 @@
 #include "private/graphics/vulkan_handle.hpp"
 #include "private/graphics/vulkan_debug_handle.hpp"
 #include "private/graphics/graphics_environment.hpp"
-#include "private/graphics/environment_user.hpp"

@@ -60,7 +60,7 @@ namespace CompWolf::Graphics::Private
 	 * @typeparam GetterType The type of the getter.
 	 */
 	template <typename SizeType, typename T, typename GetterType>
-		requires callable<GetterType, void, SizeType*, T*>
+		requires std::invocable<GetterType, SizeType*, T*>
 	auto get_size_and_vector(GetterType getter) -> std::vector<T>
 	{
 		SizeType size;

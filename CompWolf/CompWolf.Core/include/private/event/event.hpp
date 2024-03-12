@@ -20,7 +20,7 @@ namespace CompWolf
 		using parameter_type = std::remove_cvref_t<ParameterType>;
 
 		/* The type of callable object that can listen to this event. */
-		using value_type = std::function<void(parameter_type&)>;
+		using value_type = std::function<void(event<ParameterType>, parameter_type&)>;
 		/* The type of callable object that can listen to this event, as a reference type. */
 		using reference = value_type&;
 		/* The type of callable object that can listen to this event, as a const reference type. */
@@ -39,14 +39,14 @@ namespace CompWolf
 		/* Subscribes the given object to the event. */
 		template <typename ObserverType>
 			requires std::is_convertible_v<ObserverType, value_type>
-		key_type subscribe(ObserverType observer) noexcept(std::is_nothrow_convertible_v<ObserverType, value_type>)
+		key_type subscribe(ObserverType&& observer) noexcept(std::is_nothrow_convertible_v<ObserverType, value_type>)
 		{
 			auto key = _observers.size();
-			_observers.push_back(observer);
+			_observers.emblace_back(std::forward<ObserverType>(observer));
 			return key;
 		}
 		/* Unsubscribes the given object from the event. */
-		key_type unsubscribe(key_type observer_key) noexcept
+		void unsubscribe(key_type observer_key) noexcept
 		{
 			_observers[observer_key] = value_type();
 		}
@@ -57,7 +57,7 @@ namespace CompWolf
 			for (auto& observer : _observers)
 			{
 				if (observer == nullptr) continue;
-				observer(parameter);
+				observer(*this, parameter);
 			}
 		}
 		/* Invokes all subscribed objects, passing the given parameters to each. */

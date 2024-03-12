@@ -6,46 +6,37 @@
 #include "vulkan_types"
 #include "window_surface.hpp"
 #include <vector>
+#include <freeable>
+#include <owned>
 
 namespace CompWolf::Graphics
 {
 	struct swapchain_frame
 	{
-		Private::vulkan_image_view image = nullptr;
-		Private::vulkan_command_pool command_pool = nullptr;
+		Private::vulkan_image_view image;
+		Private::vulkan_command_pool command_pool;
 
 		gpu_fence drawing_fence;
 		gpu_semaphore drawing_semaphore;
 	};
 
 	/* The actual images of the window' that's surface. */
-	class window_swapchain : public basic_gpu_user
+	class window_swapchain : basic_freeable
 	{
-	private:
-		Private::vulkan_swapchain _vulkan_swapchain = nullptr;
+	private: // fields
+		owned_ptr<gpu*> _target_gpu;
+		Private::vulkan_swapchain _vulkan_swapchain;
 		std::vector<swapchain_frame> _frames;
 
-	public:
-		/* Constructs a swapchain that is already destroyed. */
-		window_swapchain() = default;
-		/* @throws std::runtime_error when something went wrong during window swapchain creation outside of the program. */
-		window_swapchain(Private::glfw_window window, window_surface& surface);
-		window_swapchain(window_swapchain&&) noexcept;
-		auto operator=(window_swapchain&&) noexcept -> window_swapchain&;
-		inline ~window_swapchain()
+	public: // getters
+		inline auto device() noexcept -> gpu&
 		{
-			destroy();
+			return *_target_gpu;
 		}
-
-	public:
-		/* Whether the swapchain has already been destroyed. */
-		inline auto is_destroyed() noexcept -> bool
+		inline auto device() const noexcept -> const gpu&
 		{
-			return !_vulkan_swapchain;
+			return *_target_gpu;
 		}
-
-		/* Destroys the swapchain. */
-		void destroy() noexcept;
 
 		inline auto vulkan_swapchain() const noexcept
 		{
@@ -60,6 +51,22 @@ namespace CompWolf::Graphics
 		{
 			return _frames;
 		}
+
+	public: // constructors
+		/* Constructs a swapchain that is already destroyed. */
+		window_swapchain() = default;
+		window_swapchain(window_swapchain&&) = default;
+		auto operator=(window_swapchain&&) -> window_swapchain& = default;
+
+		/* @throws std::runtime_error when something went wrong during window swapchain creation outside of the program. */
+		window_swapchain(Private::glfw_window window, window_surface& surface);
+
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
+		{
+			return !_target_gpu;
+		}
+		void free() noexcept final;
 	};
 }
 

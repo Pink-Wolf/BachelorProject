@@ -5,40 +5,29 @@
 #include "gpu"
 #include "graphics"
 #include <vector>
+#include <freeable>
+#include <owned>
 
 namespace CompWolf::Graphics
 {
 	/* The part of a window one can draw on. */
-	class window_surface : public basic_gpu_user
+	class window_surface : public basic_freeable
 	{
-	private:
-		Private::vulkan_surface _vulkan_surface = nullptr;
-
+	private: // fields
+		owned_ptr<gpu*> _target_gpu;
+		Private::vulkan_surface _vulkan_surface;
 		Private::surface_format_handle _format;
-
 		gpu_job _draw_present_job;
 
-	public:
-		/* Constructs a surface that is already destroyed. */
-		window_surface() = default;
-		/* @throws std::runtime_error when something went wrong during window surface creation outside of the program. */
-		window_surface(graphics_environment& environment, Private::glfw_window& window);
-		window_surface(window_surface&&) noexcept;
-		auto operator=(window_surface&&) noexcept -> window_surface&;
-		~window_surface();
-
-		window_surface(const window_surface&) = delete;
-		auto operator=(const window_surface&) -> window_surface& = delete;
-
-	public:
-		/* Whether the surface has already been destroyed. */
-		inline auto is_destroyed() noexcept -> bool
+	public: // getters
+		inline auto device() noexcept -> gpu&
 		{
-			return !_vulkan_surface;
+			return *_target_gpu;
 		}
-
-		/* Destroys the surface. */
-		void destroy() noexcept;
+		inline auto device() const noexcept -> const gpu&
+		{
+			return *_target_gpu;
+		}
 
 		inline auto surface() const noexcept
 		{
@@ -58,6 +47,26 @@ namespace CompWolf::Graphics
 		{
 			return _draw_present_job;
 		}
+
+	public: // constructor
+		/* Constructs a surface that is already freed. */
+		window_surface() = default;
+		window_surface(window_surface&&) = default;
+		auto operator=(window_surface&&) -> window_surface& = default;
+		inline ~window_surface() noexcept
+		{
+			free();
+		}
+
+		/* @throws std::runtime_error when something went wrong during window surface creation outside of the program. */
+		window_surface(graphics_environment& environment, Private::glfw_window& window);
+
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
+		{
+			return !_target_gpu;
+		}
+		void free() noexcept final;
 	};
 }
 

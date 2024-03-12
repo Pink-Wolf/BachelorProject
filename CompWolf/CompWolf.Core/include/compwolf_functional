@@ -1,2 +1,4 @@
-#include "private/functional/functional.hpp"
+// This file always includes <functional>
+#include <functional>
+
 #include "private/functional/index_function.hpp"

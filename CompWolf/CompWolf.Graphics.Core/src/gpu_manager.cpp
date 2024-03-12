@@ -10,34 +10,17 @@
 
 namespace CompWolf::Graphics
 {
-	gpu_manager::gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance) : _thread_family_count(0)
+	/******************************** other methods ********************************/
+
+	auto gpu_manager::new_persistent_job(gpu_job_settings settings) -> gpu_job
 	{
-		auto instance = Private::to_vulkan(vulkan_instance);
+		auto [gpu_pointer, family_index] = find_job_family(settings, true);
+		auto& gpu_device = *gpu_pointer; auto& family = gpu_device.families()[family_index];
 
-		{
-			auto physical_devices = Private::get_size_and_vector<uint32_t, VkPhysicalDevice>(
-				[instance](uint32_t* size, VkPhysicalDevice* data)
-				{
-					auto result = vkEnumeratePhysicalDevices(instance, size, data);
-					switch (result)
-					{
-					case VK_SUCCESS:
-					case VK_INCOMPLETE:
-						break;
-					default: throw std::runtime_error("Could not get the machine's graphics card");
-					}
-				}
-			);
+		auto thread_index = find_job_thread_in_family(settings, true, family);
+		auto& thread = family.threads[thread_index];
 
-			_gpus.reserve(physical_devices.size());
-			for (auto& physical_device : physical_devices)
-			{
-				auto vulkan_device = Private::from_vulkan(physical_device);
-				gpu new_gpu(vulkan_instance, vulkan_device);
-				_thread_family_count += new_gpu.families().size();
-				_gpus.push_back(std::move(new_gpu));
-			}
-		}
+		return gpu_job(gpu_device, family_index, thread_index, true);
 	}
 
 	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, size_t>
@@ -104,6 +87,7 @@ namespace CompWolf::Graphics
 
 		return { best_gpu, best_family_index };
 	}
+
 	auto gpu_manager::find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> size_t
 	{
 		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
@@ -165,14 +149,35 @@ namespace CompWolf::Graphics
 		return thread_index;
 	}
 
-	auto gpu_manager::new_persistent_job(gpu_job_settings settings) -> gpu_job
+	/******************************** constructors ********************************/
+
+	gpu_manager::gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance) : _thread_family_count(0)
 	{
-		auto [gpu_pointer, family_index] = find_job_family(settings, true);
-		auto& gpu_device = *gpu_pointer; auto& family = gpu_device.families()[family_index];
+		auto instance = Private::to_vulkan(vulkan_instance);
 
-		auto thread_index = find_job_thread_in_family(settings, true, family);
-		auto& thread = family.threads[thread_index];
+		{
+			auto physical_devices = Private::get_size_and_vector<uint32_t, VkPhysicalDevice>(
+				[instance](uint32_t* size, VkPhysicalDevice* data)
+				{
+					auto result = vkEnumeratePhysicalDevices(instance, size, data);
+					switch (result)
+					{
+					case VK_SUCCESS:
+					case VK_INCOMPLETE:
+						break;
+					default: throw std::runtime_error("Could not get the machine's graphics card");
+					}
+				}
+			);
 
-		return gpu_job(gpu_device, family_index, thread_index, true);
+			_gpus.reserve(physical_devices.size());
+			for (auto& physical_device : physical_devices)
+			{
+				auto vulkan_device = Private::from_vulkan(physical_device);
+				gpu new_gpu(vulkan_instance, vulkan_device);
+				_thread_family_count += new_gpu.families().size();
+				_gpus.push_back(std::move(new_gpu));
+			}
+		}
 	}
 }
