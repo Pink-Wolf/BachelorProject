@@ -25,10 +25,10 @@ namespace CompWolf::Graphics
 		COMPWOLF_GRAPHICS_DECLARE_DEFINE_VULKAN_FUNCTION(instance, vkDestroyDebugUtilsMessengerEXT);
 		if (vkDestroyDebugUtilsMessengerEXT == nullptr) throw std::runtime_error("Could not set up CompWolf::Graphics debugger; could not create destructor for Vulkan debug messenger.");
 
-		auto create_info = vulkan_debug_messenger_create_info(&settings.internal_debug_callback);
+		auto createInfo = vulkan_debug_messenger_create_info(&settings.internal_debug_callback);
 
-		VkDebugUtilsMessengerEXT debug_messenger;
-		auto result = vkCreateDebugUtilsMessengerEXT(instance, &create_info, nullptr, &debug_messenger);
+		VkDebugUtilsMessengerEXT debugMessenger;
+		auto result = vkCreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
 
 		switch (result)
 		{
@@ -36,7 +36,7 @@ namespace CompWolf::Graphics
 		default: throw std::runtime_error("Could not set up CompWolf::Graphics debugger; could not create Vulkan debug messenger.");
 		}
 
-		_messenger = Private::from_vulkan(debug_messenger);
+		_messenger = Private::from_vulkan(debugMessenger);
 		_teardowner = [vkDestroyDebugUtilsMessengerEXT, instance](Private::vulkan_debug_messenger vulkan_messenger)
 			{
 				auto messenger = Private::to_vulkan(vulkan_messenger);

@@ -43,16 +43,16 @@ namespace CompWolf::Graphics::Private
 
 	std::optional<surface_format_info> get_present_device_info(const gpu& device, VkSurfaceKHR surface)
 	{
-		auto physical_device = Private::to_vulkan(device.vulkan_physical_device());
+		auto physicalDevice = Private::to_vulkan(device.vulkan_physical_device());
 
 		surface_format_info return_value;
 
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physical_device, surface, &return_value.capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &return_value.capabilities);
 
 		auto formats = Private::get_size_and_vector<uint32_t, VkSurfaceFormatKHR>(
-			[physical_device, surface](uint32_t* size, VkSurfaceFormatKHR* data)
+			[physicalDevice, surface](uint32_t* size, VkSurfaceFormatKHR* data)
 			{
-				auto result = vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, size, data);
+				auto result = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, size, data);
 				switch (result)
 				{
 				case VK_SUCCESS:
@@ -64,7 +64,7 @@ namespace CompWolf::Graphics::Private
 		);
 		if (formats.empty()) return std::nullopt;
 
-		const VkSurfaceFormatKHR* surface_format_pointer = nullptr;
+		const VkSurfaceFormatKHR* surfaceFormatPointer = nullptr;
 		float surface_format_score = std::numeric_limits<float>::lowest();
 		{
 			for (auto& surface_format : formats)
@@ -74,18 +74,18 @@ namespace CompWolf::Graphics::Private
 				auto score = score_container.value();
 				if (score > surface_format_score)
 				{
-					surface_format_pointer = &surface_format;
+					surfaceFormatPointer = &surface_format;
 					surface_format_score = score;
 				}
 			}
-			if (surface_format_pointer == nullptr) return std::nullopt;
+			if (surfaceFormatPointer == nullptr) return std::nullopt;
 		}
-		return_value.format = *surface_format_pointer;
+		return_value.format = *surfaceFormatPointer;
 
-		auto present_modes = Private::get_size_and_vector<uint32_t, VkPresentModeKHR>(
-			[physical_device, surface](uint32_t* size, VkPresentModeKHR* data)
+		auto presentModes = Private::get_size_and_vector<uint32_t, VkPresentModeKHR>(
+			[physicalDevice, surface](uint32_t* size, VkPresentModeKHR* data)
 			{
-				auto result = vkGetPhysicalDeviceSurfacePresentModesKHR(physical_device, surface, size, data);
+				auto result = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, size, data);
 				switch (result)
 				{
 				case VK_SUCCESS:
@@ -95,9 +95,9 @@ namespace CompWolf::Graphics::Private
 				}
 			}
 		);
-		if (present_modes.empty()) return std::nullopt;
+		if (presentModes.empty()) return std::nullopt;
 
-		bool has_better_present_mode = std::find(present_modes.begin(), present_modes.end(), VK_PRESENT_MODE_MAILBOX_KHR) != present_modes.end();
+		bool has_better_present_mode = std::find(presentModes.begin(), presentModes.end(), VK_PRESENT_MODE_MAILBOX_KHR) != presentModes.end();
 		return_value.present_mode = has_better_present_mode
 			? VK_PRESENT_MODE_MAILBOX_KHR // Best, allows triple-buffering
 			: VK_PRESENT_MODE_FIFO_KHR; // Second best, always available

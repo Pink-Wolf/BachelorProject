@@ -51,21 +51,21 @@ namespace CompWolf::Graphics
 	{
 		{
 			auto& frame = swapchain().current_frame();
-			auto vulkan_semaphore = Private::to_vulkan(frame.last_vulkan_semaphore());
-			auto vulkan_swapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
+			auto semaphore = Private::to_vulkan(frame.last_vulkan_semaphore());
+			auto vkSwapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
 			auto frame_index = static_cast<uint32_t>(swapchain().current_frame_index());
 			auto queue = Private::to_vulkan(draw_present_job().thread().queue);
 
-			VkPresentInfoKHR present_info{
+			VkPresentInfoKHR presentInfo{
 				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-				.waitSemaphoreCount = (vulkan_semaphore == nullptr) ? 0_uint32 : 1_uint32,
-				.pWaitSemaphores = &vulkan_semaphore,
+				.waitSemaphoreCount = (semaphore == nullptr) ? 0_uint32 : 1_uint32,
+				.pWaitSemaphores = &semaphore,
 				.swapchainCount = 1,
-				.pSwapchains = &vulkan_swapchain,
+				.pSwapchains = &vkSwapchain,
 				.pImageIndices = &frame_index,
 			};
 
-			vkQueuePresentKHR(queue, &present_info);
+			vkQueuePresentKHR(queue, &presentInfo);
 		}
 
 		for (auto& event : _draw_events)

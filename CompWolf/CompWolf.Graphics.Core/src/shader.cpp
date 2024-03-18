@@ -18,17 +18,17 @@ namespace CompWolf::Graphics
 		}
 		else
 		{
-			VkShaderModule shader_module;
+			VkShaderModule shaderModule;
 			{
 				auto device = Private::to_vulkan(vulkan_device.vulkan_device());
 
-				VkShaderModuleCreateInfo create_info{
+				VkShaderModuleCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
 					.codeSize = _raw_code.size() * sizeof(spv_byte_type),
 					.pCode = reinterpret_cast<const uint32_t*>(_raw_code.data()),
 				};
 
-				auto result = vkCreateShaderModule(device, &create_info, nullptr, &shader_module);
+				auto result = vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
 
 				switch (result)
 				{
@@ -38,7 +38,7 @@ namespace CompWolf::Graphics
 				}
 			}
 
-			shader_module_pointer = Private::from_vulkan(shader_module);
+			shader_module_pointer = Private::from_vulkan(shaderModule);
 			_compiled_shader.insert({ &vulkan_device, shader_module_pointer });
 		}
 

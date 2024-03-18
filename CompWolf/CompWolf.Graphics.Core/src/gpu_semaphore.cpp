@@ -12,14 +12,14 @@ namespace CompWolf::Graphics
 	gpu_semaphore::gpu_semaphore(const gpu& target_gpu)
 	{
 		_device = &target_gpu;
-		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
-		VkSemaphoreCreateInfo create_info{
+		VkSemaphoreCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
 		};
 
 		VkSemaphore semaphore;
-		auto result = vkCreateSemaphore(vulkan_device, &create_info, nullptr, &semaphore);
+		auto result = vkCreateSemaphore(logicDevice, &createInfo, nullptr, &semaphore);
 
 		switch (result)
 		{
@@ -36,8 +36,8 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
-		vkDestroySemaphore(vulkan_device, Private::to_vulkan(_vulkan_semaphore), nullptr);
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		vkDestroySemaphore(logicDevice, Private::to_vulkan(_vulkan_semaphore), nullptr);
 
 		_vulkan_semaphore = nullptr;
 	}

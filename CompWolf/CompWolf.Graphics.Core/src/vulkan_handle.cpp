@@ -37,11 +37,11 @@ namespace CompWolf::Graphics
 			};
 		}
 
-		auto debug_messenger_create_info = vulkan_debug_messenger_create_info(&settings.internal_debug_callback);
+		auto debugMessengerCreateInfo = vulkan_debug_messenger_create_info(&settings.internal_debug_callback);
 
-		VkInstanceCreateInfo create_info{
+		VkInstanceCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-			.pNext = settings.internal_debug_callback ? &debug_messenger_create_info : nullptr,
+			.pNext = settings.internal_debug_callback ? &debugMessengerCreateInfo : nullptr,
 			.pApplicationInfo = &app_info,
 			.enabledLayerCount = static_cast<uint32_t>(validation_layers.size()),
 			.ppEnabledLayerNames = validation_layers.data(),
@@ -50,7 +50,7 @@ namespace CompWolf::Graphics
 		};
 
 		VkInstance instance;
-		auto result = vkCreateInstance(&create_info, nullptr, &instance);
+		auto result = vkCreateInstance(&createInfo, nullptr, &instance);
 
 		switch (result)
 		{

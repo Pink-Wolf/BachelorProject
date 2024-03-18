@@ -15,12 +15,12 @@ namespace CompWolf::Graphics
 
 	void window_swapchain::to_next_frame()
 	{
-		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 		auto swapchain = Private::to_vulkan(vulkan_swapchain());
 
 		uint32_t index;
 		gpu_fence fence(device());
-		auto result = vkAcquireNextImageKHR(vulkan_device, swapchain, UINT64_MAX, VK_NULL_HANDLE, Private::to_vulkan(fence.vulkan_fence()), &index);
+		auto result = vkAcquireNextImageKHR(logicDevice, swapchain, UINT64_MAX, VK_NULL_HANDLE, Private::to_vulkan(fence.vulkan_fence()), &index);
 
 		switch (result)
 		{
@@ -33,7 +33,7 @@ namespace CompWolf::Graphics
 		_current_frame_index = static_cast<size_t>(index);
 
 		fence.wait();
-		vkDeviceWaitIdle(vulkan_device); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
+		vkDeviceWaitIdle(logicDevice); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
 		current_frame().synchronizations.clear();
 	}
 
@@ -45,7 +45,7 @@ namespace CompWolf::Graphics
 
 		_target_gpu = &window_surface.device();
 		auto instance = Private::to_vulkan(device().vulkan_instance());
-		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
 		auto surface = Private::to_vulkan(window_surface.surface());
 		auto& surface_format = *Private::to_private(window_surface.format());
@@ -57,11 +57,11 @@ namespace CompWolf::Graphics
 			// Swapchain
 			VkSwapchainKHR swapchain;
 			{
-				VkExtent2D surface_extent;
+				VkExtent2D surfaceExtent;
 				{
 					int width, height;
 					glfwGetFramebufferSize(glfwWindow, &width, &height);
-					surface_extent = {
+					surfaceExtent = {
 						.width = std::clamp<uint32_t>(width, surface_format.capabilities.minImageExtent.width, surface_format.capabilities.maxImageExtent.width),
 						.height = static_cast<uint32_t>(height, surface_format.capabilities.minImageExtent.height, surface_format.capabilities.maxImageExtent.height),
 					};
@@ -73,13 +73,13 @@ namespace CompWolf::Graphics
 					swapchain_image_count = std::clamp<uint32_t>(swapchain_image_count, min, max);
 				}
 
-				VkSwapchainCreateInfoKHR create_info{
+				VkSwapchainCreateInfoKHR createInfo{
 					.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 					.surface = surface,
 					.minImageCount = swapchain_image_count,
 					.imageFormat = surface_format.format.format,
 					.imageColorSpace = surface_format.format.colorSpace,
-					.imageExtent = surface_extent,
+					.imageExtent = surfaceExtent,
 					.imageArrayLayers = 1,
 					.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
 					.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
@@ -90,7 +90,7 @@ namespace CompWolf::Graphics
 					.oldSwapchain = VK_NULL_HANDLE,
 				};
 
-				auto result = vkCreateSwapchainKHR(vulkan_device, &create_info, nullptr, &swapchain);
+				auto result = vkCreateSwapchainKHR(logicDevice, &createInfo, nullptr, &swapchain);
 
 				switch (result)
 				{
@@ -104,9 +104,9 @@ namespace CompWolf::Graphics
 
 			// Swapchain images
 			{
-				auto images = Private::get_size_and_vector<uint32_t, VkImage>([vulkan_device, swapchain](uint32_t* size, VkImage* data)
+				auto images = Private::get_size_and_vector<uint32_t, VkImage>([logicDevice, swapchain](uint32_t* size, VkImage* data)
 					{
-						auto result = vkGetSwapchainImagesKHR(vulkan_device, swapchain, size, data);
+						auto result = vkGetSwapchainImagesKHR(logicDevice, swapchain, size, data);
 						switch (result)
 						{
 						case VK_SUCCESS:
@@ -122,7 +122,7 @@ namespace CompWolf::Graphics
 				{
 					auto& image = images;
 
-					VkImageViewCreateInfo create_info{
+					VkImageViewCreateInfo createInfo{
 						.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 						.image = images[i],
 						.viewType = VK_IMAGE_VIEW_TYPE_2D,
@@ -143,7 +143,7 @@ namespace CompWolf::Graphics
 					};
 
 					VkImageView view;
-					auto result = vkCreateImageView(vulkan_device, &create_info, nullptr, &view);
+					auto result = vkCreateImageView(logicDevice, &createInfo, nullptr, &view);
 
 					switch (result)
 					{
@@ -160,14 +160,14 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					VkCommandPoolCreateInfo create_info{
+					VkCommandPoolCreateInfo createInfo{
 						.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 						.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
 						.queueFamilyIndex = static_cast<uint32_t>(device().index_of_family(job.family())),
 					};
 
-					VkCommandPool command_pool;
-					auto result = vkCreateCommandPool(vulkan_device, &create_info, nullptr, &command_pool);
+					VkCommandPool commandPool;
+					auto result = vkCreateCommandPool(logicDevice, &createInfo, nullptr, &commandPool);
 
 					switch (result)
 					{
@@ -175,7 +175,7 @@ namespace CompWolf::Graphics
 					default: throw std::runtime_error("Could not set up \"command pool\"s for a window's swapchain-images.");
 					}
 
-					frame.command_pool = Private::from_vulkan(command_pool);
+					frame.command_pool = Private::from_vulkan(commandPool);
 				}
 			}
 
@@ -196,18 +196,18 @@ namespace CompWolf::Graphics
 		if (empty()) return;
 
 		auto instance = Private::to_vulkan(device().vulkan_instance());
-		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
-		auto vulkan_swapchain = Private::to_vulkan(_vulkan_swapchain);
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto vkSwapchain = Private::to_vulkan(_vulkan_swapchain);
 
-		vkDeviceWaitIdle(vulkan_device);
+		vkDeviceWaitIdle(logicDevice);
 
 		for (auto& frame : _frames)
 		{
-			if (frame.image) vkDestroyImageView(vulkan_device, Private::to_vulkan(frame.image), nullptr);
-			if (frame.command_pool) vkDestroyCommandPool(vulkan_device, Private::to_vulkan(frame.command_pool), nullptr);
+			if (frame.image) vkDestroyImageView(logicDevice, Private::to_vulkan(frame.image), nullptr);
+			if (frame.command_pool) vkDestroyCommandPool(logicDevice, Private::to_vulkan(frame.command_pool), nullptr);
 		}
 		_frames.clear();
-		if (_vulkan_swapchain) vkDestroySwapchainKHR(vulkan_device, Private::to_vulkan(_vulkan_swapchain), nullptr);
+		if (_vulkan_swapchain) vkDestroySwapchainKHR(logicDevice, Private::to_vulkan(_vulkan_swapchain), nullptr);
 
 		_target_gpu = nullptr;
 	}

@@ -156,7 +156,7 @@ namespace CompWolf::Graphics
 		auto instance = Private::to_vulkan(vulkan_instance);
 
 		{
-			auto physical_devices = Private::get_size_and_vector<uint32_t, VkPhysicalDevice>(
+			auto physicalDevices = Private::get_size_and_vector<uint32_t, VkPhysicalDevice>(
 				[instance](uint32_t* size, VkPhysicalDevice* data)
 				{
 					auto result = vkEnumeratePhysicalDevices(instance, size, data);
@@ -170,11 +170,11 @@ namespace CompWolf::Graphics
 				}
 			);
 
-			_gpus.reserve(physical_devices.size());
-			for (auto& physical_device : physical_devices)
+			_gpus.reserve(physicalDevices.size());
+			for (auto& physical_device : physicalDevices)
 			{
-				auto vulkan_device = Private::from_vulkan(physical_device);
-				gpu new_gpu(vulkan_instance, vulkan_device);
+				auto vulkan_physical_device = Private::from_vulkan(physical_device);
+				gpu new_gpu(vulkan_instance, vulkan_physical_device);
 				_thread_family_count += new_gpu.families().size();
 				_gpus.push_back(std::move(new_gpu));
 			}
