@@ -7,8 +7,36 @@
 #include <algorithm>
 #include <optional>
 
+#include <iostream>
+
 namespace CompWolf::Graphics
 {
+	/******************************** other methods ********************************/
+
+	void window_swapchain::to_next_frame()
+	{
+		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
+		auto swapchain = Private::to_vulkan(vulkan_swapchain());
+
+		uint32_t index;
+		gpu_fence fence(device());
+		auto result = vkAcquireNextImageKHR(vulkan_device, swapchain, UINT64_MAX, VK_NULL_HANDLE, Private::to_vulkan(fence.vulkan_fence()), &index);
+
+		switch (result)
+		{
+		case VK_SUCCESS:
+		case VK_SUBOPTIMAL_KHR:
+			break;
+		default: throw std::runtime_error("Could not get next frame.");
+		}
+
+		_current_frame_index = static_cast<size_t>(index);
+
+		fence.wait();
+		vkDeviceWaitIdle(vulkan_device); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
+		current_frame().synchronizations.clear();
+	}
+
 	/******************************** constructors ********************************/
 
 	window_swapchain::window_swapchain(Private::glfw_window window, window_surface& window_surface)
@@ -123,10 +151,9 @@ namespace CompWolf::Graphics
 					default: throw std::runtime_error("Could not get connection to a window's swapchain-images");
 					}
 
-					_frames.push_back(std::move(swapchain_frame{
-						.image = Private::from_vulkan(view),
-						.drawing_fence = gpu_fence(device()),
-						.drawing_semaphore = gpu_semaphore(device()),
+					_frames.push_back(std::move(swapchain_frame
+						{
+							.image = Private::from_vulkan(view),
 						}
 					));
 				}
@@ -151,6 +178,8 @@ namespace CompWolf::Graphics
 					frame.command_pool = Private::from_vulkan(command_pool);
 				}
 			}
+
+			to_next_frame();
 		}
 		catch (...)
 		{
@@ -168,11 +197,12 @@ namespace CompWolf::Graphics
 
 		auto instance = Private::to_vulkan(device().vulkan_instance());
 		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
+		auto vulkan_swapchain = Private::to_vulkan(_vulkan_swapchain);
+
+		vkDeviceWaitIdle(vulkan_device);
 
 		for (auto& frame : _frames)
 		{
-			if (!frame.drawing_fence.empty()) frame.drawing_fence.wait();
-
 			if (frame.image) vkDestroyImageView(vulkan_device, Private::to_vulkan(frame.image), nullptr);
 			if (frame.command_pool) vkDestroyCommandPool(vulkan_device, Private::to_vulkan(frame.command_pool), nullptr);
 		}

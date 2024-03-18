@@ -50,45 +50,52 @@ namespace CompWolf::Graphics
 		};
 	}
 
-	class window_specific_pipeline : public basic_freeable, private free_on_dependent_freed<window>
+	class window_specific_pipeline : public basic_freeable, public window_user
 	{
 	private: // fields
+		const draw_pipeline_settings* _settings;
+		const Private::gpu_specific_pipeline* _gpu_data;
+
 		Private::vulkan_render_pass _render_pass;
 		Private::vulkan_pipeline _pipeline;
 		std::vector<Private::vulkan_frame_buffer> _frame_buffers;
 
-	public: // getters
-		inline auto target_window() noexcept -> window&
-		{
-			window* p;
-			get_dependent(p);
-			return *p;
-		}
-		inline auto target_window() const noexcept -> const window&
-		{
-			const window* p;
-			get_dependent(p);
-			return *p;
-		}
+	protected: // event handlers
+		void on_swapchain_rebuild(
+			const event<window_rebuild_swapchain_parameter>&,
+			window_rebuild_swapchain_parameter&
+		) final;
 
+	public: // getters
 		inline auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass { return _render_pass; }
 		inline auto vulkan_pipeline() const noexcept -> Private::vulkan_pipeline { return _pipeline; }
 		inline auto vulkan_frame_buffer(size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }
 
+	private: // constructor
+		void setup();
 	public: // constructor
 		window_specific_pipeline() = default;
 		window_specific_pipeline(window_specific_pipeline&&) = default;
 		auto operator=(window_specific_pipeline&&)->window_specific_pipeline & = default;
 		inline ~window_specific_pipeline() noexcept { free(); }
 
-		window_specific_pipeline(window&, const draw_pipeline_settings&, const Private::gpu_specific_pipeline&);
+		inline window_specific_pipeline(window& target_window, const draw_pipeline_settings& settings, const Private::gpu_specific_pipeline& gpu_data)
+			: window_user(target_window)
+			, _settings(&settings)
+			, _gpu_data(&gpu_data)
+		{
+			if (&target_window.device() != &gpu_data.device())
+				throw std::invalid_argument("Tried creating window-specific pipeline logic with gpu-data for a gpu other than the window's");
+			setup();
+		}
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
 		{
-			return !is_subscribed_to_dependent();
+			return !has_window();
 		}
 		void free() noexcept final;
+		event<> freeing;
 	};
 
 	class draw_pipeline : public basic_freeable

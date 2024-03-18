@@ -190,6 +190,7 @@
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
     <ClInclude Include="include\private\window\window.hpp" />
     <ClInclude Include="include\private\shader\draw_pipeline.hpp" />
+    <ClInclude Include="include\private\window\window_user.hpp" />
     <ClInclude Include="include\shader" />
     <ClInclude Include="include\vulkan_types" />
     <ClInclude Include="include\window" />
@@ -218,6 +219,7 @@
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="src\window_surface.cpp" />
     <ClCompile Include="src\window_swapchain.cpp" />
+    <ClCompile Include="src\window_user.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Project Settings Changes.md" />

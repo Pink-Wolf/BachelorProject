@@ -6,12 +6,80 @@
 #include <mutex>
 #include <algorithm>
 #include <optional>
+#include <utility>
+#include <compwolf_utility>
 
 namespace CompWolf::Graphics
 {
+	/******************************** setters ********************************/
+
+	void window::set_pixel_size(int width, int height)
+	{
+		window_rebuild_swapchain_parameter event_args{
+			.old_surface = &_surface,
+			.new_surface = nullptr,
+			.old_swapchain = &_swapchain,
+			.new_swapchain = nullptr,
+		};
+		swapchain_rebuilding(event_args);
+		auto& old_device = device();
+
+		_swapchain.free();
+		_surface.free();
+
+		_pixel_size.set(std::make_pair(width, height));
+
+		_surface = window_surface(environment(), _glfw_window, window_surface_settings
+			{
+				.target_device = &old_device
+			}
+		);
+		_swapchain = window_swapchain(_glfw_window, _surface);
+
+		event_args = window_rebuild_swapchain_parameter{
+			.old_surface = nullptr,
+			.new_surface = &_surface,
+			.old_swapchain = nullptr,
+			.new_swapchain = &_swapchain,
+		};
+		swapchain_rebuilded(event_args);
+	}
+
+	/******************************** other methods ********************************/
+
+	void window::update_image()
+	{
+		{
+			auto& frame = swapchain().current_frame();
+			auto vulkan_semaphore = Private::to_vulkan(frame.last_vulkan_semaphore());
+			auto vulkan_swapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
+			auto frame_index = static_cast<uint32_t>(swapchain().current_frame_index());
+			auto queue = Private::to_vulkan(draw_present_job().thread().queue);
+
+			VkPresentInfoKHR present_info{
+				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+				.waitSemaphoreCount = (vulkan_semaphore == nullptr) ? 0_uint32 : 1_uint32,
+				.pWaitSemaphores = &vulkan_semaphore,
+				.swapchainCount = 1,
+				.pSwapchains = &vulkan_swapchain,
+				.pImageIndices = &frame_index,
+			};
+
+			vkQueuePresentKHR(queue, &present_info);
+		}
+
+		for (auto& event : _draw_events)
+		{
+			event.second(*this);
+		}
+		_draw_events.clear();
+
+		swapchain().to_next_frame();
+	}
+
 	/******************************** constructors ********************************/
 
-	window::window(graphics_environment& environment)
+	window::window(graphics_environment& environment) : _environment(&environment)
 	{
 		auto instance = Private::to_vulkan(environment.vulkan_instance());
 
@@ -37,10 +105,16 @@ namespace CompWolf::Graphics
 					window* this_window = static_cast<window*>(glfwGetWindowUserPointer(glfwWindow));
 					this_window->close();
 					});
+
+				glfwSetFramebufferSizeCallback(glfwWindow, [](GLFWwindow* glfwWindow, int width, int height) {
+					window* this_window = static_cast<window*>(glfwGetWindowUserPointer(glfwWindow));
+					this_window->_draw_events.erase(draw_event_type::resize);
+					this_window->_draw_events.emplace(draw_event_type::resize, [width, height](window& w)->void { w.set_pixel_size(width, height); });
+					});
 			}
 
-			_surface = std::move(window_surface(environment, _glfw_window));
-			_swapchain = std::move(window_swapchain(_glfw_window, _surface));
+			_surface = window_surface(environment, _glfw_window, window_surface_settings());
+			_swapchain = window_swapchain(_glfw_window, _surface);
 		}
 		catch (...)
 		{
@@ -57,17 +131,10 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		for (auto& frame : swapchain().frames())
-		{
-			frame.drawing_fence.wait();
-		}
-
-		auto instance = Private::to_vulkan(device().vulkan_instance());
 		window_close_parameter close_args;
-		window_free_parameter free_args;
 
 		closing(close_args);
-		freeing(free_args);
+		freeing();
 
 		_swapchain.free();
 		_surface.free();
@@ -77,6 +144,6 @@ namespace CompWolf::Graphics
 		_glfw_window = nullptr;
 
 		closed(close_args);
-		freed(free_args);
+		freed();
 	}
 }

@@ -8,6 +8,26 @@
 
 namespace CompWolf::Graphics
 {
+	/******************************** event handlers ********************************/
+
+	void window_specific_pipeline::on_swapchain_rebuild(
+		const event<window_rebuild_swapchain_parameter>&,
+		window_rebuild_swapchain_parameter& args
+	) {
+		auto settings = _settings;
+		auto gpu_data = _gpu_data;
+		auto& target = target_window();
+
+		free();
+
+		_settings = settings;
+		_gpu_data = gpu_data;
+		set_target_window(target);
+
+
+		setup();
+	}
+
 	/******************************** constructors ********************************/
 
 	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu& gpu_device, const draw_pipeline_settings& settings)
@@ -34,18 +54,15 @@ namespace CompWolf::Graphics
 		_layout = Private::from_vulkan(pipeline_layout);
 	}
 
-	window_specific_pipeline::window_specific_pipeline(window& target, const draw_pipeline_settings& settings, const Private::gpu_specific_pipeline& gpu_data)
+	void window_specific_pipeline::setup()
 	{
-		if (&target.device() != &gpu_data.device()) throw std::invalid_argument("Tried creating window-specific pipeline logic with gpu-data for a gpu other than the window's");
-		set_dependent(&target);
-
 		auto& gpu_device = target_window().device();
 		auto& thread_family = target_window().draw_present_job().family();
 		auto device = Private::to_vulkan(gpu_device.vulkan_device());
 		auto& surface_format = *Private::to_private(target_window().surface().format());
 		auto& frames = target_window().swapchain().frames();
 
-		auto pipeline_layout = Private::to_vulkan(gpu_data.layout());
+		auto pipeline_layout = Private::to_vulkan(_gpu_data->layout());
 
 		try
 		{
@@ -54,14 +71,14 @@ namespace CompWolf::Graphics
 				VkPipelineShaderStageCreateInfo vertex_create_info{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_VERTEX_BIT,
-					.module = Private::to_vulkan(settings.vertex_shader->shader_module(gpu_device)),
+					.module = Private::to_vulkan(_settings->vertex_shader->shader_module(gpu_device)),
 					.pName = "main",
 				};
 
 				VkPipelineShaderStageCreateInfo frag_create_info{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-					.module = Private::to_vulkan(settings.fragment_shader->shader_module(gpu_device)),
+					.module = Private::to_vulkan(_settings->fragment_shader->shader_module(gpu_device)),
 					.pName = "main",
 				};
 
@@ -302,13 +319,17 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
+		freeing();
+
 		auto vulkan_device = Private::to_vulkan(target_window().device().vulkan_device());
+
+		vkDeviceWaitIdle(vulkan_device);
 
 		for (auto& framebuffer : _frame_buffers) vkDestroyFramebuffer(vulkan_device, Private::to_vulkan(framebuffer), nullptr);
 		_frame_buffers.clear();
 		if (_pipeline) vkDestroyPipeline(vulkan_device, Private::to_vulkan(_pipeline), nullptr);
 		if (_render_pass) vkDestroyRenderPass(vulkan_device, Private::to_vulkan(_render_pass), nullptr);
 
-		set_dependent(nullptr);
+		set_target_window(nullptr);
 	}
 }

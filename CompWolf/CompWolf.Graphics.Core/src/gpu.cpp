@@ -53,10 +53,15 @@ namespace CompWolf::Graphics
 			}
 		);
 		std::vector<const char*> enabled_extensions;
-		bool has_swapchain_extension = std::any_of(extension_properties.cbegin(), extension_properties.cend(), [](VkExtensionProperties a) { return 0 == strcmp(a.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME); });
 
+		// VK_EXT_SWAPCHAIN_MAINTENANCE_1_EXTENSION_NAME depends on/includes VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		bool has_swapchain_extension = std::any_of(extension_properties.cbegin(), extension_properties.cend(), [](VkExtensionProperties a) { return 0 == strcmp(a.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME); });
+		
 		bool is_present_device = has_swapchain_extension;
-		if (is_present_device) enabled_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+		if (is_present_device)
+		{
+			enabled_extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+		}
 
 		const float queue_priority_item = .5f;
 		std::vector<float> queue_priority(8, queue_priority_item);

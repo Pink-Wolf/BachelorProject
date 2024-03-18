@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <limits>
+#include <compwolf_utility>
 
 namespace CompWolf::Graphics::Private
 {
@@ -136,8 +137,6 @@ namespace CompWolf::Graphics::Private
 	{
 		if (empty()) return;
 
-		frame().drawing_fence.wait();
-
 		auto& gpu_device = target_window().device();
 		auto& family = target_window().draw_present_job().family();
 		auto device = Private::to_vulkan(gpu_device.vulkan_device());
@@ -150,31 +149,6 @@ namespace CompWolf::Graphics::Private
 
 	/******************************** other methods ********************************/
 
-	auto gpu_draw_program_frame_data::next_frame(frameset_type& frameset) -> gpu_draw_program_frame_data&
-	{
-		auto& target_window = frameset[0]._pipeline->target_window();
-		auto device = Private::to_vulkan(target_window.device().vulkan_device());
-		auto swapchain = Private::to_vulkan(target_window.swapchain().vulkan_swapchain());
-
-		uint32_t index;
-		gpu_semaphore semaphore(target_window.device());
-		auto result = vkAcquireNextImageKHR(device, swapchain, std::numeric_limits<uint64_t>::max(), Private::to_vulkan(semaphore.vulkan_semaphore()), VK_NULL_HANDLE, &index);
-
-		switch (result)
-		{
-		case VK_SUCCESS: break;
-		default: throw std::runtime_error("Could not get next frame.");
-		}
-
-		auto& frame_data = frameset[static_cast<size_t>(index)];
-		auto& frame = frame_data.frame();
-		
-		frame.drawing_fence.wait();
-		frame.drawing_semaphore = std::move(semaphore);
-
-		return frame_data;
-	}
-
 	void gpu_draw_program_frame_data::draw()
 	{
 		auto& gpu_device = target_window().device();
@@ -186,13 +160,12 @@ namespace CompWolf::Graphics::Private
 		uint32_t index = static_cast<uint32_t>(_index);
 
 		auto& frame = target_window().swapchain().frames()[_index];
-		auto frame_fence = Private::to_vulkan(frame.drawing_fence.vulkan_fence());
-		auto frame_semaphore = Private::to_vulkan(frame.drawing_semaphore.vulkan_semaphore());
+		auto old_semaphore = Private::to_vulkan(frame.last_vulkan_semaphore());
+		auto& sync = frame.synchronizations.emplace_back(gpu_fence(gpu_device), gpu_semaphore(gpu_device));
+		auto fence = Private::to_vulkan(sync.first.vulkan_fence());
+		auto semaphore = Private::to_vulkan(sync.second.vulkan_semaphore());
 
 		auto vulkan_command = Private::to_vulkan(_vulkan_command);
-
-		frame.drawing_fence.wait();
-		vkResetFences(device, 1, &frame_fence);
 
 		{
 			VkPipelineStageFlags wait_stages[]{
@@ -201,35 +174,22 @@ namespace CompWolf::Graphics::Private
 			};
 			VkSubmitInfo submit_info{
 				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.waitSemaphoreCount = 1,
-				.pWaitSemaphores = &frame_semaphore,
+				.waitSemaphoreCount = (old_semaphore == nullptr) ? 0_uint32 : 1_uint32,
+				.pWaitSemaphores = &old_semaphore,
 				.pWaitDstStageMask = wait_stages,
 				.commandBufferCount = 1,
 				.pCommandBuffers = &vulkan_command,
 				.signalSemaphoreCount = 1,
-				.pSignalSemaphores = &frame_semaphore,
+				.pSignalSemaphores = &semaphore,
 			};
 
-			auto result = vkQueueSubmit(queue, 1, &submit_info, Private::to_vulkan(frame.drawing_fence.vulkan_fence()));
+			auto result = vkQueueSubmit(queue, 1, &submit_info, fence);
 
 			switch (result)
 			{
 			case VK_SUCCESS: break;
 			default: throw std::runtime_error("Could not submit commands to gpu.");
 			}
-		}
-
-		{
-			VkPresentInfoKHR present_info{
-				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-				.waitSemaphoreCount = 1,
-				.pWaitSemaphores = &frame_semaphore,
-				.swapchainCount = 1,
-				.pSwapchains = &swapchain,
-				.pImageIndices = &index,
-			};
-
-			vkQueuePresentKHR(queue, &present_info);
 		}
 	}
 }

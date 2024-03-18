@@ -10,6 +10,12 @@
 
 namespace CompWolf::Graphics
 {
+	struct window_surface_settings
+	{
+		// What device the surface should be on, or null if it may be on any device.
+		gpu* target_device;
+	};
+
 	/* The part of a window one can draw on. */
 	class window_surface : public basic_freeable
 	{
@@ -59,7 +65,7 @@ namespace CompWolf::Graphics
 		}
 
 		/* @throws std::runtime_error when something went wrong during window surface creation outside of the program. */
-		window_surface(graphics_environment& environment, Private::glfw_window& window);
+		window_surface(graphics_environment& environment, Private::glfw_window& window, window_surface_settings settings);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

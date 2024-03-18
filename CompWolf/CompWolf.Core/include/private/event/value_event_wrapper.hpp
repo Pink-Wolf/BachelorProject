@@ -118,7 +118,7 @@ namespace CompWolf
 		inline void set(ValueType&& new_value)
 			noexcept(is_nothrow_settible_v<ValueType>)
 		{
-			const_value_event_wrapper::set(std::forward(new_value));
+			const_value_event_wrapper<ValueType>::set<ValueType>(std::forward<ValueType>(new_value));
 		}
 
 		/* Sets the value. */

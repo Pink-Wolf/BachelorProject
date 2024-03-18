@@ -8,6 +8,7 @@
 #include <vector>
 #include <freeable>
 #include <owned>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
@@ -15,9 +16,15 @@ namespace CompWolf::Graphics
 	{
 		Private::vulkan_image_view image;
 		Private::vulkan_command_pool command_pool;
+		
+		std::vector<std::pair<gpu_fence, gpu_semaphore>> synchronizations;
 
-		gpu_fence drawing_fence;
-		gpu_semaphore drawing_semaphore;
+	public: // getter
+		inline auto last_vulkan_semaphore() -> Private::vulkan_semaphore
+		{
+			if (synchronizations.empty()) return nullptr;
+			return synchronizations.back().second.vulkan_semaphore();
+		}
 	};
 
 	/* The actual images of the window' that's surface. */
@@ -27,6 +34,7 @@ namespace CompWolf::Graphics
 		owned_ptr<gpu*> _target_gpu;
 		Private::vulkan_swapchain _vulkan_swapchain;
 		std::vector<swapchain_frame> _frames;
+		size_t _current_frame_index;
 
 	public: // getters
 		inline auto device() noexcept -> gpu&
@@ -51,6 +59,19 @@ namespace CompWolf::Graphics
 		{
 			return _frames;
 		}
+
+		inline auto current_frame() noexcept -> swapchain_frame&
+		{
+			return frames()[_current_frame_index];
+		}
+		inline auto current_frame() const noexcept -> const swapchain_frame&
+		{
+			return frames()[_current_frame_index];
+		}
+		inline auto current_frame_index() const noexcept { return _current_frame_index; }
+
+	public: // other methods
+		void to_next_frame();
 
 	public: // constructors
 		/* Constructs a swapchain that is already destroyed. */

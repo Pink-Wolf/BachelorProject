@@ -24,8 +24,11 @@ namespace CompWolf::Graphics
 			return _vulkan_fence;
 		}
 
+		bool signaled() const;
+
 	public: // other methods
 		void wait() const;
+		void reset();
 
 	public: // constructors
 		gpu_fence() = default;
@@ -36,7 +39,7 @@ namespace CompWolf::Graphics
 			free();
 		}
 
-		gpu_fence(const gpu& target_gpu);
+		gpu_fence(const gpu& target_gpu, bool signaled = false);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

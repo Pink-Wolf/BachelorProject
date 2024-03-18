@@ -3,6 +3,7 @@
 
 #include "vulkan_types"
 #include "graphics"
+#include "window"
 #include "gpu_command.hpp"
 #include "draw_pipeline.hpp"
 #include <type_traits>
@@ -53,7 +54,12 @@ namespace CompWolf::Graphics
 			}
 
 		public: // other methods
-			static auto next_frame(frameset_type&) -> gpu_draw_program_frame_data&;
+			static inline auto current_frame(frameset_type& frameset) -> gpu_draw_program_frame_data&
+			{
+				auto& target_window = frameset[0]._pipeline->target_window();
+				auto index = target_window.swapchain().current_frame_index();
+				return frameset[index];
+			}
 			void draw();
 
 		public: // constructors
@@ -73,22 +79,25 @@ namespace CompWolf::Graphics
 			void free() noexcept final;
 		};
 
-		class window_draw_program : public basic_freeable
+		class window_draw_program : public basic_freeable, private free_on_dependent_freed<window_specific_pipeline>
 		{
 		private:
-			window_specific_pipeline* _pipeline;
+			gpu_command* _command;
 			using frame_data = Private::gpu_draw_program_frame_data;
 			frame_data::frameset_type _programs_for_frames;
-			event<window_close_parameter>::key_type _window_closing_key;
 
 		public: // getters
 			inline auto pipeline() noexcept -> window_specific_pipeline&
 			{
-				return *_pipeline;
+				window_specific_pipeline* p;
+				get_dependent(p);
+				return *p;
 			}
 			inline auto pipeline() const noexcept -> const window_specific_pipeline&
 			{
-				return *_pipeline;
+				const window_specific_pipeline* p;
+				get_dependent(p);
+				return *p;
 			}
 
 			inline auto target_window() noexcept -> window&
@@ -99,11 +108,10 @@ namespace CompWolf::Graphics
 			{
 				return pipeline().target_window();
 			}
-
 		public: // other methods
 			inline void draw()
 			{
-				frame_data::next_frame(_programs_for_frames).draw();
+				frame_data::current_frame(_programs_for_frames).draw();
 			}
 
 		public: // constructors
@@ -112,10 +120,8 @@ namespace CompWolf::Graphics
 			auto operator=(window_draw_program&&) -> window_draw_program& = default;
 
 			window_draw_program(window_specific_pipeline& pipeline, gpu_command* command)
-				: _pipeline(&pipeline)
-				, _window_closing_key(target_window().closing.subscribe(
-					[this](const event<window_close_parameter>& sender, window_close_parameter& args) { free(); }
-				))
+				: free_on_dependent_freed<window_specific_pipeline>(pipeline)
+				, _command(command)
 				, _programs_for_frames(frame_data::new_frameset(pipeline, command)) {}
 
 		public: // CompWolf::freeable
@@ -127,7 +133,7 @@ namespace CompWolf::Graphics
 			{
 				if (empty()) return;
 				_programs_for_frames.clear();
-				target_window().closing.unsubscribe(_window_closing_key);
+				set_dependent(nullptr);
 			}
 		};
 	}
@@ -165,11 +171,27 @@ namespace CompWolf::Graphics
 			return _command;
 		}
 
-	public: // other methods
-		void draw(window& target_window)
+	private:
+		auto get_window_data(window& target_window) -> Private::window_draw_program&
 		{
-			auto& window_data = _window_data.try_emplace(&target_window, pipeline().window_data(target_window), &command()).first->second;
-			window_data.draw();
+			auto iterator = _window_data.find(&target_window);
+			if (iterator != _window_data.end())
+			{
+				auto& window_data = iterator->second;
+				if (window_data.empty()) _window_data.erase(iterator);
+				else return window_data;
+			}
+			return _window_data.try_emplace(
+				&target_window,
+				pipeline().window_data(target_window),
+				&command()
+			).first->second;
+		}
+
+	public: // other methods
+		inline void draw(window& target_window)
+		{
+			get_window_data(target_window).draw();
 		}
 
 	public: // constructors

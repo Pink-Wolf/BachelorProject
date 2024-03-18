@@ -18,9 +18,14 @@ namespace CompWolf::Graphics
 	{
 
 	};
-	struct window_free_parameter
-	{
 
+	struct window_rebuild_swapchain_parameter
+	{
+		window_surface* old_surface;
+		window_surface* new_surface;
+
+		window_swapchain* old_swapchain;
+		window_swapchain* new_swapchain;
 	};
 
 	/* A window, as in a rectangle that can be drawn onto, and that listens for various events from outside the program (relating to the window).
@@ -29,6 +34,7 @@ namespace CompWolf::Graphics
 	class window : public basic_freeable
 	{
 	private: // fields
+		graphics_environment* _environment;
 		using glfw_window_type = owned_ptr<Private::glfw_window>;
 		glfw_window_type _glfw_window;
 
@@ -37,12 +43,31 @@ namespace CompWolf::Graphics
 
 		value_event_wrapper<std::pair<int, int>> _pixel_size;
 
+		enum class draw_event_type
+		{
+			resize
+		};
+		std::unordered_map<draw_event_type, std::function<void(window&)>> _draw_events;
+
+	public:
+		event<window_rebuild_swapchain_parameter> swapchain_rebuilding;
+		event<window_rebuild_swapchain_parameter> swapchain_rebuilded;
+
 	public: // getters
 
 		/* Whether the window is currently open. */
 		inline auto is_open() const noexcept -> bool
 		{
 			return !empty();
+		}
+
+		auto environment() noexcept -> graphics_environment&
+		{
+			return *_environment;
+		}
+		auto environment() const noexcept -> const graphics_environment&
+		{
+			return *_environment;
 		}
 
 		auto device() noexcept -> gpu&
@@ -86,7 +111,11 @@ namespace CompWolf::Graphics
 			return _pixel_size.const_wrapper();
 		}
 
+	private: // setters
+		void set_pixel_size(int width, int height);
+
 	public: // other methods
+		void update_image();
 
 		/* Closes the window. */
 		inline void close() noexcept
@@ -127,13 +156,11 @@ namespace CompWolf::Graphics
 		/* Invoked right before the window's data is freed.
 		 * @see free()
 		 */
-		event<window_free_parameter> freeing;
-		using freeing_parameter_type = window_free_parameter;
+		event<> freeing;
 		/* Invoked right after the window's data is freed.
 		 * @see free()
 		 */
-		event<window_free_parameter> freed;
-		using freed_parameter_type = window_free_parameter;
+		event<> freed;
 	};
 }
 

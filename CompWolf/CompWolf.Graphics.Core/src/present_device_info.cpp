@@ -6,10 +6,12 @@
 
 namespace CompWolf::Graphics::Private
 {
-	std::function<std::optional<float>(const gpu&)> evaluate_gpu_for_present(std::unordered_map<Private::vulkan_physical_device, surface_format_info>& out_device_info, Private::vulkan_surface vulkan_surface)
+	std::function<std::optional<float>(const gpu&)> evaluate_gpu_for_present(std::unordered_map<Private::vulkan_physical_device, surface_format_info>& out_device_info, Private::vulkan_surface vulkan_surface, const window_surface_settings& settings)
 	{
-		return [&out_device_info, vulkan_surface](const gpu& device)->std::optional<float>
+		return [&out_device_info, vulkan_surface, &settings](const gpu& device)->std::optional<float>
 			{
+				if (settings.target_device != nullptr) if (&device != settings.target_device) return std::nullopt;
+
 				auto surface = Private::to_vulkan(vulkan_surface);
 
 				auto info_container = get_present_device_info(device, surface);
