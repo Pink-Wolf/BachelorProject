@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="header\present_device_info.hpp" />
+    <ClInclude Include="header\shader_field_type.hpp" />
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
     <ClInclude Include="include\gpu" />
     <ClInclude Include="include\graphics" />
@@ -182,6 +183,8 @@
     <ClInclude Include="include\private\gpu\gpu_job.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
+    <ClInclude Include="include\private\shader\shader_field.hpp" />
+    <ClInclude Include="include\private\shader\vertex_shader.hpp" />
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
     <ClInclude Include="include\private\window\window_surface.hpp" />
     <ClInclude Include="include\private\shader\gpu_command.hpp" />
@@ -213,6 +216,7 @@
     <ClCompile Include="src\present_device_info.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\draw_pipeline.cpp" />
+    <ClCompile Include="src\shader_field.cpp" />
     <ClCompile Include="src\vulkan_debug_handle.cpp" />
     <ClCompile Include="src\vulkan_handle.cpp" />
     <ClCompile Include="src\gpu_semaphore.cpp" />

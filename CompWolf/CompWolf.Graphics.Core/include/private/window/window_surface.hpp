@@ -40,7 +40,7 @@ namespace CompWolf::Graphics
 			return _vulkan_surface;
 		}
 
-		inline auto format() const noexcept -> Private::const_surface_format_handle
+		inline auto format() const noexcept -> const Private::surface_format_handle
 		{
 			return _format;
 		}

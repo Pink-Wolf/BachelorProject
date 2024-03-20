@@ -45,6 +45,7 @@ namespace CompWolf
 		using front = at<0>;
 		/* The last type in the type_list. */
 		using back = at<size - 1>;
+		
 
 		/* Whether the type_list contains the given type. */
 		template <typename T>
@@ -77,6 +78,19 @@ namespace CompWolf
 		template <typename TOther>
 		using and_type_list = TOther;
 	};
+
+	template <typename... TypeLists>
+	struct combine_type_lists
+	{
+		using type = type_list<>;
+	};
+	template <typename TypeList, typename... RestTypeLists>
+	struct combine_type_lists<TypeList, RestTypeLists...>
+	{
+		using type = TypeList::template and_type_list<combine_type_lists<RestTypeLists...>::template type>;
+	};
+	template <typename... TypeLists>
+	using combine_type_lists_t = combine_type_lists<TypeLists...>::type;
 }
 
 #endif // ! COMPWOLF_TYPE_TRAIT_HEADER

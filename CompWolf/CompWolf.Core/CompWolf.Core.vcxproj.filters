@@ -108,6 +108,15 @@
     <ClInclude Include="include\compwolf_utility">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\other\dimensions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dimensions">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\type_traits\type_value_pair.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

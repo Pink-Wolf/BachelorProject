@@ -3,7 +3,10 @@
 #include <window>
 #include <shader>
 #include <fstream>
+#include <dimensions>
+#include <vector>
 
+using namespace CompWolf;
 using namespace CompWolf::Graphics;
 
 auto load_shader(std::string path) -> std::vector<shader::spv_byte_type>
@@ -31,6 +34,17 @@ auto load_shader(std::string path) -> std::vector<shader::spv_byte_type>
     return data;
 }
 
+struct vertex
+{
+    float2d position;
+    float3d color;
+};
+
+template<> struct shader_field_info<vertex> : public shader_field_info_from_fields<
+    type_value_pair<float2d, offsetof(vertex, position)>,
+    type_value_pair<float3d, offsetof(vertex, color)>
+> {};
+
 int main()
 {
     try
@@ -42,13 +56,19 @@ int main()
             });
         window win(environment);
 
-        auto vertex_shader = shader(environment, load_shader("vertex.spv"));
+        auto vert_shader = vertex_shader<vertex>(environment, load_shader("vertex.spv"));
         auto frag_shader = shader(environment, load_shader("frag.spv"));
-        auto pipeline = draw_pipeline(draw_pipeline_settings{
-            .vertex_shader = &vertex_shader,
+        auto pipeline = draw_pipeline<vertex>(draw_pipeline_settings<vertex>{
+            .vertex_shader = &vert_shader,
             .fragment_shader = &frag_shader,
             }
         );
+
+        std::vector<vertex> vertices{
+            {{+0.f, -.5f}, {1.f, 0.f, 0.f}},
+            {{+.5f, +.5f}, {0.f, 1.f, 0.f}},
+            {{-.5f, +.5f}, {0.f, 0.f, 1.f}}
+        };
 
         auto draw_program = new_gpu_program(pipeline,
             draw_command(),

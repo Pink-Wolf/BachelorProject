@@ -3,8 +3,10 @@
 
 #include "compwolf_vulkan.hpp"
 #include "present_device_info.hpp"
+#include "shader_field_type.hpp"
 #include <stdexcept>
 #include <algorithm>
+#include <ranges>
 
 namespace CompWolf::Graphics
 {
@@ -14,13 +16,13 @@ namespace CompWolf::Graphics
 		const event<window_rebuild_swapchain_parameter>&,
 		window_rebuild_swapchain_parameter& args
 	) {
-		auto settings = _settings;
+		auto pipeline_data = _pipeline_data;
 		auto gpu_data = _gpu_data;
 		auto& target = target_window();
 
 		free();
 
-		_settings = settings;
+		_pipeline_data = pipeline_data;
 		_gpu_data = gpu_data;
 		set_target_window(target);
 
@@ -30,7 +32,7 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu& gpu_device, const draw_pipeline_settings& settings)
+	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu& gpu_device, const draw_pipeline_data& data)
 	{
 		_device = &gpu_device;
 		auto device = Private::to_vulkan(gpu_device.vulkan_device());
@@ -71,25 +73,47 @@ namespace CompWolf::Graphics
 				VkPipelineShaderStageCreateInfo vertexCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_VERTEX_BIT,
-					.module = Private::to_vulkan(_settings->vertex_shader->shader_module(gpu_device)),
+					.module = Private::to_vulkan(_pipeline_data->vertex_shader->shader_module(gpu_device)),
 					.pName = "main",
 				};
 
 				VkPipelineShaderStageCreateInfo fragCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-					.module = Private::to_vulkan(_settings->fragment_shader->shader_module(gpu_device)),
+					.module = Private::to_vulkan(_pipeline_data->fragment_shader->shader_module(gpu_device)),
 					.pName = "main",
 				};
 
 				stageCreateInfo = { std::move(vertexCreateInfo), std::move(fragCreateInfo) };
 			}
+
+			VkVertexInputBindingDescription bindingDescription{
+				.binding = 0,
+				.stride = static_cast<uint32_t>(_pipeline_data->input_stride),
+				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+			};
+			std::vector<VkVertexInputAttributeDescription> inputAttributes;
+			inputAttributes.reserve(_pipeline_data->input_types->size());
+			for (uint32_t i = 0; i < _pipeline_data->input_types->size(); ++i)
+			{
+				auto& info = *Private::to_private(_pipeline_data->input_types->operator[](i));
+				auto offset = (*_pipeline_data->input_offsets)[i];
+				inputAttributes.push_back(VkVertexInputAttributeDescription
+					{
+						.location = i,
+						.binding = 0,
+						.format = info.format,
+						.offset = static_cast<uint32_t>(offset),
+					}
+				);
+			}
+
 			VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-				.vertexBindingDescriptionCount = 0,
-				.pVertexBindingDescriptions = nullptr,
-				.vertexAttributeDescriptionCount = 0,
-				.pVertexAttributeDescriptions = nullptr,
+				.vertexBindingDescriptionCount = 1,
+				.pVertexBindingDescriptions = &bindingDescription,
+				.vertexAttributeDescriptionCount = static_cast<uint32_t>(inputAttributes.size()),
+				.pVertexAttributeDescriptions = inputAttributes.data(),
 			};
 			VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
@@ -280,14 +304,9 @@ namespace CompWolf::Graphics
 		}
 	}
 
-	void draw_pipeline::setup()
-	{
-
-	}
-
 	/******************************** getters ********************************/
 
-	auto draw_pipeline::window_data(window& target_window) const noexcept -> const window_specific_pipeline&
+	auto Private::base_draw_pipeline::window_data(window& target_window) const noexcept -> const window_specific_pipeline&
 	{
 		// Get data if it does exist
 		{
@@ -297,8 +316,8 @@ namespace CompWolf::Graphics
 		// Create data if it does not exist
 		{
 			auto& gpu_device = target_window.device();
-			auto& gpu_data = _gpu_data.try_emplace(&gpu_device, gpu_device, _settings).first->second;
-			auto& window_data = _window_data.try_emplace(&target_window, target_window, _settings, gpu_data).first->second;
+			auto& gpu_data = _gpu_data.try_emplace(&gpu_device, gpu_device, _pipeline_data).first->second;
+			auto& window_data = _window_data.try_emplace(&target_window, target_window, _pipeline_data, gpu_data).first->second;
 			return window_data;
 		}
 	}

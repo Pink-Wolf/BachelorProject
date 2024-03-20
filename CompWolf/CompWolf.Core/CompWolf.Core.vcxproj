@@ -151,6 +151,7 @@
     <ClInclude Include="header\pch.h" />
     <ClInclude Include="include\compwolf_type_traits" />
     <ClInclude Include="include\compwolf_utility" />
+    <ClInclude Include="include\dimensions" />
     <ClInclude Include="include\empty_pointer" />
     <ClInclude Include="include\enum_bitset" />
     <ClInclude Include="include\event" />
@@ -158,6 +159,7 @@
     <ClInclude Include="include\freeable" />
     <ClInclude Include="include\free_on_dependent_freed" />
     <ClInclude Include="include\owned" />
+    <ClInclude Include="include\private\other\dimensions.hpp" />
     <ClInclude Include="include\private\other\empty_pointer.hpp" />
     <ClInclude Include="include\private\event\event.hpp" />
     <ClInclude Include="include\private\functional\index_function.hpp" />
@@ -170,6 +172,7 @@
     <ClInclude Include="include\private\type_traits\is_assignable.hpp" />
     <ClInclude Include="include\private\type_traits\type_list.hpp" />
     <ClInclude Include="include\private\type_traits\for_each.hpp" />
+    <ClInclude Include="include\private\type_traits\type_value_pair.hpp" />
     <ClInclude Include="include\private\utility\int_literals.hpp" />
     <ClInclude Include="include\private\value_mutex\shared_value_lock.hpp" />
     <ClInclude Include="include\private\value_mutex\unique_value_lock.hpp" />

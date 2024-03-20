@@ -13,12 +13,6 @@
 
 namespace CompWolf::Graphics
 {
-	enum class shader_type
-	{
-		vertex,
-		frag,
-	};
-
 	class shader : public basic_freeable
 	{
 	public: // fields

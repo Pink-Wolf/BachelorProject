@@ -33,7 +33,7 @@ namespace CompWolf::Graphics::Private
 	using vulkan_surface = vulkan_handle64<0>;
 	using vulkan_swapchain = vulkan_handle64<1>;
 	using vulkan_image_view = vulkan_handle64<2>;
-	struct surface_format_handle_t {}; using surface_format_handle = surface_format_handle_t*; using const_surface_format_handle = const surface_format_handle_t*;
+	struct surface_format_handle_t {}; using surface_format_handle = surface_format_handle_t*;
 
 	using vulkan_shader = vulkan_handle64<3>;
 	using vulkan_pipeline_layout = vulkan_handle64<4>;
@@ -42,6 +42,7 @@ namespace CompWolf::Graphics::Private
 	using vulkan_frame_buffer = vulkan_handle64<7>;
 	using vulkan_command_pool = vulkan_handle64<8>;
 	struct vulkan_command_t {}; using vulkan_command = vulkan_command_t*;
+	struct shader_field_info_handle_t {}; using shader_field_info_handle = shader_field_info_handle_t*;
 }
 
 #endif // ! COMPWOLF_GRAPHICS_PRIVATE_VULKAN_TYPES_HEADER

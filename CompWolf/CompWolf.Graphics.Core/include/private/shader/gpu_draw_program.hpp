@@ -138,7 +138,7 @@ namespace CompWolf::Graphics
 		};
 	}
 
-	template <typename CommandType>
+	template <ShaderField InputType, typename CommandType>
 		requires std::is_base_of_v<gpu_command, CommandType>
 	class gpu_draw_program : public basic_freeable
 	{
@@ -147,17 +147,17 @@ namespace CompWolf::Graphics
 	private:
 		using frame_data = Private::gpu_draw_program_frame_data;
 	private:
-		draw_pipeline* _pipeline;
+		draw_pipeline<InputType>* _pipeline;
 		command_type _command;
 
 		std::map<window*, Private::window_draw_program> _window_data;
 
 	public: // getters
-		inline auto pipeline() noexcept -> draw_pipeline&
+		inline auto pipeline() noexcept -> draw_pipeline<InputType>&
 		{
 			return *_pipeline;
 		}
-		inline auto pipeline() const noexcept -> const draw_pipeline&
+		inline auto pipeline() const noexcept -> const draw_pipeline<InputType>&
 		{
 			return *_pipeline;
 		}
@@ -199,7 +199,7 @@ namespace CompWolf::Graphics
 
 		template <typename TInput>
 			requires std::is_constructible_v<command_type, TInput>
-		gpu_draw_program(draw_pipeline& pipeline, TInput&& command) :
+		gpu_draw_program(draw_pipeline<InputType>& pipeline, TInput&& command) :
 			_pipeline(&pipeline),
 			_command(std::forward<TInput>(command))
 		{}
@@ -215,11 +215,11 @@ namespace CompWolf::Graphics
 		}
 	};
 
-	template <typename... CommandTypes>
+	template <ShaderField InputType, typename... CommandTypes>
 		requires (std::is_base_of_v<gpu_command, CommandTypes> && ...)
-	auto new_gpu_program(draw_pipeline& pipeline, CommandTypes&&... command) -> gpu_draw_program<gpu_commands<CommandTypes...>>
+	auto new_gpu_program(draw_pipeline<InputType>& pipeline, CommandTypes&&... command)
 	{
-		return gpu_draw_program<gpu_commands<CommandTypes...>>(pipeline,
+		return gpu_draw_program<InputType, gpu_commands<CommandTypes...>>(pipeline,
 				gpu_commands<CommandTypes...>(
 					std::forward<CommandTypes>(command)...
 				)
