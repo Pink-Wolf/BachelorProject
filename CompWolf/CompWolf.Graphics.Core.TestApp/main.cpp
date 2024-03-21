@@ -93,7 +93,7 @@ int main()
                 auto modifier = (std::chrono::duration_cast<std::chrono::seconds>(time - start_time).count() % 2 == 0) ? -1 : 1;
 
                 auto vertices_data = vertices.data();
-                for (auto& vertex_data : vertices_data.data())
+                for (auto& vertex_data : vertices_data)
                 {
                     vertex_data.position.y() += static_cast<float>(min_delta_time.count() * modifier * .25);
                 }

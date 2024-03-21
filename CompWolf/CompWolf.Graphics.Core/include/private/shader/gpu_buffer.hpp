@@ -57,8 +57,8 @@ namespace CompWolf::Graphics
 			auto buffer() noexcept -> base_gpu_buffer& { return *_buffer; }
 			auto buffer() const noexcept -> const base_gpu_buffer& { return *_buffer; }
 
-			auto data() noexcept -> void* { return _data; }
-			auto data() const noexcept -> const void* { return _data; }
+			auto pointer() noexcept -> void* { return _data; }
+			auto pointer() const noexcept -> const void* { return _data; }
 
 		public: // constructor
 			base_gpu_buffer_data() = default;
@@ -99,21 +99,16 @@ namespace CompWolf::Graphics
 	};
 
 	template <typename T>
-	class gpu_buffer_data : public freeable
+	class gpu_buffer_data : public std::span<T, std::dynamic_extent>
 	{
-	public: // fields
-		using type = T;
-	private:
+	private: // fields
+		using super_span = std::span<T, std::dynamic_extent>;
+
 		Private::base_gpu_buffer_data _data;
 
 	public: // getters
 		auto buffer() noexcept -> gpu_buffer<T>& { return *static_cast<gpu_buffer<T>*>(&_data.buffer()); }
 		auto buffer() const noexcept -> const gpu_buffer<T>& { return *static_cast<const gpu_buffer<T>*>(&_data.buffer()); }
-
-		auto size() const noexcept { return buffer().size(); }
-
-		auto data() noexcept { return std::span<T, std::dynamic_extent>(static_cast<T*>(_data.data()), size()); }
-		auto data() const noexcept { return std::span<T, std::dynamic_extent>(static_cast<const T*>(_data.data()), size()); }
 
 	public: // constructor
 		gpu_buffer_data() = default;
@@ -122,11 +117,9 @@ namespace CompWolf::Graphics
 
 		gpu_buffer_data(gpu_buffer<T>& target_buffer)
 			: _data(target_buffer)
-		{}
-
-	public: // CompWolf::freeable
-		inline auto empty() const noexcept -> bool final { return _data.empty(); }
-		void free() noexcept final { _data.free(); }
+		{
+			super_span::operator=(std::span<T, std::dynamic_extent>(static_cast<T*>(_data.pointer()), target_buffer.size()));
+		}
 	};
 
 
@@ -137,11 +130,10 @@ namespace CompWolf::Graphics
 	gpu_buffer<T>::gpu_buffer(gpu& target_device, std::initializer_list<T> data_list)
 		: gpu_buffer(target_device, data_list.size())
 	{
-		auto buffer = data();
-		auto span = buffer.data();
+		auto dest_buffer = data();
 
 		auto src = data_list.begin();
-		for (auto dest = span.begin(); dest != span.end(); ++dest, ++src)
+		for (auto dest = dest_buffer.begin(); dest != dest_buffer.end(); ++dest, ++src)
 		{
 			new (&*dest) (T) (std::move(*src));
 		}
