@@ -5,6 +5,8 @@
 #include <fstream>
 #include <dimensions>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 using namespace CompWolf;
 using namespace CompWolf::Graphics;
@@ -64,20 +66,39 @@ int main()
             }
         );
 
-        std::vector<vertex> vertices{
-            {{+0.f, -.5f}, {1.f, 0.f, 0.f}},
+        gpu_buffer<vertex> vertices(win.device(), {
+            {{+0.f, -.5f}, {1.f, 1.f, 1.f}},
             {{+.5f, +.5f}, {0.f, 1.f, 0.f}},
             {{-.5f, +.5f}, {0.f, 0.f, 1.f}}
-        };
+            });
 
         auto draw_program = new_gpu_program(pipeline,
-            draw_command(),
-            draw_command(),
-            draw_command()
+            draw_command(&vertices)
         );
 
+        std::chrono::steady_clock clock;
+        auto start_time = clock.now();
+        auto time = clock.now();
+        const std::chrono::duration<double> min_delta_time(1 / 60.);
         while (win.is_open())
         {
+            {
+                auto new_time = clock.now();
+                auto delta_time = std::chrono::duration_cast<std::chrono::seconds>(new_time - time);
+                if (delta_time < min_delta_time) std::this_thread::sleep_for(min_delta_time - delta_time);
+                time = new_time;
+            }
+
+            {
+                auto modifier = (std::chrono::duration_cast<std::chrono::seconds>(time - start_time).count() % 2 == 0) ? -1 : 1;
+
+                auto vertices_data = vertices.data();
+                for (auto& vertex_data : vertices_data.data())
+                {
+                    vertex_data.position.y() += static_cast<float>(min_delta_time.count() * modifier * .25);
+                }
+            }
+
             draw_program.draw(win);
             win.update_image();
             environment.update();
@@ -88,6 +109,6 @@ int main()
     catch (const std::exception& e)
     {
         std::cout << "Error: " << e.what() << "\n";
-        return -1;
+        throw;
     }
 }

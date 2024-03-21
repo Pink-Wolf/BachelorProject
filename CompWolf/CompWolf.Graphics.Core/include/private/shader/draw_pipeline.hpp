@@ -73,6 +73,7 @@ namespace CompWolf::Graphics
 		) final;
 
 	public: // getters
+		inline auto pipeline_data() const noexcept -> const Private::draw_pipeline_data& { return *_pipeline_data; }
 		inline auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass { return _render_pass; }
 		inline auto vulkan_pipeline() const noexcept -> Private::vulkan_pipeline { return _pipeline; }
 		inline auto vulkan_frame_buffer(size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }

@@ -217,11 +217,11 @@ namespace CompWolf::Graphics
 
 	template <ShaderField InputType, typename... CommandTypes>
 		requires (std::is_base_of_v<gpu_command, CommandTypes> && ...)
-	auto new_gpu_program(draw_pipeline<InputType>& pipeline, CommandTypes&&... command)
+	auto new_gpu_program(draw_pipeline<InputType>& pipeline, CommandTypes... command)
 	{
 		return gpu_draw_program<InputType, gpu_commands<CommandTypes...>>(pipeline,
 				gpu_commands<CommandTypes...>(
-					std::forward<CommandTypes>(command)...
+					std::move(command)...
 				)
 			);
 	}

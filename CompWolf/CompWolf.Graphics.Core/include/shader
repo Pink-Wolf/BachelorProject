@@ -1,4 +1,5 @@
 #include "private/shader/shader_field.hpp"
+#include "private/shader/gpu_buffer.hpp"
 #include "private/shader/shader.hpp"
 #include "private/shader/vertex_shader.hpp"
 #include "private/shader/draw_pipeline.hpp"

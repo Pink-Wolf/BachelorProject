@@ -183,6 +183,7 @@
     <ClInclude Include="include\private\gpu\gpu_job.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
+    <ClInclude Include="include\private\shader\gpu_buffer.hpp" />
     <ClInclude Include="include\private\shader\shader_field.hpp" />
     <ClInclude Include="include\private\shader\vertex_shader.hpp" />
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
@@ -201,6 +202,7 @@
   <ItemGroup>
     <ClCompile Include="src\glfw_handle.cpp" />
     <ClCompile Include="src\gpu.cpp" />
+    <ClCompile Include="src\gpu_buffer.cpp" />
     <ClCompile Include="src\gpu_command.cpp" />
     <ClCompile Include="src\gpu_draw_program.cpp" />
     <ClCompile Include="src\gpu_fence.cpp" />

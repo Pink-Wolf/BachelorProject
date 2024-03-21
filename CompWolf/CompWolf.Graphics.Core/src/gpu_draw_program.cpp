@@ -107,7 +107,12 @@ namespace CompWolf::Graphics::Private
 						vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 						vkCmdSetScissor(commandBuffer, 0, 1, &renderpassInfo.renderArea);
 
-						command->compile(Private::from_vulkan(commandBuffer));
+						gpu_command_compile_settings command_settings{
+							.command = Private::from_vulkan(commandBuffer),
+							.pipeline = &pipeline,
+							.frame_index = index,
+						};
+						command->compile(command_settings);
 					}
 					vkCmdEndRenderPass(commandBuffer);
 				}

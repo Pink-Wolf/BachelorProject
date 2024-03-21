@@ -5,9 +5,13 @@
 
 namespace CompWolf::Graphics
 {
-	void draw_command::compile(Private::vulkan_command vulkan_command)
+	void Private::base_draw_command::compile(const gpu_command_compile_settings& settings)
 	{
-		auto command = Private::to_vulkan(vulkan_command);
-		vkCmdDraw(command, 3, 1, 0, 0);
+		auto command = Private::to_vulkan(settings.command);
+		auto vkBuffer = Private::to_vulkan(base_buffer->vulkan_buffer());
+		static VkDeviceSize offsets[] = { 0 };
+
+		vkCmdBindVertexBuffers(command, 0, 1, &vkBuffer, offsets);
+		vkCmdDraw(command, static_cast<uint32_t>(base_buffer->size()), 1, 0, 0);
 	}
 }
