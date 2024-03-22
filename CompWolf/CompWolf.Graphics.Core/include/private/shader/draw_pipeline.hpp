@@ -176,8 +176,8 @@ namespace CompWolf::Graphics
 
 		draw_pipeline(draw_pipeline_settings<InputType> settings) : base_draw_pipeline(Private::draw_pipeline_data
 			{
-				.input_types = &shader_field_info_vector<InputType>(),
-				.input_offsets = &shader_field_offset_vector<InputType>(),
+				.input_types = &shader_field_info_handles<InputType, std::vector<Private::shader_field_info_handle>>(),
+				.input_offsets = &shader_field_info_offsets<InputType, std::vector<std::size_t>>(),
 				.input_stride = sizeof(InputType),
 				.vertex_shader = static_cast<shader*>(settings.vertex_shader),
 				.fragment_shader = settings.fragment_shader,

@@ -185,6 +185,10 @@
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
     <ClInclude Include="include\private\shader\gpu_buffer.hpp" />
     <ClInclude Include="include\private\shader\shader_field.hpp" />
+    <ClInclude Include="include\private\shader\shader_field\combine_shader_fields.hpp" />
+    <ClInclude Include="include\private\shader\shader_field\primitive_shader_field.hpp" />
+    <ClInclude Include="include\private\shader\shader_field\shader_field_info.hpp" />
+    <ClInclude Include="include\private\shader\shader_field\shader_field_info_extractor.hpp" />
     <ClInclude Include="include\private\shader\vertex_shader.hpp" />
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
     <ClInclude Include="include\private\window\window_surface.hpp" />

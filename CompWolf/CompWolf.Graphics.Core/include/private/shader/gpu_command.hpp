@@ -19,7 +19,6 @@ namespace CompWolf::Graphics
 
 	struct gpu_command
 	{
-	public:
 		virtual void compile(const gpu_command_compile_settings&) = 0;
 	};
 

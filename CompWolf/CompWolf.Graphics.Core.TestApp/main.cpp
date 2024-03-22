@@ -42,7 +42,7 @@ struct vertex
     float3d color;
 };
 
-template<> struct shader_field_info<vertex> : public shader_field_info_from_fields<
+template<> struct shader_field_info<vertex> : public combine_shader_fields<
     type_value_pair<float2d, offsetof(vertex, position)>,
     type_value_pair<float3d, offsetof(vertex, color)>
 > {};
@@ -60,7 +60,7 @@ int main()
 
         auto vert_shader = vertex_shader<vertex>(environment, load_shader("vertex.spv"));
         auto frag_shader = shader(environment, load_shader("frag.spv"));
-        auto pipeline = draw_pipeline<vertex>(draw_pipeline_settings<vertex>{
+        auto pipeline = draw_pipeline(draw_pipeline_settings{
             .vertex_shader = &vert_shader,
             .fragment_shader = &frag_shader,
             }
