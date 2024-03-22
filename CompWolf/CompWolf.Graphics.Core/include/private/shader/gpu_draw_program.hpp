@@ -26,7 +26,7 @@ namespace CompWolf::Graphics
 			using frameset_type = std::vector<gpu_draw_program_frame_data>;
 		public:
 			owned_ptr<window_specific_pipeline*> _pipeline;
-			size_t _index;
+			std::size_t _index;
 			Private::vulkan_command _vulkan_command;
 
 		public: // getters
@@ -67,7 +67,7 @@ namespace CompWolf::Graphics
 			gpu_draw_program_frame_data(gpu_draw_program_frame_data&&) = default;
 			auto operator=(gpu_draw_program_frame_data&&) -> gpu_draw_program_frame_data& = default;
 
-			gpu_draw_program_frame_data(window_specific_pipeline& pipeline, gpu_command* command, size_t index);
+			gpu_draw_program_frame_data(window_specific_pipeline& pipeline, gpu_command* command, std::size_t index);
 
 			static auto new_frameset(window_specific_pipeline& pipeline, gpu_command* command) -> frameset_type;
 

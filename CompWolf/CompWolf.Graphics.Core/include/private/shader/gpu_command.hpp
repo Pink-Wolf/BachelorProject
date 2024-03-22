@@ -6,6 +6,7 @@
 #include <compwolf_type_traits>
 #include "gpu_buffer.hpp"
 #include <type_traits>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
@@ -13,7 +14,7 @@ namespace CompWolf::Graphics
 	{
 		Private::vulkan_command command;
 		window_specific_pipeline* pipeline;
-		size_t frame_index;
+		std::size_t frame_index;
 	};
 
 	struct gpu_command

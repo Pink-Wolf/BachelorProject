@@ -1,12 +1,12 @@
 #ifndef COMPWOLF_DIMENSIONS_HEADER
 #define COMPWOLF_DIMENSIONS_HEADER
 
-#include <stdio.h>
+#include <utility>
 #include <array>
 
 namespace CompWolf
 {
-	template <size_t Dimensions, typename Type>
+	template <std::size_t Dimensions, typename Type>
 	struct dimensions : public std::array<Type, Dimensions>
 	{
 

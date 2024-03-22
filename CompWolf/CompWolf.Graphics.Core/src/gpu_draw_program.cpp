@@ -17,13 +17,13 @@ namespace CompWolf::Graphics::Private
 		auto size = pipeline.target_window().swapchain().frames().size();
 		frameset_type data;
 		data.reserve(size);
-		for (size_t i = 0; i < size; ++i)
+		for (std::size_t i = 0; i < size; ++i)
 		{
 			data.emplace_back(pipeline, command, i);
 		}
 		return data;
 	}
-	gpu_draw_program_frame_data::gpu_draw_program_frame_data(window_specific_pipeline& pipeline, gpu_command* command, size_t index)
+	gpu_draw_program_frame_data::gpu_draw_program_frame_data(window_specific_pipeline& pipeline, gpu_command* command, std::size_t index)
 	{
 		_pipeline = &pipeline;
 		_index = index;

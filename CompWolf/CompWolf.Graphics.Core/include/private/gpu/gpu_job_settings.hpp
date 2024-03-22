@@ -4,6 +4,7 @@
 #include <enum_bitset>
 #include <functional>
 #include <optional>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
@@ -11,7 +12,7 @@ namespace CompWolf::Graphics
 	struct gpu_thread_family;
 
 	/* The different type of work a job for a gpu can be. */
-	enum class gpu_job_type : size_t
+	enum class gpu_job_type : std::size_t
 	{
 		/* Drawing on a window or image. */
 		draw,

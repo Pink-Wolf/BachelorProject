@@ -23,14 +23,14 @@ namespace CompWolf::Graphics
 		return gpu_job(gpu_device, family_index, thread_index, true);
 	}
 
-	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, size_t>
+	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, std::size_t>
 	{
 		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
 		static auto is_occupied_nonpersistent = [](gpu_thread a) { return a.job_count > 0; };
 		auto is_occupied = is_persistent_job ? is_occupied_persistent : is_occupied_nonpersistent;
 
 		gpu* best_gpu = nullptr;
-		size_t best_family_index = 0;
+		std::size_t best_family_index = 0;
 		float best_family_score = std::numeric_limits<float>::lowest();
 		float best_family_score_custom = 0;
 		for (auto& gpu_item : _gpus)
@@ -42,7 +42,7 @@ namespace CompWolf::Graphics
 			if (!custom_gpu_score_container.has_value()) continue;
 			auto custom_gpu_score = custom_gpu_score_container.value();
 
-			for (size_t family_index = 0; family_index < gpu_item.families().size(); ++family_index)
+			for (std::size_t family_index = 0; family_index < gpu_item.families().size(); ++family_index)
 			{
 				auto& family = gpu_item.families()[family_index];
 
@@ -88,13 +88,13 @@ namespace CompWolf::Graphics
 		return { best_gpu, best_family_index };
 	}
 
-	auto gpu_manager::find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> size_t
+	auto gpu_manager::find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> std::size_t
 	{
 		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
 		static auto is_occupied_nonpersistent = [](gpu_thread a) { return a.job_count > 0; };
 		auto is_occupied = is_persistent_job ? is_occupied_persistent : is_occupied_nonpersistent;
 
-		size_t thread_index;
+		std::size_t thread_index;
 		{
 			auto high_priority_thread_is_free = !is_occupied(family.threads[0]);
 			auto job_count = is_persistent_job ? family.persistent_job_count : family.job_count;
@@ -107,10 +107,10 @@ namespace CompWolf::Graphics
 			if (use_high_priority_thread) thread_index = 0;
 			else if (job_count >= family.threads.size()) // No free threads
 			{
-				size_t best_thread_index = -1;
+				std::size_t best_thread_index = -1;
 				float best_thread_score = std::numeric_limits<float>::lowest();
 
-				for (size_t i = 0; i < family.threads.size(); ++i)
+				for (std::size_t i = 0; i < family.threads.size(); ++i)
 				{
 					auto& thread = family.threads[i];
 

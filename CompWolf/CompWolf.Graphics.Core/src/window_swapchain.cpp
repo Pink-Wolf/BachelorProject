@@ -30,7 +30,7 @@ namespace CompWolf::Graphics
 		default: throw std::runtime_error("Could not get next frame.");
 		}
 
-		_current_frame_index = static_cast<size_t>(index);
+		_current_frame_index = static_cast<std::size_t>(index);
 
 		fence.wait();
 		vkDeviceWaitIdle(logicDevice); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
@@ -118,7 +118,7 @@ namespace CompWolf::Graphics
 				);
 
 				_frames.reserve(images.size());
-				for (size_t i = 0; i < images.size(); ++i)
+				for (std::size_t i = 0; i < images.size(); ++i)
 				{
 					auto& image = images;
 

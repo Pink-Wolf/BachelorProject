@@ -1,9 +1,10 @@
 #ifndef COMPWOLF_ENUM_BITSET_HEADER
 #define COMPWOLF_ENUM_BITSET_HEADER
 
-#include <bitset>
 #include "compwolf_type_traits"
 #include "compwolf_functional"
+#include <bitset>
+#include <utility>
 #include <initializer_list>
 
 namespace CompWolf
@@ -11,14 +12,14 @@ namespace CompWolf
 	/* A std::bitset whose bits represent different values from an EnumType.
 	 * As in an associative container with EnumType-values as keys and bools/bits as values.
 	 * @typeparam EnumType The type whose different values are represented by the bitset.
-	 * * The values must be explicitly convertible to a size_t denoting their position in the bitset.
+	 * * The values must be explicitly convertible to a std::size_t denoting their position in the bitset.
 	 * * Not all values need to be represented in the bitset. Values not represented must be converted to a position outside of the bitfield.
-	 * * Unless Size is specified, EnumType::size must also be convertible to size_t.
+	 * * Unless Size is specified, EnumType::size must also be convertible to std::size_t.
 	 * * An enum inheriting an integral type, whose elements are not set to a specific value, and whose last element is "size", fulfills these requirements.
 	 * @typeparam Size The amount of bits in the bitset. By default EnumType::size.
 	 */
-	template <typename EnumType, size_t Size = static_cast<size_t>(EnumType::size)>
-		requires explicitly_convertible_to<EnumType, size_t>
+	template <typename EnumType, std::size_t Size = static_cast<std::size_t>(EnumType::size)>
+		requires explicitly_convertible_to<EnumType, std::size_t>
 	struct enum_bitset : public std::bitset<Size>
 	{
 	public: using super = std::template bitset<Size>;

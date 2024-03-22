@@ -1,9 +1,11 @@
 #ifndef COMPWOLF_TYPE_VALUE_PAIR_HEADER
 #define COMPWOLF_TYPE_VALUE_PAIR_HEADER
 
+#include <utility>
+
 namespace CompWolf
 {
-	template <typename Type, size_t Value>
+	template <typename Type, std::size_t Value>
 	struct type_value_pair
 	{
 		using type = Type;

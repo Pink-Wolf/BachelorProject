@@ -16,8 +16,8 @@ namespace CompWolf::Graphics
 		{
 		private: // fields
 			owned_ptr<gpu*> _device;
-			size_t _memory_size;
-			size_t _item_count;
+			std::size_t _memory_size;
+			std::size_t _item_count;
 			Private::vulkan_buffer _vulkan_buffer;
 			Private::vulkan_memory _vulkan_memory;
 
@@ -25,7 +25,7 @@ namespace CompWolf::Graphics
 			inline auto device() noexcept -> gpu& { return *_device; }
 			inline auto device() const noexcept -> const gpu& { return *_device; }
 
-			inline auto vulkan_memory_size() const noexcept -> size_t { return _memory_size; }
+			inline auto vulkan_memory_size() const noexcept -> std::size_t { return _memory_size; }
 			inline auto size() const noexcept { return _item_count; }
 
 			inline auto vulkan_buffer() const noexcept -> Private::vulkan_buffer { return _vulkan_buffer; }
@@ -37,7 +37,7 @@ namespace CompWolf::Graphics
 			auto operator=(base_gpu_buffer&&)->base_gpu_buffer & = default;
 			inline ~base_gpu_buffer() noexcept { free(); }
 
-			base_gpu_buffer(gpu& target_device, size_t item_count, size_t item_stride);
+			base_gpu_buffer(gpu& target_device, std::size_t item_count, std::size_t item_stride);
 
 		public: // CompWolf::freeable
 			inline auto empty() const noexcept -> bool final
@@ -91,7 +91,7 @@ namespace CompWolf::Graphics
 		gpu_buffer(gpu_buffer&&) = default;
 		auto operator=(gpu_buffer&&)->gpu_buffer & = default;
 
-		inline gpu_buffer(gpu& target_device, size_t size)
+		inline gpu_buffer(gpu& target_device, std::size_t size)
 			: Private::base_gpu_buffer(target_device, size, sizeof(T))
 		{};
 

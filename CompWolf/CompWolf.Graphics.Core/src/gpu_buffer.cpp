@@ -8,7 +8,7 @@ namespace CompWolf::Graphics::Private
 {
 	/******************************** constructor ********************************/
 
-	base_gpu_buffer::base_gpu_buffer(gpu& target_device, size_t item_count, size_t item_stride)
+	base_gpu_buffer::base_gpu_buffer(gpu& target_device, std::size_t item_count, std::size_t item_stride)
 		: _device(&target_device)
 		, _item_count(item_count)
 	{

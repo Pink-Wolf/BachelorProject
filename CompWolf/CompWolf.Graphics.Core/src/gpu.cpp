@@ -2,6 +2,7 @@
 #include "gpu"
 
 #include "compwolf_vulkan.hpp"
+#include <cstddef>
 #include <vector>
 #include <algorithm>
 #include <iterator>
@@ -16,9 +17,9 @@ namespace CompWolf::Graphics
 {
 	/******************************** getters ********************************/
 
-	auto gpu::index_of_family(const gpu_thread_family& target) const -> size_t
+	auto gpu::index_of_family(const gpu_thread_family& target) const -> std::size_t
 	{
-		for (size_t i = 0; i < _families.size(); ++i)
+		for (std::size_t i = 0; i < _families.size(); ++i)
 		{
 			if (&_families[i] == &target) return i;
 		}
@@ -76,7 +77,7 @@ namespace CompWolf::Graphics
 			queueCreateInfos.reserve(queueFamilies.size());
 			_families.reserve(queueFamilies.size());
 
-			for (size_t queue_index = 0; queue_index < queueFamilies.size(); queue_index++)
+			for (std::size_t queue_index = 0; queue_index < queueFamilies.size(); queue_index++)
 			{
 				auto& queueFamily = queueFamilies[queue_index];
 

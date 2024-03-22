@@ -9,6 +9,7 @@
 #include <iterator>
 #include <optional>
 #include <freeable>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
@@ -20,7 +21,7 @@ namespace CompWolf::Graphics
 		/* The gpus contained by the manager. */
 		_gpus_type _gpus;
 		/* The amount of thread families the various GPUs have together. */
-		size_t _thread_family_count;
+		std::size_t _thread_family_count;
 
 	public: // getters
 		/* Returns the gpu-connections the manager contains. */
@@ -38,8 +39,8 @@ namespace CompWolf::Graphics
 		/* Creates a new persistent job. */
 		auto new_persistent_job(gpu_job_settings settings) -> gpu_job;
 	private:
-		auto find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, size_t>;
-		auto find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> size_t;
+		auto find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, std::size_t>;
+		auto find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> std::size_t;
 
 	public: // constructor
 		/* Constructs a manager with no gpus. */

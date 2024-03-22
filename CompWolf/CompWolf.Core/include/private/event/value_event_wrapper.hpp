@@ -3,6 +3,7 @@
 
 #include "event.hpp"
 #include "compwolf_type_traits"
+#include <utility>
 
 namespace CompWolf
 {

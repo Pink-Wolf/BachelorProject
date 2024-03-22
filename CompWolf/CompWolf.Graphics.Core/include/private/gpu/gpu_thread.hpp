@@ -4,6 +4,7 @@
 #include "vulkan_types"
 #include "gpu_job_settings.hpp"
 #include <vector>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
@@ -23,9 +24,9 @@ namespace CompWolf::Graphics
 	struct gpu_thread
 	{
 		/* The amount of jobs running on the thread. */
-		size_t job_count = 0;
+		std::size_t job_count = 0;
 		/* The amount of persistent jobs running on the thread. */
-		size_t persistent_job_count = 0;
+		std::size_t persistent_job_count = 0;
 
 		Private::vulkan_queue queue;
 	};
@@ -42,9 +43,9 @@ namespace CompWolf::Graphics
 		std::vector<gpu_thread> threads;
 
 		/* The amount of threads in the family occupied by a persistent job. */
-		size_t persistent_job_count;
+		std::size_t persistent_job_count;
 		/* The amount of threads in the family occupied by a job. */
-		size_t job_count;
+		std::size_t job_count;
 	};
 }
 

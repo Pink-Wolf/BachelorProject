@@ -3,7 +3,7 @@
 
 #include <type_traits>
 #include <tuple>
-#include <stddef.h>
+#include <utility>
 
 namespace CompWolf
 {
@@ -30,11 +30,11 @@ namespace CompWolf
 	};
 
 	/* Allows repeating some logic. */
-	template <size_t InclusiveStart, size_t ExclusiveEnd>
+	template <std::size_t InclusiveStart, std::size_t ExclusiveEnd>
 	struct for_each_index
 	{
 		/* For each value I in [InclusiveStart; ExclusiveEnd[, calls Function<I>::invoke(args...). */
-		template <template <size_t> typename Function, typename... TArgs>
+		template <template <std::size_t> typename Function, typename... TArgs>
 		static inline void invoke(TArgs... args)
 		{
 			if constexpr (InclusiveStart < ExclusiveEnd)
@@ -53,7 +53,7 @@ namespace CompWolf
 		template <template <typename> typename Function, typename... TArgs>
 		struct invoke_internal
 		{
-			template <size_t Index>
+			template <std::size_t Index>
 			struct index_function
 			{
 				static inline void invoke(Tuple& tuple, TArgs... args)

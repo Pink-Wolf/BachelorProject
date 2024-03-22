@@ -271,7 +271,7 @@ namespace CompWolf::Graphics
 			_pipeline = Private::from_vulkan(pipeline);
 
 			_frame_buffers.reserve(frames.size());
-			for (size_t frame_iterator = 0; frame_iterator < frames.size(); ++frame_iterator)
+			for (std::size_t frame_iterator = 0; frame_iterator < frames.size(); ++frame_iterator)
 			{
 				VkImageView swapchainImage = Private::to_vulkan(frames[frame_iterator].image);
 

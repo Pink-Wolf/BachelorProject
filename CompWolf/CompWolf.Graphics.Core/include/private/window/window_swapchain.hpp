@@ -34,7 +34,7 @@ namespace CompWolf::Graphics
 		owned_ptr<gpu*> _target_gpu;
 		Private::vulkan_swapchain _vulkan_swapchain;
 		std::vector<swapchain_frame> _frames;
-		size_t _current_frame_index;
+		std::size_t _current_frame_index;
 
 	public: // getters
 		inline auto device() noexcept -> gpu&

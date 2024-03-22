@@ -16,9 +16,9 @@ namespace CompWolf::Graphics
 		/* The gpu containing the thread that the job is running on. */
 		owned_ptr<gpu*> _device;
 		/* The family containing the thread that the job is running on. */
-		size_t _family_index;
+		std::size_t _family_index;
 		/* The index of the thread in the family that the job is running on. */
-		size_t _thread_index;
+		std::size_t _thread_index;
 
 		bool _is_persistent;
 
@@ -56,11 +56,11 @@ namespace CompWolf::Graphics
 			return _is_persistent;
 		}
 
-		inline auto family_index() const noexcept -> size_t
+		inline auto family_index() const noexcept -> std::size_t
 		{
 			return _family_index;
 		}
-		inline auto thread_index() const noexcept -> size_t
+		inline auto thread_index() const noexcept -> std::size_t
 		{
 			return _thread_index;
 		}
@@ -70,7 +70,7 @@ namespace CompWolf::Graphics
 		gpu_job(gpu_job&&) = default;
 		auto operator=(gpu_job&&)->gpu_job& = default;
 
-		gpu_job(gpu& device, size_t family_index, size_t thread_index, bool is_persistent);
+		gpu_job(gpu& device, std::size_t family_index, std::size_t thread_index, bool is_persistent);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

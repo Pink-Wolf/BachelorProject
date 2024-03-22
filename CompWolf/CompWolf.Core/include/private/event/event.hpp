@@ -1,6 +1,7 @@
 #ifndef COMPWOLF_EVENT_HEADER
 #define COMPWOLF_EVENT_HEADER
 
+#include <utility>
 #include <vector>
 #include <functional>
 #include <type_traits>

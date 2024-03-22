@@ -3,7 +3,6 @@
 
 #include <compwolf_type_traits>
 #include "utility"
-#include <stddef.h>
 
 namespace CompWolf
 {
@@ -158,14 +157,14 @@ namespace CompWolf
 		}
 
 		template <typename T>
-		auto operator [](size_t i)
+		auto operator [](std::size_t i)
 			noexcept(noexcept(std::declval<TPointer>()[0]))
 			-> T&
 		{
 			return super::value[i];
 		}
 		template <typename T>
-		auto operator [](size_t i) const
+		auto operator [](std::size_t i) const
 			noexcept(noexcept(std::declval<TPointer>()[0]))
 			-> const T&
 		{

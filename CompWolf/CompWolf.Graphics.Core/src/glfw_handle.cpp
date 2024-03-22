@@ -3,11 +3,12 @@
 
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
 	/* The amount of glfw_handles that the program currently has. */
-	static size_t glfw_handle_counter;
+	static std::size_t glfw_handle_counter;
 
 	/******************************** constructors ********************************/
 

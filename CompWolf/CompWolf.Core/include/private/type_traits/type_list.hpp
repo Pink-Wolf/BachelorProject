@@ -2,13 +2,13 @@
 #define COMPWOLF_TYPE_TRAIT_HEADER
 
 #include <type_traits>
-#include <stddef.h>
+#include <utility>
 
 namespace CompWolf
 {
 	namespace Private
 	{
-		template <size_t Index, typename T, typename... TRest>
+		template <std::size_t Index, typename T, typename... TRest>
 		struct get_type_at_index_internal
 		{
 			using type = get_type_at_index_internal<Index - 1, TRest...>::type;
@@ -18,7 +18,7 @@ namespace CompWolf
 		{
 			using type = T;
 		};
-		template <size_t Index, typename... Ts>
+		template <std::size_t Index, typename... Ts>
 		struct get_type_at_index
 		{
 			static_assert(Index >= 0, "out of range! Tried getting a type from a type list at a negative index");
@@ -38,7 +38,7 @@ namespace CompWolf
 		static constexpr bool empty = false;
 
 		/* Gets the type at the given index in the type_list. */
-		template <size_t Index>
+		template <std::size_t Index>
 		using at = Private::template get_type_at_index<Index, Ts...>::type;
 
 		/* The first type in the type_list. */

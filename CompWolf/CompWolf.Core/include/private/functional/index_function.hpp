@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <concepts>
+#include <utility>
 #include "compwolf_type_traits"
 
 namespace CompWolf

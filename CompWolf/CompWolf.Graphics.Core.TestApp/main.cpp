@@ -26,7 +26,7 @@ auto load_shader(std::string path) -> std::vector<shader::spv_byte_type>
     while (stream.read(new_word, word_size))
     {
         shader::spv_byte_type new_data = 0;
-        for (size_t i = 0; i < word_size; ++i)
+        for (std::size_t i = 0; i < word_size; ++i)
         {
             new_data |= static_cast<shader::spv_byte_type>(new_word[i]) << (i * 8);
         }

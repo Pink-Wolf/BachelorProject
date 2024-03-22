@@ -7,6 +7,8 @@
 #include "shader.hpp"
 #include "vertex_shader.hpp"
 #include "shader_field.hpp"
+
+#include <utility>
 #include <vector>
 #include <owned>
 #include <freeable>
@@ -20,8 +22,8 @@ namespace CompWolf::Graphics
 		struct draw_pipeline_data
 		{
 			const std::vector<Private::shader_field_info_handle>* input_types;
-			const std::vector<size_t>* input_offsets;
-			size_t input_stride;
+			const std::vector<std::size_t>* input_offsets;
+			std::size_t input_stride;
 
 			shader* vertex_shader;
 			shader* fragment_shader;
@@ -76,7 +78,7 @@ namespace CompWolf::Graphics
 		inline auto pipeline_data() const noexcept -> const Private::draw_pipeline_data& { return *_pipeline_data; }
 		inline auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass { return _render_pass; }
 		inline auto vulkan_pipeline() const noexcept -> Private::vulkan_pipeline { return _pipeline; }
-		inline auto vulkan_frame_buffer(size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }
+		inline auto vulkan_frame_buffer(std::size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }
 
 	private: // constructor
 		void setup();

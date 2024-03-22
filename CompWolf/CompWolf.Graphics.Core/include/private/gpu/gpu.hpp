@@ -3,6 +3,7 @@
 
 #include "vulkan_types"
 #include "gpu_thread.hpp"
+#include <utility>
 #include <vector>
 #include <freeable>
 #include <owned>
@@ -39,7 +40,7 @@ namespace CompWolf::Graphics
 			return _families;
 		}
 
-		auto index_of_family(const gpu_thread_family&) const -> size_t;
+		auto index_of_family(const gpu_thread_family&) const -> std::size_t;
 
 		/* The type of work at least 1 thread on the gpu can perform. */
 		inline gpu_job_type_set& work_types()

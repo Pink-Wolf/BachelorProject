@@ -7,6 +7,7 @@
 #include <compwolf_type_traits>
 #include <array>
 #include <vector>
+#include <utility>
 
 namespace CompWolf::Graphics
 {
@@ -19,7 +20,7 @@ namespace CompWolf::Graphics
 	concept ShaderField = requires ()
 	{
 		typename shader_field_info<T>::types;
-		{ shader_field_info<T>::type_offsets } -> std::same_as<const std::array<size_t, shader_field_info<T>::types::size>&>;
+		{ shader_field_info<T>::type_offsets } -> std::same_as<const std::array<std::size_t, shader_field_info<T>::types::size>&>;
 	};
 
 	template <typename T>
@@ -31,7 +32,7 @@ namespace CompWolf::Graphics
 	template<> struct shader_field_info<void>
 	{
 		using types = type_list<>;
-		static constexpr const std::array<size_t, 0> type_offsets;
+		static constexpr const std::array<std::size_t, 0> type_offsets;
 	};
 
 	namespace Private
@@ -61,10 +62,10 @@ namespace CompWolf::Graphics
 
 	template <typename T>
 	auto constexpr shader_field_offset_vector()
-		-> const std::vector<size_t>&
+		-> const std::vector<std::size_t>&
 	{
 		static auto& array_data = shader_field_info<T>::type_offsets;
-		static const std::vector<size_t> vector_data(array_data.begin(), array_data.end());
+		static const std::vector<std::size_t> vector_data(array_data.begin(), array_data.end());
 		return vector_data;
 	}
 
@@ -73,7 +74,7 @@ namespace CompWolf::Graphics
 	struct shader_field_info_from_fields
 	{
 	public:
-		using type_offsets_type = std::array<size_t, (shader_field_info<typename FieldAndOffsets::type>::type_offsets.size() + ...)>;
+		using type_offsets_type = std::array<std::size_t, (shader_field_info<typename FieldAndOffsets::type>::type_offsets.size() + ...)>;
 	private:
 		using field_and_offsets = type_list<FieldAndOffsets...>;
 
@@ -81,18 +82,18 @@ namespace CompWolf::Graphics
 		{
 			type_offsets_type offsets;
 
-			size_t field_offsets[] = { FieldAndOffsets::value... };
-			const size_t* type_offsets[] = { shader_field_info<typename FieldAndOffsets::type>::type_offsets.data()...};
-			size_t type_offsets_size[] = { shader_field_info<typename FieldAndOffsets::type>::type_offsets.size()... };
+			std::size_t field_offsets[] = { FieldAndOffsets::value... };
+			const std::size_t* type_offsets[] = { shader_field_info<typename FieldAndOffsets::type>::type_offsets.data()...};
+			std::size_t type_offsets_size[] = { shader_field_info<typename FieldAndOffsets::type>::type_offsets.size()... };
 
-			size_t i = 0;
-			for (size_t field_index = 0; field_index < field_and_offsets::size; ++field_index)
+			std::size_t i = 0;
+			for (std::size_t field_index = 0; field_index < field_and_offsets::size; ++field_index)
 			{
 				auto field_offset = field_offsets[field_index];
 				auto field_type_offset = type_offsets[field_index];
 				auto field_type_offset_size = type_offsets_size[field_index];
 
-				for (size_t type_index = 0; type_index < field_type_offset_size; ++type_index, ++i)
+				for (std::size_t type_index = 0; type_index < field_type_offset_size; ++type_index, ++i)
 				{
 					auto type_offset = field_type_offset[type_index];
 					
@@ -111,7 +112,7 @@ namespace CompWolf::Graphics
 	template<> struct shader_field_info<type>									\
 	{																			\
 		using types = type_list<type>;											\
-		static constexpr const std::array<size_t, 1> type_offsets = { 0 };		\
+		static constexpr const std::array<std::size_t, 1> type_offsets = { 0 };		\
 		static auto type_info() noexcept -> Private::shader_field_info_handle;	\
 	}																			\
 
