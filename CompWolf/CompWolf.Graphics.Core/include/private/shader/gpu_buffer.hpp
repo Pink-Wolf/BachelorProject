@@ -34,7 +34,7 @@ namespace CompWolf::Graphics
 		public: // constructor
 			base_gpu_buffer() = default;
 			base_gpu_buffer(base_gpu_buffer&&) = default;
-			auto operator=(base_gpu_buffer&&)->base_gpu_buffer & = default;
+			auto operator=(base_gpu_buffer&&) -> base_gpu_buffer& = default;
 			inline ~base_gpu_buffer() noexcept { free(); }
 
 			base_gpu_buffer(gpu& target_device, std::size_t item_count, std::size_t item_stride);

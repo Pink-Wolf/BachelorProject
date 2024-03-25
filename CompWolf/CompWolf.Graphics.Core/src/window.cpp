@@ -51,7 +51,7 @@ namespace CompWolf::Graphics
 	{
 		{
 			auto& frame = swapchain().current_frame();
-			auto semaphore = Private::to_vulkan(frame.last_vulkan_semaphore());
+			auto semaphore = Private::to_vulkan(frame.pool.last_vulkan_semaphore());
 			auto vkSwapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
 			auto frame_index = static_cast<uint32_t>(swapchain().current_frame_index());
 			auto queue = Private::to_vulkan(draw_present_job().thread().queue);

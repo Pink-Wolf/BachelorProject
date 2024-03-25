@@ -15,16 +15,7 @@ namespace CompWolf::Graphics
 	struct swapchain_frame
 	{
 		Private::vulkan_image_view image;
-		Private::vulkan_command_pool command_pool;
-		
-		std::vector<std::pair<gpu_fence, gpu_semaphore>> synchronizations;
-
-	public: // getter
-		inline auto last_vulkan_semaphore() -> Private::vulkan_semaphore
-		{
-			if (synchronizations.empty()) return nullptr;
-			return synchronizations.back().second.vulkan_semaphore();
-		}
+		command_pool pool;
 	};
 
 	/* The actual images of the window' that's surface. */

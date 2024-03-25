@@ -34,7 +34,7 @@ namespace CompWolf::Graphics
 
 		fence.wait();
 		vkDeviceWaitIdle(logicDevice); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
-		current_frame().synchronizations.clear();
+		current_frame().pool.synchronizations().clear();
 	}
 
 	/******************************** constructors ********************************/
@@ -160,22 +160,7 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					VkCommandPoolCreateInfo createInfo{
-						.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-						.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-						.queueFamilyIndex = static_cast<uint32_t>(device().index_of_family(job.family())),
-					};
-
-					VkCommandPool commandPool;
-					auto result = vkCreateCommandPool(logicDevice, &createInfo, nullptr, &commandPool);
-
-					switch (result)
-					{
-					case VK_SUCCESS: break;
-					default: throw std::runtime_error("Could not set up \"command pool\"s for a window's swapchain-images.");
-					}
-
-					frame.command_pool = Private::from_vulkan(commandPool);
+					frame.pool = command_pool(device(), job.family_index(), job.thread_index());
 				}
 			}
 
@@ -204,7 +189,7 @@ namespace CompWolf::Graphics
 		for (auto& frame : _frames)
 		{
 			if (frame.image) vkDestroyImageView(logicDevice, Private::to_vulkan(frame.image), nullptr);
-			if (frame.command_pool) vkDestroyCommandPool(logicDevice, Private::to_vulkan(frame.command_pool), nullptr);
+			frame.pool.free();
 		}
 		_frames.clear();
 		if (_vulkan_swapchain) vkDestroySwapchainKHR(logicDevice, Private::to_vulkan(_vulkan_swapchain), nullptr);

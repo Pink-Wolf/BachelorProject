@@ -183,7 +183,9 @@
     <ClInclude Include="include\private\gpu\gpu_job.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
+    <ClInclude Include="include\private\gpu\command_pool.hpp" />
     <ClInclude Include="include\private\shader\gpu_buffer.hpp" />
+    <ClInclude Include="include\private\shader\gpu_program.hpp" />
     <ClInclude Include="include\private\shader\shader_field.hpp" />
     <ClInclude Include="include\private\shader\shader_field\combine_shader_fields.hpp" />
     <ClInclude Include="include\private\shader\shader_field\primitive_shader_field.hpp" />
@@ -193,7 +195,7 @@
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
     <ClInclude Include="include\private\window\window_surface.hpp" />
     <ClInclude Include="include\private\shader\gpu_command.hpp" />
-    <ClInclude Include="include\private\shader\gpu_draw_program.hpp" />
+    <ClInclude Include="include\private\shader\draw_program.hpp" />
     <ClInclude Include="include\private\shader\shader.hpp" />
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
     <ClInclude Include="include\private\window\window.hpp" />
@@ -204,14 +206,16 @@
     <ClInclude Include="include\window" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\command_pool.cpp" />
     <ClCompile Include="src\glfw_handle.cpp" />
     <ClCompile Include="src\gpu.cpp" />
     <ClCompile Include="src\gpu_buffer.cpp" />
     <ClCompile Include="src\gpu_command.cpp" />
-    <ClCompile Include="src\gpu_draw_program.cpp" />
+    <ClCompile Include="src\draw_program.cpp" />
     <ClCompile Include="src\gpu_fence.cpp" />
     <ClCompile Include="src\gpu_job.cpp" />
     <ClCompile Include="src\gpu_manager.cpp" />
+    <ClCompile Include="src\gpu_program.cpp" />
     <ClCompile Include="src\graphics_environment.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

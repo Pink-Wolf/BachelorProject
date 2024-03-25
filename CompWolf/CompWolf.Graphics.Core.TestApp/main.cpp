@@ -72,7 +72,7 @@ int main()
             {{-.5f, +.5f}, {0.f, 0.f, 1.f}}
             });
 
-        auto draw_program = new_gpu_program(pipeline,
+        auto draw_program = new_draw_program(pipeline,
             draw_command(&vertices)
         );
 
