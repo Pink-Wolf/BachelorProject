@@ -52,7 +52,7 @@ namespace CompWolf::Graphics
 
 	namespace Private
 	{
-		struct base_draw_command : public gpu_command
+		struct base_bind_command : public gpu_command
 		{
 		protected: // fields
 			base_gpu_buffer* base_buffer;
@@ -61,13 +61,34 @@ namespace CompWolf::Graphics
 		};
 	}
 	template <typename InputType>
-	struct draw_command : public Private::base_draw_command
+	struct bind_command : public Private::base_bind_command
 	{
 	private: // fields
-		gpu_buffer<InputType>* _buffer;
+		gpu_vertex_buffer<InputType>* _buffer;
 	public: // getters
-		inline auto buffer() noexcept -> gpu_buffer<InputType>& { return *_buffer; }
-		inline auto buffer() const noexcept -> const gpu_buffer<InputType>& { return *_buffer; }
+		inline auto buffer() noexcept -> gpu_vertex_buffer<InputType>& { return *_buffer; }
+		inline auto buffer() const noexcept -> const gpu_vertex_buffer<InputType>& { return *_buffer; }
+
+	public: // constructor
+		bind_command() = default;
+		bind_command(const bind_command&) = default;
+		auto operator=(const bind_command&) -> bind_command& = default;
+		bind_command(bind_command&&) = default;
+		auto operator=(bind_command&&) -> bind_command& = default;
+
+		bind_command(gpu_vertex_buffer<InputType>& buffer) noexcept : _buffer(&buffer)
+		{
+			base_buffer = &buffer;
+		}
+	};
+
+	struct draw_command : public gpu_command
+	{
+	public: // fields
+		gpu_index_buffer* _index_buffer;
+	public: // getters
+		inline auto indices() noexcept -> gpu_index_buffer& { return *_index_buffer; }
+		inline auto indices() const noexcept -> const gpu_index_buffer& { return *_index_buffer; }
 
 	public: // constructor
 		draw_command() = default;
@@ -76,10 +97,10 @@ namespace CompWolf::Graphics
 		draw_command(draw_command&&) = default;
 		auto operator=(draw_command&&) -> draw_command& = default;
 
-		draw_command(gpu_buffer<InputType>* buffer) : _buffer(buffer)
-		{
-			base_buffer = buffer;
-		}
+		draw_command(gpu_index_buffer& indices) noexcept : _index_buffer(&indices) {}
+
+	public: // CompWolf::Graphics::gpu_command
+		void compile(const gpu_command_compile_settings&) final;
 	};
 }
 

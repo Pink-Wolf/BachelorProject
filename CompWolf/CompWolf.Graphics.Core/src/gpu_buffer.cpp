@@ -8,7 +8,7 @@ namespace CompWolf::Graphics::Private
 {
 	/******************************** constructor ********************************/
 
-	base_gpu_buffer::base_gpu_buffer(gpu& target_device, std::size_t item_count, std::size_t item_stride)
+	base_gpu_buffer::base_gpu_buffer(gpu& target_device, gpu_buffer_type type, std::size_t item_count, std::size_t item_stride)
 		: _device(&target_device)
 		, _item_count(item_count)
 	{
@@ -20,9 +20,18 @@ namespace CompWolf::Graphics::Private
 			VkBufferCreateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
 				.size = item_count * item_stride,
-				.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 				.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
 			};
+			switch (type)
+			{
+			case CompWolf::Graphics::Private::gpu_buffer_type::index:
+				createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+				break;
+			case CompWolf::Graphics::Private::gpu_buffer_type::vertex:
+				createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+				break;
+			default: throw std::invalid_argument("Could not create buffer on GPU; the given type is unknown.");
+			}
 			auto result = vkCreateBuffer(logicDevice, &createInfo, nullptr, &buffer);
 
 			switch (result)

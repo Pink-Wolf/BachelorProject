@@ -64,28 +64,28 @@ namespace CompWolf::Graphics
 		return Private::from_private(&field_info);
 	}
 
-	auto shader_field_info<int>::type_info() noexcept -> Private::shader_field_info_handle
+	auto shader_field_info<shader_int>::type_info() noexcept -> Private::shader_field_info_handle
 	{
 		static Private::shader_field_info field_info{
 			.format = VK_FORMAT_R32_SINT
 		};
 		return Private::from_private(&field_info);
 	}
-	auto shader_field_info<int2d>::type_info() noexcept -> Private::shader_field_info_handle
+	auto shader_field_info<shader_int2d>::type_info() noexcept -> Private::shader_field_info_handle
 	{
 		static Private::shader_field_info field_info{
 			.format = VK_FORMAT_R32G32_SINT
 		};
 		return Private::from_private(&field_info);
 	}
-	auto shader_field_info<int3d>::type_info() noexcept -> Private::shader_field_info_handle
+	auto shader_field_info<shader_int3d>::type_info() noexcept -> Private::shader_field_info_handle
 	{
 		static Private::shader_field_info field_info{
 			.format = VK_FORMAT_R32G32B32_SINT
 		};
 		return Private::from_private(&field_info);
 	}
-	auto shader_field_info<int4d>::type_info() noexcept -> Private::shader_field_info_handle
+	auto shader_field_info<shader_int4d>::type_info() noexcept -> Private::shader_field_info_handle
 	{
 		static Private::shader_field_info field_info{
 			.format = VK_FORMAT_R32G32B32A32_SINT

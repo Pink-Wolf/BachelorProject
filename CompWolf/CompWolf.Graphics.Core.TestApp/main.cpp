@@ -66,14 +66,18 @@ int main()
             }
         );
 
-        gpu_buffer<vertex> vertices(win.device(), {
-            {{+0.f, -.5f}, {1.f, 1.f, 1.f}},
-            {{+.5f, +.5f}, {0.f, 1.f, 0.f}},
-            {{-.5f, +.5f}, {0.f, 0.f, 1.f}}
+        gpu_vertex_buffer<vertex> vertices(win.device(), {
+            {{-.5f, -.5f}, {1.f, 0.f, 0.f}},
+            {{+.5f, -.5f}, {0.f, 1.f, 0.f}},
+            {{+.5f, +.5f}, {0.f, 0.f, 1.f}},
+            {{-.5f, +.5f}, {1.f, 1.f, 1.f}}
             });
 
+        gpu_index_buffer indices(win.device(), { 0, 1, 2, 2, 3, 0 });
+
         auto draw_program = new_draw_program(pipeline,
-            draw_command(&vertices)
+            bind_command(vertices),
+            draw_command(indices)
         );
 
         std::chrono::steady_clock clock;
