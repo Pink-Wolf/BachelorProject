@@ -28,12 +28,15 @@ namespace CompWolf
 		};
 	}
 
+	template <auto... Ts>
+	constexpr std::size_t size_of = sizeof...(Ts);
+
 	/* A compile-time list of types. */
 	template <typename... Ts>
 	struct type_list
 	{
 		/* The amount of types the type_list contains. */
-		static constexpr int size = sizeof...(Ts);
+		static constexpr std::size_t size = sizeof...(Ts);
 		/* Whether the type_list contains nothing. */
 		static constexpr bool empty = false;
 

@@ -38,13 +38,12 @@ auto load_shader(std::string path) -> std::vector<shader::spv_byte_type>
 
 struct vertex
 {
-    float2d position;
-    float3d color;
+    float2 position;
+    float3 color;
 };
-
 template<> struct shader_field_info<vertex> : public combine_shader_fields<
-    type_value_pair<float2d, offsetof(vertex, position)>,
-    type_value_pair<float3d, offsetof(vertex, color)>
+    type_value_pair<float2, offsetof(vertex, position)>,
+    type_value_pair<float3, offsetof(vertex, color)>
 > {};
 
 int main()
