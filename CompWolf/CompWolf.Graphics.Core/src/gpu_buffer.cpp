@@ -11,6 +11,7 @@ namespace CompWolf::Graphics::Private
 	base_gpu_buffer::base_gpu_buffer(gpu& target_device, gpu_buffer_type type, std::size_t item_count, std::size_t item_stride)
 		: _device(&target_device)
 		, _item_count(item_count)
+		, _vulkan_buffer(nullptr), _vulkan_memory(nullptr)
 	{
 		auto logicDevice = Private::to_vulkan(target_device.vulkan_device());
 		auto physicalDevice = Private::to_vulkan(target_device.vulkan_physical_device());

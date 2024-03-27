@@ -13,6 +13,7 @@ namespace CompWolf::Graphics
 		, gpu_program_compile_function code
 	) : _device(&target_device)
 		, _command_pool(&pool)
+		, _vulkan_command(nullptr)
 	{
 		auto logicDevice = Private::to_vulkan(target_device.vulkan_device());
 

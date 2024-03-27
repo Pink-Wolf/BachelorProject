@@ -33,6 +33,7 @@ namespace CompWolf::Graphics
 	/******************************** constructors ********************************/
 
 	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu& gpu_device, const draw_pipeline_data& data)
+		: _layout_descriptor(nullptr), _layout(nullptr)
 	{
 		_device = &gpu_device;
 		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
@@ -85,6 +86,10 @@ namespace CompWolf::Graphics
 
 	void window_specific_pipeline::setup()
 	{
+		_descriptor_pool = nullptr;
+		_render_pass = nullptr;
+		_pipeline = nullptr;
+
 		auto& gpu_device = target_window().device();
 		auto& thread_family = target_window().draw_present_job().family();
 		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());

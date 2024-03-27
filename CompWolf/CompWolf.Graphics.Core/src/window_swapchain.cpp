@@ -40,6 +40,7 @@ namespace CompWolf::Graphics
 	/******************************** constructors ********************************/
 
 	window_swapchain::window_swapchain(Private::glfw_window window, window_surface& window_surface)
+		: _vulkan_swapchain(nullptr)
 	{
 		auto glfwWindow = Private::to_glfw(window);
 

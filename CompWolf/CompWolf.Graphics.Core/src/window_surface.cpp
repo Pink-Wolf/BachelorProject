@@ -12,6 +12,7 @@ namespace CompWolf::Graphics
 	/******************************** constructors ********************************/
 
 	window_surface::window_surface(graphics_environment& environment, Private::glfw_window& window, window_surface_settings settings)
+		: _vulkan_surface(nullptr), _format(nullptr)
 	{
 		auto instance = Private::to_vulkan(environment.vulkan_instance());
 		auto glfwWindow = Private::to_glfw(window);

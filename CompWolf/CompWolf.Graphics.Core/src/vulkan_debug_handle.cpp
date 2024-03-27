@@ -10,13 +10,9 @@ namespace CompWolf::Graphics
 	/******************************** constructors ********************************/
 
 	vulkan_debug_handle::vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance)
+		: _teardowner(nullptr)
 	{
-		if (!settings.internal_debug_callback)
-		{
-			_messenger = nullptr;
-			_teardowner = nullptr;
-			return;
-		}
+		if (!settings.internal_debug_callback) return;
 
 		auto instance = Private::to_vulkan(vulkan_instance);
 

@@ -11,6 +11,7 @@ namespace CompWolf::Graphics
 		: _device(&target_device)
 		, _thread_family_index(thread_family_index)
 		, _thread_index(thread_index)
+		, _vulkan_pool(nullptr)
 	{
 		std::ignore = target_device.families().at(thread_family_index); // throw if index is not within array.
 

@@ -12,7 +12,7 @@ namespace CompWolf::Graphics
 	{
 	private: // fields
 		const gpu* _device;
-		owned_ptr<Private::vulkan_semaphore> _vulkan_semaphore = nullptr;
+		owned_ptr<Private::vulkan_semaphore> _vulkan_semaphore;
 
 	public: // getters
 		inline auto device() const noexcept -> const gpu&

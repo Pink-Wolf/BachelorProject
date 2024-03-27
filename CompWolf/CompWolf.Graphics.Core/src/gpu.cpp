@@ -28,9 +28,10 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device) :
-		_vulkan_instance(vulkan_instance),
-		_vulkan_physical_device(vulkan_physical_device)
+	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device)
+		: _vulkan_instance(vulkan_instance)
+		, _vulkan_physical_device(vulkan_physical_device)
+		, _vulkan_device(nullptr)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 		auto physicalDevice = Private::to_vulkan(vulkan_physical_device);
