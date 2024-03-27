@@ -52,16 +52,11 @@ namespace CompWolf::Graphics
 
 	namespace Private
 	{
-		struct base_bind_command : public gpu_command
-		{
-		protected: // fields
-			base_gpu_buffer* base_buffer;
-		public: // CompWolf::Graphics::gpu_command
-			void compile(const gpu_command_compile_settings&) final;
-		};
+		void compile_bind_vertex_command(base_gpu_buffer* buffer, const gpu_command_compile_settings&);
+		void compile_bind_uniform_command(base_gpu_buffer* buffer, const gpu_command_compile_settings&);
 	}
 	template <typename InputType>
-	struct bind_command : public Private::base_bind_command
+	struct bind_vertex_command : public gpu_command
 	{
 	private: // fields
 		gpu_vertex_buffer<InputType>* _buffer;
@@ -70,15 +65,46 @@ namespace CompWolf::Graphics
 		inline auto buffer() const noexcept -> const gpu_vertex_buffer<InputType>& { return *_buffer; }
 
 	public: // constructor
-		bind_command() = default;
-		bind_command(const bind_command&) = default;
-		auto operator=(const bind_command&) -> bind_command& = default;
-		bind_command(bind_command&&) = default;
-		auto operator=(bind_command&&) -> bind_command& = default;
+		bind_vertex_command() = default;
+		bind_vertex_command(const bind_vertex_command&) = default;
+		auto operator=(const bind_vertex_command&)->bind_vertex_command & = default;
+		bind_vertex_command(bind_vertex_command&&) = default;
+		auto operator=(bind_vertex_command&&)->bind_vertex_command & = default;
 
-		bind_command(gpu_vertex_buffer<InputType>& buffer) noexcept : _buffer(&buffer)
+		bind_vertex_command(gpu_vertex_buffer<InputType>& buffer) noexcept
+			: _buffer(&buffer)
+		{}
+
+	public: // CompWolf::Graphics::gpu_command
+		void compile(const gpu_command_compile_settings& settings) final
 		{
-			base_buffer = &buffer;
+			compile_bind_vertex_command(_buffer, settings);
+		}
+	};
+	template <typename InputType>
+	struct bind_uniform_command : public gpu_command
+	{
+	private: // fields
+		gpu_uniform_buffer<InputType>* _buffer;
+	public: // getters
+		inline auto buffer() noexcept -> gpu_uniform_buffer<InputType>& { return *_buffer; }
+		inline auto buffer() const noexcept -> const gpu_uniform_buffer<InputType>& { return *_buffer; }
+
+	public: // constructor
+		bind_uniform_command() = default;
+		bind_uniform_command(const bind_uniform_command&) = default;
+		auto operator=(const bind_uniform_command&)->bind_uniform_command & = default;
+		bind_uniform_command(bind_uniform_command&&) = default;
+		auto operator=(bind_uniform_command&&)->bind_uniform_command & = default;
+
+		bind_uniform_command(gpu_uniform_buffer<InputType>& buffer) noexcept
+			: _buffer(&buffer)
+		{}
+
+	public: // CompWolf::Graphics::gpu_command
+		void compile(const gpu_command_compile_settings& settings) final
+		{
+			compile_bind_uniform_command(_buffer, settings);
 		}
 	};
 

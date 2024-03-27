@@ -35,17 +35,44 @@ namespace CompWolf::Graphics
 	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu& gpu_device, const draw_pipeline_data& data)
 	{
 		_device = &gpu_device;
-		auto device = Private::to_vulkan(gpu_device.vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
+
+		VkDescriptorSetLayout uniformLayout;
+		{
+			VkDescriptorSetLayoutBinding uniformBinding{
+				.binding = 0,
+				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+				.descriptorCount = 1,
+				.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+			};
+
+			VkDescriptorSetLayoutCreateInfo createInfo{
+				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+				.bindingCount = 1,
+				.pBindings = &uniformBinding,
+			};
+
+			auto result = vkCreateDescriptorSetLayout(logicDevice, &createInfo, nullptr, &uniformLayout);
+
+			switch (result)
+			{
+			case VK_SUCCESS: break;
+			default: throw std::runtime_error("Could not set up uniform fields for pipeline's vertex shader.");
+			}
+
+			_layout_descriptor = Private::from_vulkan(uniformLayout);
+		}
 
 		VkPipelineLayout pipelineLayout;
 		{
 			VkPipelineLayoutCreateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-				.setLayoutCount = 0,
+				.setLayoutCount = 1,
+				.pSetLayouts = &uniformLayout,
 				.pushConstantRangeCount = 0,
 			};
 
-			auto result = vkCreatePipelineLayout(device, &createInfo, nullptr, &pipelineLayout);
+			auto result = vkCreatePipelineLayout(logicDevice, &createInfo, nullptr, &pipelineLayout);
 
 			switch (result)
 			{
@@ -87,7 +114,7 @@ namespace CompWolf::Graphics
 				stageCreateInfo = { std::move(vertexCreateInfo), std::move(fragCreateInfo) };
 			}
 
-			VkVertexInputBindingDescription bindingDescription{
+			VkVertexInputBindingDescription inputBinding{
 				.binding = 0,
 				.stride = static_cast<uint32_t>(_pipeline_data->input_stride),
 				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
@@ -111,7 +138,7 @@ namespace CompWolf::Graphics
 			VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 				.vertexBindingDescriptionCount = 1,
-				.pVertexBindingDescriptions = &bindingDescription,
+				.pVertexBindingDescriptions = &inputBinding,
 				.vertexAttributeDescriptionCount = static_cast<uint32_t>(inputAttributes.size()),
 				.pVertexAttributeDescriptions = inputAttributes.data(),
 			};
@@ -130,6 +157,55 @@ namespace CompWolf::Graphics
 				.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size()),
 				.pDynamicStates = dynamicStates.data(),
 			};
+
+			auto descriptorSize = static_cast<uint32_t>(frames.size());
+			VkDescriptorPool descriptorPool;
+			{
+				VkDescriptorPoolSize poolSize{
+					.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+					.descriptorCount = descriptorSize,
+				};
+				VkDescriptorPoolCreateInfo createInfo{
+					.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+					.maxSets = descriptorSize,
+					.poolSizeCount = 1,
+					.pPoolSizes = &poolSize,
+				};
+
+				auto result = vkCreateDescriptorPool(logicDevice, &createInfo, nullptr, &descriptorPool);
+
+				switch (result)
+				{
+				case VK_SUCCESS: break;
+				default: throw std::runtime_error("Could not set up \"descriptor pool\" to connect uniform buffers to vertex shader.");
+				}
+
+				_descriptor_pool = Private::from_vulkan(descriptorPool);
+			}
+			std::vector<VkDescriptorSet> descriptorSets;
+			{
+				std::vector<VkDescriptorSetLayout> descriptorLayouts(descriptorSize, Private::to_vulkan(_gpu_data->layout_descriptor()));
+
+				VkDescriptorSetAllocateInfo allocateInfo{
+					.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+					.descriptorPool = descriptorPool,
+					.descriptorSetCount = descriptorSize,
+					.pSetLayouts = descriptorLayouts.data(),
+				};
+
+				descriptorSets.resize(descriptorSize);
+				auto result = vkAllocateDescriptorSets(logicDevice, &allocateInfo, descriptorSets.data());
+
+				switch (result)
+				{
+				case VK_SUCCESS: break;
+				default: descriptorSets.clear();
+					throw std::runtime_error("Could not set up \"descriptor pool\" to connect uniform buffers to vertex shader.");
+				}
+
+				_descriptor_sets.reserve(descriptorSets.size());
+				for (auto set : descriptorSets) _descriptor_sets.push_back(Private::from_vulkan(set));
+			}
 
 			uint32_t width, height;
 			{
@@ -328,8 +404,9 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto vulkan_device = to_vulkan(device().vulkan_device());
-		if (_layout) vkDestroyPipelineLayout(vulkan_device, Private::to_vulkan(_layout), nullptr);
+		auto logicDevice = to_vulkan(device().vulkan_device());
+		if (_layout_descriptor) vkDestroyDescriptorSetLayout(logicDevice, Private::to_vulkan(_layout_descriptor), nullptr);
+		if (_layout) vkDestroyPipelineLayout(logicDevice, Private::to_vulkan(_layout), nullptr);
 
 		_device = nullptr;
 	}
@@ -348,6 +425,8 @@ namespace CompWolf::Graphics
 		_frame_buffers.clear();
 		if (_pipeline) vkDestroyPipeline(logicDevice, Private::to_vulkan(_pipeline), nullptr);
 		if (_render_pass) vkDestroyRenderPass(logicDevice, Private::to_vulkan(_render_pass), nullptr);
+
+		if (_descriptor_pool) vkDestroyDescriptorPool(logicDevice, Private::to_vulkan(_descriptor_pool), nullptr);
 
 		set_target_window(nullptr);
 	}

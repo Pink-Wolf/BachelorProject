@@ -33,13 +33,15 @@ namespace CompWolf::Graphics
 		{
 		private: // fields
 			owned_ptr<gpu*> _device;
+			Private::vulkan_pipeline_layout_descriptor _layout_descriptor;
 			Private::vulkan_pipeline_layout _layout;
 
 		public: // getters
 			auto device() noexcept -> gpu& { return *_device; }
 			auto device() const noexcept -> const gpu& { return *_device; }
 
-			auto layout() const noexcept -> Private::vulkan_pipeline_layout { return _layout; }
+			inline auto layout_descriptor() const noexcept { return _layout_descriptor; }
+			inline auto layout() const noexcept { return _layout; }
 
 		public: // constructor
 			gpu_specific_pipeline() = default;
@@ -64,6 +66,9 @@ namespace CompWolf::Graphics
 		const Private::draw_pipeline_data* _pipeline_data;
 		const Private::gpu_specific_pipeline* _gpu_data;
 
+		Private::vulkan_descriptor_pool _descriptor_pool;
+		std::vector<Private::vulkan_descriptor_set> _descriptor_sets;
+
 		Private::vulkan_render_pass _render_pass;
 		Private::vulkan_pipeline _pipeline;
 		std::vector<Private::vulkan_frame_buffer> _frame_buffers;
@@ -76,9 +81,18 @@ namespace CompWolf::Graphics
 
 	public: // getters
 		inline auto pipeline_data() const noexcept -> const Private::draw_pipeline_data& { return *_pipeline_data; }
-		inline auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass { return _render_pass; }
-		inline auto vulkan_pipeline() const noexcept -> Private::vulkan_pipeline { return _pipeline; }
-		inline auto vulkan_frame_buffer(std::size_t index) const noexcept -> Private::vulkan_frame_buffer { return _frame_buffers[index]; }
+		inline auto gpu_data() const noexcept -> const Private::gpu_specific_pipeline& { return *_gpu_data; }
+
+		inline auto vulkan_descriptor_pool() const noexcept { return _descriptor_pool; }
+		inline auto vulkan_descriptor_sets() const noexcept
+			-> const std::vector<Private::vulkan_descriptor_set>&
+		{
+			return _descriptor_sets;
+		}
+
+		inline auto vulkan_render_pass() const noexcept { return _render_pass; }
+		inline auto vulkan_pipeline() const noexcept { return _pipeline; }
+		inline auto vulkan_frame_buffer(std::size_t index) const noexcept { return _frame_buffers[index]; }
 
 	private: // constructor
 		void setup();

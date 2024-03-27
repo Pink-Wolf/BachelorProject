@@ -40,10 +40,13 @@ namespace CompWolf::Graphics::Private
 	using vulkan_memory = vulkan_handle64<4>;
 	using vulkan_shader = vulkan_handle64<5>;
 	using vulkan_pipeline_layout = vulkan_handle64<6>;
-	using vulkan_render_pass = vulkan_handle64<7>;
-	using vulkan_pipeline = vulkan_handle64<8>;
-	using vulkan_frame_buffer = vulkan_handle64<9>;
-	using vulkan_command_pool = vulkan_handle64<10>;
+	using vulkan_pipeline_layout_descriptor = vulkan_handle64<7>;
+	using vulkan_descriptor_pool = vulkan_handle64<8>;
+	using vulkan_descriptor_set = vulkan_handle64<9>;
+	using vulkan_render_pass = vulkan_handle64<10>;
+	using vulkan_pipeline = vulkan_handle64<11>;
+	using vulkan_frame_buffer = vulkan_handle64<12>;
+	using vulkan_command_pool = vulkan_handle64<13>;
 	struct vulkan_command_t {}; using vulkan_command = vulkan_command_t*;
 }
 

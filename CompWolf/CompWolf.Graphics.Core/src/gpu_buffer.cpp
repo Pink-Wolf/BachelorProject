@@ -24,12 +24,9 @@ namespace CompWolf::Graphics::Private
 			};
 			switch (type)
 			{
-			case CompWolf::Graphics::Private::gpu_buffer_type::index:
-				createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-				break;
-			case CompWolf::Graphics::Private::gpu_buffer_type::vertex:
-				createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-				break;
+			case gpu_buffer_type::index: createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT; break;
+			case gpu_buffer_type::vertex: createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT; break;
+			case gpu_buffer_type::uniform: createInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT; break;
 			default: throw std::invalid_argument("Could not create buffer on GPU; the given type is unknown.");
 			}
 			auto result = vkCreateBuffer(logicDevice, &createInfo, nullptr, &buffer);

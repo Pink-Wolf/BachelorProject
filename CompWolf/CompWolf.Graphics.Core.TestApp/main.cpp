@@ -7,6 +7,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <cmath>
 
 using namespace CompWolf;
 using namespace CompWolf::Graphics;
@@ -46,6 +47,11 @@ template<> struct shader_field_info<vertex> : public combine_shader_fields<
     type_value_pair<float3, offsetof(vertex, color)>
 > {};
 
+struct transform
+{
+    float2 position;
+};
+
 int main()
 {
     try
@@ -71,17 +77,20 @@ int main()
             {{+.5f, +.5f}, {0.f, 0.f, 1.f}},
             {{-.5f, +.5f}, {1.f, 1.f, 1.f}}
             });
-
         gpu_index_buffer indices(win.device(), { 0, 1, 2, 2, 3, 0 });
 
+        gpu_uniform_buffer<transform> trans(win.device(), transform());
+
         auto draw_program = new_draw_program(pipeline,
-            bind_command(vertices),
+            bind_vertex_command(vertices),
+            bind_uniform_command(trans),
             draw_command(indices)
         );
 
         std::chrono::steady_clock clock;
         auto start_time = clock.now();
         auto time = clock.now();
+        double total_time;
         const std::chrono::duration<double> min_delta_time(1 / 60.);
         while (win.is_open())
         {
@@ -90,16 +99,15 @@ int main()
                 auto delta_time = std::chrono::duration_cast<std::chrono::seconds>(new_time - time);
                 if (delta_time < min_delta_time) std::this_thread::sleep_for(min_delta_time - delta_time);
                 time = new_time;
+                total_time = std::chrono::duration<double>(time - start_time).count();
             }
 
             {
-                auto modifier = (std::chrono::duration_cast<std::chrono::seconds>(time - start_time).count() % 2 == 0) ? -1 : 1;
+                auto transform_data = trans.data();
+                auto& data = transform_data.front();
 
-                auto vertices_data = vertices.data();
-                for (auto& vertex_data : vertices_data)
-                {
-                    vertex_data.position.y() += static_cast<float>(min_delta_time.count() * modifier * .25);
-                }
+                data.position.x() = static_cast<float>(std::cos(total_time)) / 2;
+                data.position.y() = static_cast<float>(std::sin(total_time)) / 2;
             }
 
             draw_program.draw(win);

@@ -16,6 +16,7 @@ namespace CompWolf::Graphics
 		{
 			index,
 			vertex,
+			uniform,
 		};
 
 		class base_gpu_buffer : public basic_freeable
@@ -122,6 +123,9 @@ namespace CompWolf::Graphics
 			inline name(::CompWolf::Graphics::gpu& target_device, std::initializer_list<T> data)	\
 				: super(target_device, type, data)													\
 			{}																						\
+			inline name(::CompWolf::Graphics::gpu& target_device, T data)							\
+				: super(target_device, type, { std::move(data) })									\
+			{}																						\
 		}																							\
 
 	}
@@ -152,6 +156,7 @@ namespace CompWolf::Graphics
 
 
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_BUFFER_TYPE(gpu_vertex_buffer, Private::gpu_buffer_type::vertex);
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_BUFFER_TYPE(gpu_uniform_buffer, Private::gpu_buffer_type::uniform);
 
 	class gpu_index_buffer : public ::CompWolf::Graphics::Private::gpu_buffer<shader_int>
 	{
