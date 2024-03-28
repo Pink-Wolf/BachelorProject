@@ -213,6 +213,12 @@ namespace CompWolf::Graphics
 		)
 		{}
 	};
+
+	template <typename VertexShaderType>
+	auto new_draw_pipeline(VertexShaderType& vertex_shader, shader& fragment_shader)
+	{
+		return draw_pipeline<VertexShaderType>(vertex_shader, fragment_shader);
+	}
 }
 
 #endif // ! COMPWOLF_GRAPHICS_DRAW_PIPELINE_HEADER

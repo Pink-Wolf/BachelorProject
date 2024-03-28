@@ -68,7 +68,7 @@ int main()
 
         auto vert_shader = vertex_shader<type_list<vertex>, type_list<transform>>(environment, load_shader("vertex.spv"));
         auto frag_shader = shader(environment, load_shader("frag.spv"));
-        auto pipeline = draw_pipeline<vertex_shader<type_list<vertex>, type_list<transform>>>(vert_shader, frag_shader);
+        auto pipeline = new_draw_pipeline(vert_shader, frag_shader);
 
         gpu_vertex_buffer<vertex> vertices(win.device(), {
             {{-.5f, -.5f}, {1.f, 0.f, 0.f}},
@@ -80,9 +80,7 @@ int main()
 
         gpu_uniform_buffer<transform> trans(win.device(), transform());
 
-        auto drawer_command = draw_command<draw_pipeline<vertex_shader<type_list<vertex>, type_list<transform>>>>(
-            pipeline, indices, vertices, trans
-        );
+        auto drawer_command = new_draw_command(pipeline, indices, vertices, trans);
 
         auto drawer = draw_program
         (

@@ -4,6 +4,7 @@
 #include "vulkan_types"
 #include "gpu_buffer.hpp"
 #include "draw_pipeline.hpp"
+#include "draw_program.hpp"
 #include "window"
 #include <utility>
 #include <freeable>
@@ -95,6 +96,14 @@ namespace CompWolf::Graphics
 		}
 		{}
 	};
+
+	template <typename PipelineType, typename... BufferTypes>
+	auto new_draw_command(PipelineType& pipeline
+		, gpu_index_buffer& indices
+		, BufferTypes&... buffers)
+	{
+		return draw_command<PipelineType>(pipeline, indices, buffers...);
+	}
 }
 
 #endif // ! COMPWOLF_GRAPHICS_DRAW_COMMAND_HEADER
