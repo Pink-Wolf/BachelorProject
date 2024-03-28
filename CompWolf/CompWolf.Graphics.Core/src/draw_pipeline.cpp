@@ -131,44 +131,32 @@ namespace CompWolf::Graphics
 				stageCreateInfo = { std::move(vertexCreateInfo), std::move(fragCreateInfo) };
 			}
 
-			std::vector<VkVertexInputBindingDescription> bindingDescriptions;
+			VkVertexInputBindingDescription bindingDescriptions{
+				.binding = static_cast<uint32_t>(0),
+				.stride = static_cast<uint32_t>(_pipeline_data->input_stride),
+				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+			};
 			std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
 			{
-				auto inputTypeCount = _pipeline_data->input_types.size();
-				bindingDescriptions.reserve(inputTypeCount); attributeDescriptions.reserve(inputTypeCount);
-				for (std::size_t vertex_index = 0; vertex_index < inputTypeCount; ++vertex_index)
+				attributeDescriptions.reserve(_pipeline_data->input_types->size());
+				for (uint32_t i = 0; i < _pipeline_data->input_types->size(); ++i)
 				{
-					auto& input_types = *_pipeline_data->input_types[vertex_index];
-					auto& input_offsets = *_pipeline_data->input_offsets[vertex_index];
-
-					bindingDescriptions.emplace_back(VkVertexInputBindingDescription
+					auto& info = *Private::to_private(_pipeline_data->input_types->at(i));
+					auto offset = _pipeline_data->input_offsets->at(i);
+					attributeDescriptions.emplace_back(VkVertexInputAttributeDescription
 						{
-							.binding = static_cast<uint32_t>(vertex_index),
-							.stride = static_cast<uint32_t>(_pipeline_data->input_stride[vertex_index]),
-							.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+							.location = i,
+							.binding = 0,
+							.format = info.format,
+							.offset = static_cast<uint32_t>(offset),
 						}
 					);
-
-					attributeDescriptions.reserve(attributeDescriptions.size() + input_types.size());
-					for (uint32_t i = 0; i < input_types.size(); ++i)
-					{
-						auto& info = *Private::to_private(input_types[i]);
-						auto offset = input_offsets[i];
-						attributeDescriptions.emplace_back(VkVertexInputAttributeDescription
-							{
-								.location = i,
-								.binding = 0,
-								.format = info.format,
-								.offset = static_cast<uint32_t>(offset),
-							}
-						);
-					}
 				}
 			}
 			VkPipelineVertexInputStateCreateInfo inputCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-				.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size()),
-				.pVertexBindingDescriptions = bindingDescriptions.data(),
+				.vertexBindingDescriptionCount = 1,
+				.pVertexBindingDescriptions = &bindingDescriptions,
 				.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size()),
 				.pVertexAttributeDescriptions = attributeDescriptions.data(),
 			};

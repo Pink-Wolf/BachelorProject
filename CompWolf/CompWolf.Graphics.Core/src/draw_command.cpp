@@ -35,17 +35,15 @@ namespace CompWolf::Graphics
 			};
 			vkCmdSetScissor(command, 0, 1, &renderArea);
 		}
-		for (auto& i : _data->vertices)
 		{
-			auto& buffer = *i;
-			auto vkBuffer = Private::to_vulkan(buffer.vulkan_buffer());
+			auto vkBuffer = Private::to_vulkan(_data->vertices->vulkan_buffer());
 			static VkDeviceSize offsets[] = { 0 };
 
 			vkCmdBindVertexBuffers(command, 0, 1, &vkBuffer, offsets);
 		}
-		for (auto& i : _data->uniform_vertex_data)
+		for (size_t i = 0; i < _data->uniform_vertex_data.size(); ++i)
 		{
-			auto& buffer = *i;
+			auto& buffer = *_data->uniform_vertex_data[i];
 			auto vkBuffer = Private::to_vulkan(buffer.vulkan_buffer());
 			auto descriptorSet = Private::to_vulkan(window_pipeline().vulkan_descriptor_sets()[args.frame_index]);
 
@@ -57,7 +55,7 @@ namespace CompWolf::Graphics
 			VkWriteDescriptorSet writer{
 				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
 				.dstSet = descriptorSet,
-				.dstBinding = 0,
+				.dstBinding = static_cast<uint32_t>(i),
 				.dstArrayElement = 0,
 				.descriptorCount = 1,
 				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -65,7 +63,6 @@ namespace CompWolf::Graphics
 			};
 
 			vkUpdateDescriptorSets(logicDevice, 1, &writer, 0, nullptr);
-
 
 			vkCmdBindDescriptorSets(command
 				, VK_PIPELINE_BIND_POINT_GRAPHICS

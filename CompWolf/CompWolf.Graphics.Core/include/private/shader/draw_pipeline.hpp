@@ -21,12 +21,9 @@ namespace CompWolf::Graphics
 	{
 		struct draw_pipeline_data
 		{
-			using input_types_type = std::vector<const std::vector<Private::shader_field_info_handle>*>;
-			input_types_type input_types;
-			using input_offsets_type = std::vector<const std::vector<std::size_t>*>;
-			input_offsets_type input_offsets;
-			using input_stride_type = std::vector<std::size_t>;
-			input_stride_type input_stride;
+			const std::vector<Private::shader_field_info_handle>* input_types;
+			const std::vector<std::size_t>* input_offsets;
+			std::size_t input_stride;
 
 			std::size_t uniform_buffer_count;
 
@@ -177,12 +174,12 @@ namespace CompWolf::Graphics
 		static_assert(std::same_as<VertexShaderType, VertexShaderType>, "draw_pipeline was not given a proper vertex shader");
 	};
 
-	template <typename... VertexTypes, typename... UniformDataTypes>
-	class draw_pipeline<vertex_shader<type_list<VertexTypes...>, type_list<UniformDataTypes...>>>
+	template <typename VertexType, typename... UniformDataTypes>
+	class draw_pipeline<vertex_shader<VertexType, type_list<UniformDataTypes...>>>
 		: public Private::base_draw_pipeline
 	{
 	public: // fields
-		using vertex_shader_type = vertex_shader<type_list<VertexTypes...>, type_list<UniformDataTypes...>>;
+		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformDataTypes...>>;
 		using fragment_shader_type = shader;
 
 	public: // constructors
@@ -197,15 +194,9 @@ namespace CompWolf::Graphics
 		draw_pipeline(vertex_shader_type& vertex_shader, fragment_shader_type& fragment_shader)
 			: base_draw_pipeline(Private::draw_pipeline_data
 			{
-				.input_types = Private::draw_pipeline_data::input_types_type({
-					&shader_field_info_handles<VertexTypes, std::vector<Private::shader_field_info_handle>>()...
-				}),
-				.input_offsets = Private::draw_pipeline_data::input_offsets_type({
-					&shader_field_info_offsets<VertexTypes, std::vector<std::size_t>>()...
-				}),
-				.input_stride = {
-					sizeof(VertexTypes)...
-				},
+				.input_types = &shader_field_info_handles<VertexType, std::vector<Private::shader_field_info_handle>>(),
+				.input_offsets = &shader_field_info_offsets<VertexType, std::vector<std::size_t>>(),
+				.input_stride = sizeof(VertexType),
 				.uniform_buffer_count = type_list<UniformDataTypes...>::size,
 				.vertex_shader = static_cast<shader*>(&vertex_shader),
 				.fragment_shader = &fragment_shader,
