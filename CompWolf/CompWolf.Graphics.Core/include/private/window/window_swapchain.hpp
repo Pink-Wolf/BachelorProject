@@ -4,6 +4,7 @@
 #include "graphics"
 #include "gpu"
 #include "vulkan_types"
+#include "window_settings.hpp"
 #include "window_surface.hpp"
 #include <vector>
 #include <freeable>
@@ -15,6 +16,8 @@ namespace CompWolf::Graphics
 	struct swapchain_frame
 	{
 		Private::vulkan_image_view image;
+		Private::vulkan_frame_buffer frame_buffer;
+
 		command_pool pool;
 	};
 
@@ -71,7 +74,7 @@ namespace CompWolf::Graphics
 		auto operator=(window_swapchain&&) -> window_swapchain& = default;
 
 		/* @throws std::runtime_error when something went wrong during window swapchain creation outside of the program. */
-		window_swapchain(Private::glfw_window window, window_surface& surface);
+		window_swapchain(window_settings& args, Private::glfw_window window, window_surface& surface);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

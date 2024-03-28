@@ -78,15 +78,6 @@
     <ClInclude Include="include\shader">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\draw_pipeline.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\shader\gpu_command.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\shader\draw_program.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\private\window\window_swapchain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,6 +129,18 @@
     <ClInclude Include="include\private\gpu\command_pool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\shader\draw_command.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shader\draw_pipeline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shader\draw_program.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\window\window_settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -173,15 +176,6 @@
     <ClCompile Include="src\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\draw_pipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\draw_program.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gpu_command.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\window_swapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -207,6 +201,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\command_pool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw_command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

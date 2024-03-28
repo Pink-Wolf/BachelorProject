@@ -100,18 +100,20 @@ namespace CompWolf
 	template<typename ValueType>
 	class value_event_wrapper : public const_value_event_wrapper<ValueType>
 	{
+	private: // fields
+		using super = const_value_event_wrapper<ValueType>;
 	public:
 		/* The type of value the value_event contains. */
-		using value_type = const_value_event_wrapper<ValueType>::value_type;
+		using value_type = super::value_type;
 		/* The type of value the value_event contains, as a reference type. */
-		using reference = const_value_event_wrapper<ValueType>::reference;
+		using reference = super::reference;
 		/* The type of value the value_event contains, as a const reference type. */
-		using const_reference = const_value_event_wrapper<ValueType>::const_reference;
+		using const_reference = super::const_reference;
 	protected:
 		template <typename ValueType>
-		static constexpr bool is_settible_v = const_value_event_wrapper<value_type>::is_settible<ValueType>::value;
+		static constexpr bool is_settible_v = super::is_settible<ValueType>::value;
 		template <typename ValueType>
-		static constexpr bool is_nothrow_settible_v = const_value_event_wrapper<value_type>::is_nothrow_settible<ValueType>::value;
+		static constexpr bool is_nothrow_settible_v = super::is_nothrow_settible<ValueType>::value;
 	public:
 		/* Sets the value. */
 		template <typename ValueType>
@@ -119,7 +121,7 @@ namespace CompWolf
 		inline void set(ValueType&& new_value)
 			noexcept(is_nothrow_settible_v<ValueType>)
 		{
-			const_value_event_wrapper<ValueType>::set<ValueType>(std::forward<ValueType>(new_value));
+			super::set<ValueType>(std::forward<ValueType>(new_value));
 		}
 
 		/* Sets the value. */
@@ -129,15 +131,15 @@ namespace CompWolf
 			noexcept(is_nothrow_settible_v<ValueType>)
 			-> const_reference
 		{
-			const_value_event_wrapper<value_type>::set<ValueType>(std::forward<ValueType>(new_value));
+			super::set<ValueType>(std::forward<ValueType>(new_value));
 
-			return const_value_event_wrapper<ValueType>::value();
+			return super::value();
 		}
 
 	public:
-		auto const_wrapper() const noexcept -> const_value_event_wrapper<value_type>&
+		auto const_wrapper() const noexcept -> super&
 		{
-			return *static_cast<const_value_event_wrapper<value_type>*>(const_cast<value_event_wrapper*>(this));
+			return *static_cast<super*>(const_cast<value_event_wrapper*>(this));
 		}
 	};
 }

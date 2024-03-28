@@ -2,43 +2,37 @@
 #include "shader"
 
 #include "compwolf_vulkan.hpp"
-#include "present_device_info.hpp"
-#include <stdexcept>
-#include <algorithm>
-#include <limits>
-#include <compwolf_utility>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Graphics
 {
-	/******************************** constructors ********************************/
+	/******************************** getters ********************************/
 
-	auto frame_draw_program::new_frameset(window_specific_pipeline& pipeline, gpu_command* command) -> frameset_type
+	auto draw_program::window_program(window& target) noexcept -> Private::draw_window_program&
 	{
-		auto size = pipeline.target_window().swapchain().frames().size();
-		frameset_type data;
-		data.reserve(size);
-		for (std::size_t i = 0; i < size; ++i)
-		{
-			data.emplace_back(pipeline, command, i);
-		}
-		return data;
+		return _window_commands.try_emplace(&target, _data, target).first->second;
 	}
-	void frame_draw_program::on_compile(window_specific_pipeline* pipeline, gpu_command* command, std::size_t index, const gpu_program_compile_parameter& args)
+
+	/******************************** other methods ********************************/
+
+	void Private::draw_frame_program::gpu_code(const gpu_program_input& args)
 	{
 		auto commandBuffer = Private::to_vulkan(args.command);
+		auto& frame = target_window().swapchain().frames()[frame_index()];
 
-		VkClearValue clearColor = { {{.0f, .0f, .0f, .0f}} };
+		auto& clear_color = _data->settings.background;
+		VkClearValue clearColor = { {{clear_color.x(), clear_color.y(), clear_color.z()}} };
+
 		uint32_t width, height;
 		{
-			auto size = pipeline->target_window().pixel_size().value();
+			auto size = target_window().pixel_size().value();
 			width = static_cast<uint32_t>(size.first);
 			height = static_cast<uint32_t>(size.second);
 		}
 
 		VkRenderPassBeginInfo renderpassInfo{
 			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			.renderPass = Private::to_vulkan(pipeline->vulkan_render_pass()),
-			.framebuffer = Private::to_vulkan(pipeline->vulkan_frame_buffer(index)),
+			.renderPass = Private::to_vulkan(target_window().surface().render_pass()),
+			.framebuffer = Private::to_vulkan(frame.frame_buffer),
 			.renderArea = {
 				.offset = {0, 0},
 				.extent = {
@@ -52,25 +46,36 @@ namespace CompWolf::Graphics::Private
 
 		vkCmdBeginRenderPass(commandBuffer, &renderpassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		{
-			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Private::to_vulkan(pipeline->vulkan_pipeline()));
-			VkViewport viewport{
-				.x = .0f,
-				.y = .0f,
-				.width = static_cast<float>(width),
-				.height = static_cast<float>(height),
-				.minDepth = .0f,
-				.maxDepth = 1.f,
+			draw_program_input draw_args{
+				{ args },
+				&target_window(),
+				frame_index(),
 			};
-			vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-			vkCmdSetScissor(commandBuffer, 0, 1, &renderpassInfo.renderArea);
-
-			gpu_command_compile_settings command_settings{
-				.command = Private::from_vulkan(commandBuffer),
-				.pipeline = pipeline,
-				.frame_index = index,
-			};
-			command->compile(command_settings);
+			_data->code(draw_args);
 		}
 		vkCmdEndRenderPass(commandBuffer);
+	}
+
+	/******************************** constructors ********************************/
+
+	Private::draw_window_program::draw_window_program(draw_program_data& data, window& target)
+		: _target_window(&target), _data(&data)
+	{
+		auto& frames = _target_window->swapchain().frames();
+		_frame_programs.reserve(frames.size());
+		for (std::size_t i = 0; i < frames.size(); ++i)
+		{
+			_frame_programs.emplace_back(data, target, i);
+		}
+	}
+
+	Private::draw_frame_program::draw_frame_program(draw_program_data& data, window& target, std::size_t frame_index)
+		: _target_window(&target), _data(&data), _frame_index(frame_index)
+		, _program(target.device()
+			, target.swapchain().frames()[frame_index].pool
+			, std::bind_front(&draw_frame_program::gpu_code, this)
+		)
+	{
+
 	}
 }

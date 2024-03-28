@@ -61,15 +61,14 @@ int main()
             .program_name = "Test CompWolf Program",
             .program_version = {1, 2, 3},
             });
-        window win(environment);
-
-        auto vert_shader = vertex_shader<vertex>(environment, load_shader("vertex.spv"));
-        auto frag_shader = shader(environment, load_shader("frag.spv"));
-        auto pipeline = draw_pipeline(draw_pipeline_settings{
-            .vertex_shader = &vert_shader,
-            .fragment_shader = &frag_shader,
+        window win(environment, window_settings{
+            .name = "Test Window",
             }
         );
+
+        auto vert_shader = vertex_shader<type_list<vertex>, type_list<transform>>(environment, load_shader("vertex.spv"));
+        auto frag_shader = shader(environment, load_shader("frag.spv"));
+        auto pipeline = draw_pipeline<vertex_shader<type_list<vertex>, type_list<transform>>>(vert_shader, frag_shader);
 
         gpu_vertex_buffer<vertex> vertices(win.device(), {
             {{-.5f, -.5f}, {1.f, 0.f, 0.f}},
@@ -81,10 +80,16 @@ int main()
 
         gpu_uniform_buffer<transform> trans(win.device(), transform());
 
-        auto draw_program = new_draw_program(pipeline,
-            bind_vertex_command(vertices),
-            bind_uniform_command(trans),
-            draw_command(indices)
+        auto drawer_command = draw_command<draw_pipeline<vertex_shader<type_list<vertex>, type_list<transform>>>>(
+            pipeline, indices, vertices, trans
+        );
+
+        auto drawer = draw_program
+        (
+            draw_program_settings{
+                .background = { 0, 0, 0 },
+            },
+            [&drawer_command](const draw_program_input& args) { return drawer_command(args); }
         );
 
         std::chrono::steady_clock clock;
@@ -110,7 +115,7 @@ int main()
                 data.position.y() = static_cast<float>(std::sin(total_time)) / 2;
             }
 
-            draw_program.draw(win);
+            drawer.execute(win);
             win.update_image();
             environment.update();
         }

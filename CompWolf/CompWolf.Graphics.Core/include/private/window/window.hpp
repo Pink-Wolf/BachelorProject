@@ -4,6 +4,7 @@
 #include <gpu>
 #include "graphics"
 #include "vulkan_types"
+#include "window_settings.hpp"
 #include "window_surface.hpp"
 #include "window_swapchain.hpp"
 #include <event>
@@ -11,6 +12,8 @@
 #include <utility>
 #include <freeable>
 #include <owned>
+#include <string_view>
+#include <concepts>
 
 namespace CompWolf::Graphics
 {
@@ -35,6 +38,8 @@ namespace CompWolf::Graphics
 	{
 	private: // fields
 		graphics_environment* _environment;
+		window_settings _settings;
+
 		using glfw_window_type = owned_ptr<Private::glfw_window>;
 		glfw_window_type _glfw_window;
 
@@ -133,7 +138,9 @@ namespace CompWolf::Graphics
 		event<window_close_parameter> closed;
 		using closed_parameter_type = window_close_parameter;
 
-	public: // constructors
+	private: // constructors
+		void setup();
+	public:
 		/* Constructs a window that is already closed. */
 		window() = default;
 		window(window&&) = default;
@@ -144,7 +151,13 @@ namespace CompWolf::Graphics
 		}
 
 		/* @throws std::runtime_error when something went wrong during window creation outside of the program. */
-		window(graphics_environment& environment);
+		template <typename SettingsInputType>
+			requires std::constructible_from<window_settings, SettingsInputType>
+		window(graphics_environment& environment, SettingsInputType settings)
+			: _environment(&environment), _settings(settings)
+		{
+			setup();
+		}
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

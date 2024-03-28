@@ -184,6 +184,9 @@
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
     <ClInclude Include="include\private\gpu\command_pool.hpp" />
+    <ClInclude Include="include\private\shader\draw_command.hpp" />
+    <ClInclude Include="include\private\shader\draw_pipeline.hpp" />
+    <ClInclude Include="include\private\shader\draw_program.hpp" />
     <ClInclude Include="include\private\shader\gpu_buffer.hpp" />
     <ClInclude Include="include\private\shader\gpu_program.hpp" />
     <ClInclude Include="include\private\shader\shader_field.hpp" />
@@ -192,14 +195,12 @@
     <ClInclude Include="include\private\shader\shader_field\shader_field_info.hpp" />
     <ClInclude Include="include\private\shader\shader_field\shader_field_info_extractor.hpp" />
     <ClInclude Include="include\private\shader\vertex_shader.hpp" />
+    <ClInclude Include="include\private\window\window_settings.hpp" />
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
     <ClInclude Include="include\private\window\window_surface.hpp" />
-    <ClInclude Include="include\private\shader\gpu_command.hpp" />
-    <ClInclude Include="include\private\shader\draw_program.hpp" />
     <ClInclude Include="include\private\shader\shader.hpp" />
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
     <ClInclude Include="include\private\window\window.hpp" />
-    <ClInclude Include="include\private\shader\draw_pipeline.hpp" />
     <ClInclude Include="include\private\window\window_user.hpp" />
     <ClInclude Include="include\shader" />
     <ClInclude Include="include\vulkan_types" />
@@ -207,11 +208,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\command_pool.cpp" />
+    <ClCompile Include="src\draw_command.cpp" />
+    <ClCompile Include="src\draw_pipeline.cpp" />
+    <ClCompile Include="src\draw_program.cpp" />
     <ClCompile Include="src\glfw_handle.cpp" />
     <ClCompile Include="src\gpu.cpp" />
     <ClCompile Include="src\gpu_buffer.cpp" />
-    <ClCompile Include="src\gpu_command.cpp" />
-    <ClCompile Include="src\draw_program.cpp" />
     <ClCompile Include="src\gpu_fence.cpp" />
     <ClCompile Include="src\gpu_job.cpp" />
     <ClCompile Include="src\gpu_manager.cpp" />
@@ -225,7 +227,6 @@
     </ClCompile>
     <ClCompile Include="src\present_device_info.cpp" />
     <ClCompile Include="src\shader.cpp" />
-    <ClCompile Include="src\draw_pipeline.cpp" />
     <ClCompile Include="src\shader_field.cpp" />
     <ClCompile Include="src\vulkan_debug_handle.cpp" />
     <ClCompile Include="src\vulkan_handle.cpp" />

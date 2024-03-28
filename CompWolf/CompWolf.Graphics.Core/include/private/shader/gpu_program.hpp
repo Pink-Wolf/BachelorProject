@@ -8,11 +8,11 @@
 
 namespace CompWolf::Graphics
 {
-	struct gpu_program_compile_parameter
+	struct gpu_program_input
 	{
 		Private::vulkan_command command;
 	};
-	using gpu_program_compile_function = std::function<void(const gpu_program_compile_parameter&)>;
+	using gpu_program_code = std::function<void(const gpu_program_input&)>;
 
 	class gpu_program : public basic_freeable
 	{
@@ -36,11 +36,11 @@ namespace CompWolf::Graphics
 	public: // constructors
 		gpu_program() = default;
 		gpu_program(gpu_program&&) = default;
-		auto operator=(gpu_program&&)->gpu_program & = default;
+		auto operator=(gpu_program&&) -> gpu_program& = default;
 
 		gpu_program(gpu& target_device
 			, command_pool& pool
-			, gpu_program_compile_function code
+			, gpu_program_code code
 		);
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

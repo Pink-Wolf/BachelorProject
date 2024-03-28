@@ -40,17 +40,24 @@ namespace CompWolf::Graphics
 
 		VkDescriptorSetLayout uniformLayout;
 		{
-			VkDescriptorSetLayoutBinding uniformBinding{
-				.binding = 0,
-				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-				.descriptorCount = 1,
-				.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-			};
+			std::vector<VkDescriptorSetLayoutBinding> uniformBindings;
+			uniformBindings.reserve(data.uniform_buffer_count);
+			for (std::size_t i = 0; i < data.uniform_buffer_count; ++i)
+			{
+				uniformBindings.emplace_back(VkDescriptorSetLayoutBinding
+					{
+						.binding = static_cast<uint32_t>(i),
+						.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+						.descriptorCount = 1,
+						.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+					}
+				);
+			}
 
 			VkDescriptorSetLayoutCreateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-				.bindingCount = 1,
-				.pBindings = &uniformBinding,
+				.bindingCount = static_cast<uint32_t>(uniformBindings.size()),
+				.pBindings = uniformBindings.data(),
 			};
 
 			auto result = vkCreateDescriptorSetLayout(logicDevice, &createInfo, nullptr, &uniformLayout);
@@ -84,6 +91,11 @@ namespace CompWolf::Graphics
 		_layout = Private::from_vulkan(pipelineLayout);
 	}
 
+	struct InputStateCreateInfoData
+	{
+		VkVertexInputBindingDescription description;
+		std::vector<VkVertexInputAttributeDescription> attributes;
+	};
 	void window_specific_pipeline::setup()
 	{
 		_descriptor_pool = nullptr;
@@ -119,33 +131,46 @@ namespace CompWolf::Graphics
 				stageCreateInfo = { std::move(vertexCreateInfo), std::move(fragCreateInfo) };
 			}
 
-			VkVertexInputBindingDescription inputBinding{
-				.binding = 0,
-				.stride = static_cast<uint32_t>(_pipeline_data->input_stride),
-				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
-			};
-			std::vector<VkVertexInputAttributeDescription> inputAttributes;
-			inputAttributes.reserve(_pipeline_data->input_types->size());
-			for (uint32_t i = 0; i < _pipeline_data->input_types->size(); ++i)
+			std::vector<VkVertexInputBindingDescription> bindingDescriptions;
+			std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
 			{
-				auto& info = *Private::to_private(_pipeline_data->input_types->operator[](i));
-				auto offset = (*_pipeline_data->input_offsets)[i];
-				inputAttributes.push_back(VkVertexInputAttributeDescription
-					{
-						.location = i,
-						.binding = 0,
-						.format = info.format,
-						.offset = static_cast<uint32_t>(offset),
-					}
-				);
-			}
+				auto inputTypeCount = _pipeline_data->input_types.size();
+				bindingDescriptions.reserve(inputTypeCount); attributeDescriptions.reserve(inputTypeCount);
+				for (std::size_t vertex_index = 0; vertex_index < inputTypeCount; ++vertex_index)
+				{
+					auto& input_types = *_pipeline_data->input_types[vertex_index];
+					auto& input_offsets = *_pipeline_data->input_offsets[vertex_index];
 
-			VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{
+					bindingDescriptions.emplace_back(VkVertexInputBindingDescription
+						{
+							.binding = static_cast<uint32_t>(vertex_index),
+							.stride = static_cast<uint32_t>(_pipeline_data->input_stride[vertex_index]),
+							.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+						}
+					);
+
+					attributeDescriptions.reserve(attributeDescriptions.size() + input_types.size());
+					for (uint32_t i = 0; i < input_types.size(); ++i)
+					{
+						auto& info = *Private::to_private(input_types[i]);
+						auto offset = input_offsets[i];
+						attributeDescriptions.emplace_back(VkVertexInputAttributeDescription
+							{
+								.location = i,
+								.binding = 0,
+								.format = info.format,
+								.offset = static_cast<uint32_t>(offset),
+							}
+						);
+					}
+				}
+			}
+			VkPipelineVertexInputStateCreateInfo inputCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-				.vertexBindingDescriptionCount = 1,
-				.pVertexBindingDescriptions = &inputBinding,
-				.vertexAttributeDescriptionCount = static_cast<uint32_t>(inputAttributes.size()),
-				.pVertexAttributeDescriptions = inputAttributes.data(),
+				.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size()),
+				.pVertexBindingDescriptions = bindingDescriptions.data(),
+				.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size()),
+				.pVertexAttributeDescriptions = attributeDescriptions.data(),
 			};
 			VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
@@ -326,7 +351,7 @@ namespace CompWolf::Graphics
 					.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
 					.stageCount = static_cast<uint32_t>(stageCreateInfo.size()),
 					.pStages = stageCreateInfo.data(),
-					.pVertexInputState = &vertexInputCreateInfo,
+					.pVertexInputState = &inputCreateInfo,
 					.pInputAssemblyState = &inputAssemblyCreateInfo,
 					.pViewportState = &viewportCreateInfo,
 					.pRasterizationState = &rasterizationCreateInfo,

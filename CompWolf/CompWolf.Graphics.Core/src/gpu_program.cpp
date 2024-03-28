@@ -10,7 +10,7 @@ namespace CompWolf::Graphics
 
 	gpu_program::gpu_program(gpu& target_device
 		, command_pool& pool
-		, gpu_program_compile_function code
+		, gpu_program_code code
 	) : _device(&target_device)
 		, _command_pool(&pool)
 		, _vulkan_command(nullptr)
@@ -52,7 +52,7 @@ namespace CompWolf::Graphics
 				}
 			}
 
-			gpu_program_compile_parameter compile_parameter{
+			gpu_program_input compile_parameter{
 				.command = _vulkan_command
 			};
 

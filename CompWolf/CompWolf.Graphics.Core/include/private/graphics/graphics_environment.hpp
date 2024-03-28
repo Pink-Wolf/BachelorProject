@@ -3,7 +3,7 @@
 
 #include "vulkan_types"
 #include <thread>
-#include <type_traits>
+#include <concepts>
 #include <event>
 
 #include "graphics_environment_settings.hpp"
@@ -109,7 +109,7 @@ namespace CompWolf::Graphics
 		 * @throws std::runtime_error when something went wrong during setup outside of the program.
 		 */
 		template <typename SettingsInputType>
-			requires std::is_constructible_v<SettingsInputType, graphics_environment_settings>
+			requires std::constructible_from<graphics_environment_settings, SettingsInputType>
 		graphics_environment(SettingsInputType settings) : _settings(settings)
 			{ setup(); }
 		/* If not yet set up, sets up program-wide logic.

@@ -21,9 +21,14 @@ namespace CompWolf::Graphics
 	{
 		struct draw_pipeline_data
 		{
-			const std::vector<Private::shader_field_info_handle>* input_types;
-			const std::vector<std::size_t>* input_offsets;
-			std::size_t input_stride;
+			using input_types_type = std::vector<const std::vector<Private::shader_field_info_handle>*>;
+			input_types_type input_types;
+			using input_offsets_type = std::vector<const std::vector<std::size_t>*>;
+			input_offsets_type input_offsets;
+			using input_stride_type = std::vector<std::size_t>;
+			input_stride_type input_stride;
+
+			std::size_t uniform_buffer_count;
 
 			shader* vertex_shader;
 			shader* fragment_shader;
@@ -94,9 +99,9 @@ namespace CompWolf::Graphics
 		inline auto vulkan_pipeline() const noexcept { return _pipeline; }
 		inline auto vulkan_frame_buffer(std::size_t index) const noexcept { return _frame_buffers[index]; }
 
-	private: // constructor
+	private: // constructors
 		void setup();
-	public: // constructor
+	public:
 		window_specific_pipeline() = default;
 		window_specific_pipeline(window_specific_pipeline&&) = default;
 		auto operator=(window_specific_pipeline&&)->window_specific_pipeline & = default;
@@ -142,7 +147,7 @@ namespace CompWolf::Graphics
 		public: // constructors
 			base_draw_pipeline() = default;
 			base_draw_pipeline(base_draw_pipeline&&) = default;
-			auto operator =(base_draw_pipeline&&)->base_draw_pipeline & = default;
+			auto operator =(base_draw_pipeline&&) -> base_draw_pipeline& = default;
 			inline ~base_draw_pipeline() noexcept
 			{
 				free();
@@ -166,35 +171,44 @@ namespace CompWolf::Graphics
 		};
 	}
 
-	template <ShaderField InputType>
-	struct draw_pipeline_settings
+	template <typename VertexShaderType>
+	class draw_pipeline
 	{
-		vertex_shader<InputType>* vertex_shader;
-		shader* fragment_shader;
+		static_assert(std::same_as<VertexShaderType, VertexShaderType>, "draw_pipeline was not given a proper vertex shader");
 	};
 
-	template <ShaderField InputType>
-	class draw_pipeline : public Private::base_draw_pipeline
+	template <typename... VertexTypes, typename... UniformDataTypes>
+	class draw_pipeline<vertex_shader<type_list<VertexTypes...>, type_list<UniformDataTypes...>>>
+		: public Private::base_draw_pipeline
 	{
 	public: // fields
-		using shader_input_types = shader_field_info<InputType>::types;
+		using vertex_shader_type = vertex_shader<type_list<VertexTypes...>, type_list<UniformDataTypes...>>;
+		using fragment_shader_type = shader;
 
 	public: // constructors
 		draw_pipeline() = default;
 		draw_pipeline(draw_pipeline&&) = default;
-		auto operator =(draw_pipeline&&)->draw_pipeline & = default;
+		auto operator =(draw_pipeline&&) -> draw_pipeline& = default;
 		inline ~draw_pipeline() noexcept
 		{
 			free();
 		}
 
-		draw_pipeline(draw_pipeline_settings<InputType> settings) : base_draw_pipeline(Private::draw_pipeline_data
+		draw_pipeline(vertex_shader_type& vertex_shader, fragment_shader_type& fragment_shader)
+			: base_draw_pipeline(Private::draw_pipeline_data
 			{
-				.input_types = &shader_field_info_handles<InputType, std::vector<Private::shader_field_info_handle>>(),
-				.input_offsets = &shader_field_info_offsets<InputType, std::vector<std::size_t>>(),
-				.input_stride = sizeof(InputType),
-				.vertex_shader = static_cast<shader*>(settings.vertex_shader),
-				.fragment_shader = settings.fragment_shader,
+				.input_types = Private::draw_pipeline_data::input_types_type({
+					&shader_field_info_handles<VertexTypes, std::vector<Private::shader_field_info_handle>>()...
+				}),
+				.input_offsets = Private::draw_pipeline_data::input_offsets_type({
+					&shader_field_info_offsets<VertexTypes, std::vector<std::size_t>>()...
+				}),
+				.input_stride = {
+					sizeof(VertexTypes)...
+				},
+				.uniform_buffer_count = type_list<UniformDataTypes...>::size,
+				.vertex_shader = static_cast<shader*>(&vertex_shader),
+				.fragment_shader = &fragment_shader,
 			}
 		)
 		{}

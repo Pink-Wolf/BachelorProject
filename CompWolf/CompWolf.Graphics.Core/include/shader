@@ -3,6 +3,6 @@
 #include "private/shader/shader.hpp"
 #include "private/shader/vertex_shader.hpp"
 #include "private/shader/draw_pipeline.hpp"
-#include "private/shader/gpu_command.hpp"
 #include "private/shader/gpu_program.hpp"
 #include "private/shader/draw_program.hpp"
+#include "private/shader/draw_command.hpp"

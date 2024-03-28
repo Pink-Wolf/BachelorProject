@@ -29,12 +29,12 @@ namespace CompWolf::Graphics
 
 		_pixel_size.set(std::make_pair(width, height));
 
-		_surface = window_surface(environment(), _glfw_window, window_surface_settings
-			{
-				.target_device = &old_device
+		_surface = window_surface(_settings, _glfw_window, window_surface_settings{
+				.environment = _environment,
+				.target_device = &old_device,
 			}
 		);
-		_swapchain = window_swapchain(_glfw_window, _surface);
+		_swapchain = window_swapchain(_settings, _glfw_window, _surface);
 
 		event_args = window_rebuild_swapchain_parameter{
 			.old_surface = nullptr,
@@ -79,17 +79,25 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	window::window(graphics_environment& environment) : _environment(&environment)
+	void window::setup()
 	{
-		auto instance = Private::to_vulkan(environment.vulkan_instance());
+		auto instance = Private::to_vulkan(_environment->vulkan_instance());
+
+		if (_settings.pixel_size.first <= 0 || _settings.pixel_size.second <= 0)
+			_settings.pixel_size = std::make_pair(640, 480);
+
+		if (_settings.name.empty())
+			_settings.name = "Window";
 
 		try
 		{
-			_pixel_size = std::make_pair(640, 480);
+			_pixel_size = _settings.pixel_size;
 
 			{
 				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-				auto glfwWindow = glfwCreateWindow(_pixel_size.value().first, _pixel_size.value().second, "Window", nullptr, nullptr);
+				auto glfwWindow = glfwCreateWindow(_pixel_size.value().first, _pixel_size.value().second
+					, _settings.name.data()
+					, nullptr, nullptr);
 				if (!glfwWindow) switch (glfwGetError(NULL))
 				{
 				case GLFW_API_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right API.");
@@ -113,8 +121,11 @@ namespace CompWolf::Graphics
 					});
 			}
 
-			_surface = window_surface(environment, _glfw_window, window_surface_settings());
-			_swapchain = window_swapchain(_glfw_window, _surface);
+			_surface = window_surface(_settings, _glfw_window, window_surface_settings{
+				.environment = _environment,
+				}
+			);
+			_swapchain = window_swapchain(_settings, _glfw_window, _surface);
 		}
 		catch (...)
 		{

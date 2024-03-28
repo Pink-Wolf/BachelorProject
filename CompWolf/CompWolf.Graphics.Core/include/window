@@ -1,3 +1,4 @@
+#include "private/window/window_settings.hpp"
 #include "private/window/window_surface.hpp"
 #include "private/window/window_swapchain.hpp"
 #include "private/window/window.hpp"

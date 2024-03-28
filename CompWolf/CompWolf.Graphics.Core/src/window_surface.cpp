@@ -11,15 +11,14 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	window_surface::window_surface(graphics_environment& environment, Private::glfw_window& window, window_surface_settings settings)
-		: _vulkan_surface(nullptr), _format(nullptr)
+	window_surface::window_surface(window_settings&, Private::glfw_window& window, window_surface_settings settings)
+		: _vulkan_surface(nullptr), _format(nullptr), _render_pass(nullptr)
 	{
-		auto instance = Private::to_vulkan(environment.vulkan_instance());
+		auto instance = Private::to_vulkan(settings.environment->vulkan_instance());
 		auto glfwWindow = Private::to_glfw(window);
 
 		try
 		{
-			// Surface
 			VkSurfaceKHR surface;
 			{
 				auto result = glfwCreateWindowSurface(instance, glfwWindow, nullptr, &surface);
@@ -33,23 +32,73 @@ namespace CompWolf::Graphics
 				_vulkan_surface = Private::from_vulkan(surface);
 			}
 
-			// Job
-			Private::surface_format_info job_info;
+			Private::surface_format_info* surface_format;
 			{
 				std::unordered_map<Private::vulkan_physical_device, Private::surface_format_info> device_infos;
-				_draw_present_job = environment.gpus().new_persistent_job(gpu_job_settings{
+				_draw_present_job = settings.environment->gpus().new_persistent_job(gpu_job_settings{
 					.type = {gpu_job_type::present, gpu_job_type::draw},
 					.priority = gpu_job_priority::high,
 					.gpu_scorer = Private::evaluate_gpu_for_present(device_infos, _vulkan_surface, settings),
 					});
-				job_info = std::move(device_infos[_draw_present_job.device().vulkan_physical_device()]);
-			}
-			auto& job_family = _draw_present_job.family();
-			auto& gpu_device = _draw_present_job.device();
-			auto device = Private::to_vulkan(gpu_device.vulkan_device());
+				auto& job_info = device_infos[_draw_present_job.device().vulkan_physical_device()];
 
-			_format = Private::from_private(new Private::surface_format_info(std::move(job_info)));
-			_target_gpu = &gpu_device;
+				_target_gpu = &_draw_present_job.device();
+				surface_format = new Private::surface_format_info(std::move(job_info));
+				_format = Private::from_private(surface_format);
+			}
+			auto logicDevice = Private::to_vulkan(device().vulkan_device());
+
+			VkRenderPass renderPass;
+			{
+				VkAttachmentDescription colorAttachment{
+					.format = surface_format->format.format,
+					.samples = VK_SAMPLE_COUNT_1_BIT,
+					.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+					.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+					.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+					.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+					.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+					.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+				};
+
+				VkAttachmentReference colorAttachmentReference{
+					.attachment = 0,
+					.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+				};
+				VkSubpassDescription subpass{
+					.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+					.colorAttachmentCount = 1,
+					.pColorAttachments = &colorAttachmentReference,
+				};
+
+				VkSubpassDependency dependency{
+					.srcSubpass = VK_SUBPASS_EXTERNAL,
+					.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+					.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+					.srcAccessMask = 0,
+					.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+				};
+
+				VkRenderPassCreateInfo createInfo{
+					.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+					.attachmentCount = 1,
+					.pAttachments = &colorAttachment,
+					.subpassCount = 1,
+					.pSubpasses = &subpass,
+					.dependencyCount = 1,
+					.pDependencies = &dependency,
+				};
+
+				auto result = vkCreateRenderPass(logicDevice, &createInfo, nullptr, &renderPass);
+
+				switch (result)
+				{
+				case VK_SUCCESS: break;
+				default: throw std::runtime_error("Could not set up \"render pass\" for drawing on a window.");
+				}
+
+				_render_pass = Private::from_vulkan(renderPass);
+			}
 		}
 		catch (...)
 		{
@@ -67,8 +116,9 @@ namespace CompWolf::Graphics
 		if (empty()) return;
 
 		auto instance = Private::to_vulkan(device().vulkan_instance());
-		auto vulkan_device = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
+		if (_render_pass) vkDestroyRenderPass(logicDevice, Private::to_vulkan(_render_pass), nullptr);
 		if (_format) delete Private::to_private(_format);
 		if (_vulkan_surface) vkDestroySurfaceKHR(instance, Private::to_vulkan(_vulkan_surface), nullptr);
 

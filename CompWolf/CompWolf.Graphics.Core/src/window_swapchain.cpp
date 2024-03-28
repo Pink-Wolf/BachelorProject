@@ -39,7 +39,7 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	window_swapchain::window_swapchain(Private::glfw_window window, window_surface& window_surface)
+	window_swapchain::window_swapchain(window_settings& settings, Private::glfw_window window, window_surface& window_surface)
 		: _vulkan_swapchain(nullptr)
 	{
 		auto glfwWindow = Private::to_glfw(window);
@@ -52,6 +52,13 @@ namespace CompWolf::Graphics
 		auto& surface_format = *Private::to_private(window_surface.format());
 
 		auto& job = window_surface.draw_present_job();
+
+		uint32_t width, height;
+		{
+			auto size = settings.pixel_size;
+			width = static_cast<uint32_t>(size.first);
+			height = static_cast<uint32_t>(size.second);
+		}
 
 		try
 		{
@@ -103,7 +110,7 @@ namespace CompWolf::Graphics
 				_vulkan_swapchain = Private::from_vulkan(swapchain);
 			}
 
-			// Swapchain images
+			// Frames
 			{
 				auto images = Private::get_size_and_vector<uint32_t, VkImage>([logicDevice, swapchain](uint32_t* size, VkImage* data)
 					{
@@ -155,8 +162,35 @@ namespace CompWolf::Graphics
 					_frames.push_back(std::move(swapchain_frame
 						{
 							.image = Private::from_vulkan(view),
+							.frame_buffer = nullptr,
 						}
 					));
+				}
+
+				for (auto& frame : _frames)
+				{
+					auto swapchainImage = Private::to_vulkan(frame.image);
+
+					VkFramebufferCreateInfo create_info{
+						.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+						.renderPass = Private::to_vulkan(window_surface.render_pass()),
+						.attachmentCount = 1,
+						.pAttachments = &swapchainImage,
+						.width = width,
+						.height = height,
+						.layers = 1,
+					};
+
+					VkFramebuffer framebuffer;
+					auto result = vkCreateFramebuffer(logicDevice, &create_info, nullptr, &framebuffer);
+
+					switch (result)
+					{
+					case VK_SUCCESS: break;
+					default: throw std::runtime_error("Could not set up \"framebuffer\" for pipeline.");
+					}
+
+					frame.frame_buffer = Private::from_vulkan(framebuffer);
 				}
 
 				for (auto& frame : _frames)
@@ -188,7 +222,8 @@ namespace CompWolf::Graphics
 		vkDeviceWaitIdle(logicDevice);
 
 		for (auto& frame : _frames)
-		{
+		{ 
+			if (frame.frame_buffer) vkDestroyFramebuffer(logicDevice, Private::to_vulkan(frame.frame_buffer), nullptr);
 			if (frame.image) vkDestroyImageView(logicDevice, Private::to_vulkan(frame.image), nullptr);
 			frame.pool.free();
 		}

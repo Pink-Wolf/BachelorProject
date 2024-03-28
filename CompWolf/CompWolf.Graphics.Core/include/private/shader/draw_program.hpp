@@ -1,205 +1,126 @@
 #ifndef COMPWOLF_GRAPHICS_DRAW_PROGRAM_HEADER
 #define COMPWOLF_GRAPHICS_DRAW_PROGRAM_HEADER
 
-#include "gpu_program.hpp"
 #include "vulkan_types"
+#include "gpu_program.hpp"
 #include "window"
-#include "draw_pipeline.hpp"
-#include "gpu_command.hpp"
 #include <functional>
+#include <dimensions>
 #include <utility>
+#include <concepts>
+#include <map>
+#include <vector>
 
 namespace CompWolf::Graphics
 {
+	struct draw_program_input : public gpu_program_input
+	{
+		window* target_window;
+		std::size_t frame_index;
+	};
+	using draw_program_code = std::function<void(const draw_program_input&)>;
+
+	struct draw_program_settings
+	{
+		float3 background;
+	};
+
 	namespace Private
 	{
-		class frame_draw_program : public gpu_program
+		struct draw_program_data
 		{
-		public: // fields
-			using frameset_type = std::vector<frame_draw_program>;
-		public:
-			window_specific_pipeline* _pipeline;
-			std::size_t _index;
-
-		public: // getters
-			inline auto target_window() -> window& { return _pipeline->target_window(); }
-			inline auto target_window() const -> const window& { return _pipeline->target_window(); }
-
-			inline auto frame() -> swapchain_frame& { return target_window().swapchain().frames()[_index]; }
-
-			static inline auto current_frame(frameset_type& frameset) -> frame_draw_program&
-			{
-				auto& target_window = frameset[0]._pipeline->target_window();
-				auto index = target_window.swapchain().current_frame_index();
-				return frameset[index];
-			}
-			static inline auto current_frame(const frameset_type& frameset) -> const frame_draw_program&
-			{
-				auto& target_window = frameset[0]._pipeline->target_window();
-				auto index = target_window.swapchain().current_frame_index();
-				return frameset[index];
-			}
-
-		public: // other methods
-
-			auto draw() -> gpu_fence& { return execute(); }
-
-		private: // constructors
-			static void on_compile(window_specific_pipeline* pipeline, gpu_command* command, std::size_t index, const gpu_program_compile_parameter&);
-		public:
-			frame_draw_program() = default;
-			frame_draw_program(frame_draw_program&&) = default;
-			auto operator=(frame_draw_program&&) -> frame_draw_program& = default;
-
-			frame_draw_program(window_specific_pipeline& pipeline, gpu_command* command, std::size_t index)
-				: gpu_program(pipeline.target_window().device()
-					, pipeline.target_window().swapchain().frames()[index].pool
-				, std::bind_front(&frame_draw_program::on_compile, &pipeline, command, index)
-				)
-				, _pipeline(&pipeline)
-				, _index(index)
-			{}
-
-			static auto new_frameset(window_specific_pipeline& pipeline, gpu_command* command) -> frameset_type;
+			draw_program_settings settings;
+			draw_program_code code;
 		};
 
-		class window_draw_program : public basic_freeable, private free_on_dependent_freed<window_specific_pipeline>
+		class draw_frame_program
 		{
-		private:
-			gpu_command* _command;
-			using frame_data = Private::frame_draw_program;
-			frame_data::frameset_type _programs_for_frames;
+		private: // fields
+			window* _target_window;
+			draw_program_data* _data;
+			std::size_t _frame_index;
+
+			gpu_program _program;
 
 		public: // getters
-			inline auto pipeline() noexcept -> window_specific_pipeline&
-			{
-				window_specific_pipeline* p;
-				get_dependent(p);
-				return *p;
-			}
-			inline auto pipeline() const noexcept -> const window_specific_pipeline&
-			{
-				const window_specific_pipeline* p;
-				get_dependent(p);
-				return *p;
-			}
+			inline auto target_window() noexcept -> window& { return *_target_window; }
+			inline auto target_window() const noexcept -> const window& { return *_target_window; }
 
-			inline auto target_window() noexcept -> window& { return pipeline().target_window(); }
-			inline auto target_window() const noexcept -> const window& { return pipeline().target_window(); }
+			inline auto frame_index() const noexcept { return _frame_index; }
 
 		public: // other methods
-			inline void draw() { frame_data::current_frame(_programs_for_frames).draw(); }
+			auto execute() -> gpu_fence& { return _program.execute(); }
+		private:
+			void gpu_code(const gpu_program_input&);
+			
+		public: // constructors
+			draw_frame_program() = default;
+			draw_frame_program(draw_frame_program&&) = default;
+			auto operator=(draw_frame_program&&) -> draw_frame_program& = default;
+
+			draw_frame_program(draw_program_data& data, window& target, std::size_t frame_index);
+		};
+
+		class draw_window_program
+		{
+		private: // fields
+			window* _target_window;
+			draw_program_data* _data;
+			std::vector<draw_frame_program> _frame_programs;
+
+		public: // getters
+			inline auto target_window() noexcept -> window& { return *_target_window; }
+			inline auto target_window() const noexcept -> const window& { return *_target_window; }
+
+			inline auto frame_program(std::size_t frame_index) noexcept -> draw_frame_program& { return _frame_programs[frame_index]; }
+			inline auto frame_program(std::size_t frame_index) const noexcept -> const draw_frame_program& { return _frame_programs[frame_index]; }
+			
+			inline auto current_frame_program() noexcept -> draw_frame_program&
+			{ return frame_program(target_window().swapchain().current_frame_index()); }
+			inline auto current_frame_program() const noexcept -> const draw_frame_program&
+			{ return frame_program(target_window().swapchain().current_frame_index()); }
+
+		public: // operators
+			auto execute() -> gpu_fence& { return current_frame_program().execute(); }
 
 		public: // constructors
-			window_draw_program() = default;
-			window_draw_program(window_draw_program&&) = default;
-			auto operator=(window_draw_program&&) -> window_draw_program& = default;
-			~window_draw_program() noexcept { free(); }
+			draw_window_program() = default;
+			draw_window_program(draw_window_program&&) = default;
+			auto operator=(draw_window_program&&) -> draw_window_program& = default;
 
-			window_draw_program(window_specific_pipeline& pipeline, gpu_command* command)
-				: free_on_dependent_freed<window_specific_pipeline>(pipeline)
-				, _command(command)
-				, _programs_for_frames(frame_data::new_frameset(pipeline, command)) {}
-
-		public: // CompWolf::freeable
-			inline auto empty() const noexcept -> bool final
-			{
-				return _programs_for_frames.empty();
-			}
-			void free() noexcept final
-			{
-				if (empty()) return;
-				_programs_for_frames.clear();
-				set_dependent(nullptr);
-			}
+			draw_window_program(draw_program_data& data, window& target);
 		};
 	}
 
-	template <ShaderField InputType, typename CommandType>
-		requires std::is_base_of_v<gpu_command, CommandType>
-	class draw_program : public basic_freeable
+	class draw_program
 	{
-	public: // fields
-		using command_type = CommandType;
-	private:
-		draw_pipeline<InputType>* _pipeline;
-		command_type _command;
+	private: // fields
+		Private::draw_program_data _data;
 
-		std::map<window*, Private::window_draw_program> _window_data;
+		std::map<window*, Private::draw_window_program> _window_commands;
 
 	public: // getters
-		inline auto pipeline() noexcept -> draw_pipeline<InputType>&
+		auto window_program(window&) noexcept -> Private::draw_window_program&;
+		inline auto window_program(window& target) const noexcept -> const Private::draw_window_program&
 		{
-			return *_pipeline;
-		}
-		inline auto pipeline() const noexcept -> const draw_pipeline<InputType>&
-		{
-			return *_pipeline;
+			const_cast<draw_program*>(this)->window_program(target);
 		}
 
-		inline auto command() noexcept -> gpu_command&
-		{
-			return _command;
-		}
-		inline auto command() const noexcept -> const gpu_command&
-		{
-			return _command;
-		}
-
-	private:
-		auto get_window_data(window& target_window) -> Private::window_draw_program&
-		{
-			auto iterator = _window_data.find(&target_window);
-			if (iterator != _window_data.end())
-			{
-				auto& window_data = iterator->second;
-				if (window_data.empty()) _window_data.erase(iterator);
-				else return window_data;
-			}
-			return _window_data.try_emplace(
-				&target_window,
-				pipeline().window_data(target_window),
-				&command()
-			).first->second;
-		}
-
-	public: // other methods
-		inline void draw(window& target_window)
-		{
-			get_window_data(target_window).draw();
-		}
+	public: // operators
+		inline auto execute(window& target) -> gpu_fence& { return window_program(target).execute(); }
 
 	public: // constructors
 		draw_program() = default;
+		draw_program(draw_program&&) = default;
+		auto operator=(draw_program&&) -> draw_program& = default;
 
-		template <typename TInput>
-			requires std::is_constructible_v<command_type, TInput>
-		draw_program(draw_pipeline<InputType>& pipeline, TInput&& command) :
-			_pipeline(&pipeline),
-			_command(std::forward<TInput>(command))
+		draw_program(draw_program_settings& settings, draw_program_code&& code)
+			: _data{ settings, std::move(code) }
 		{}
-
-	public: // CompWolf::freeable
-		inline auto empty() const noexcept -> bool final
-		{
-			return _window_data.empty();
-		}
-		inline void free() noexcept final
-		{
-			_window_data.clear();
-		}
+		draw_program(draw_program_settings&& settings, draw_program_code&& code)
+			: _data{ std::move(settings), std::move(code) }
+		{}
 	};
-
-	template <ShaderField InputType, typename... CommandTypes>
-		requires (std::is_base_of_v<gpu_command, CommandTypes> && ...)
-	auto new_draw_program(draw_pipeline<InputType>& pipeline, CommandTypes... command)
-	{
-		return draw_program<InputType, gpu_commands<CommandTypes...>>(pipeline,
-				gpu_commands<CommandTypes...>(
-					std::move(command)...
-				)
-			);
-	}
 }
 
 #endif // ! COMPWOLF_GRAPHICS_DRAW_PROGRAM_HEADER
