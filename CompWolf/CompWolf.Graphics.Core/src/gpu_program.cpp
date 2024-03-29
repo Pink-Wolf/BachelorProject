@@ -87,15 +87,10 @@ namespace CompWolf::Graphics
 		auto vulkanCommand = Private::to_vulkan(_vulkan_command);
 
 		{
-			VkPipelineStageFlags waitStages[]{
-				VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-				VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-			};
 			VkSubmitInfo submitInfo{
 				.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount = (oldSemaphore == nullptr) ? 0_uint32 : 1_uint32,
 				.pWaitSemaphores = &oldSemaphore,
-				.pWaitDstStageMask = waitStages,
 				.commandBufferCount = 1,
 				.pCommandBuffers = &vulkanCommand,
 				.signalSemaphoreCount = 1,

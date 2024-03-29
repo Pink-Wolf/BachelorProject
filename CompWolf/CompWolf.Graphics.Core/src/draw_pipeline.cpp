@@ -99,13 +99,13 @@ namespace CompWolf::Graphics
 	void window_specific_pipeline::setup()
 	{
 		_descriptor_pool = nullptr;
-		_render_pass = nullptr;
 		_pipeline = nullptr;
 
 		auto& gpu_device = target_window().device();
 		auto& thread_family = target_window().draw_present_job().family();
 		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
 		auto& surface_format = *Private::to_private(target_window().surface().format());
+		auto renderpass = Private::to_vulkan(target_window().surface().render_pass());
 		auto& frames = target_window().swapchain().frames();
 
 		auto vkPipelineLayout = Private::to_vulkan(_gpu_data->layout());
@@ -282,57 +282,6 @@ namespace CompWolf::Graphics
 				.pAttachments = &blendState,
 			};
 
-			VkRenderPass renderpass;
-			{
-				VkAttachmentDescription colorAttachment{
-					.format = surface_format.format.format,
-					.samples = VK_SAMPLE_COUNT_1_BIT,
-					.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
-					.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-					.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-					.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-					.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-					.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-				};
-
-				VkAttachmentReference colorAttachmentReference{
-					.attachment = 0,
-					.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-				};
-				VkSubpassDescription subpass{
-					.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-					.colorAttachmentCount = 1,
-					.pColorAttachments = &colorAttachmentReference,
-				};
-
-				VkSubpassDependency dependency{
-					.srcSubpass = VK_SUBPASS_EXTERNAL,
-					.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-					.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-					.srcAccessMask = 0,
-					.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-				};
-
-				VkRenderPassCreateInfo createInfo{
-					.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-					.attachmentCount = 1,
-					.pAttachments = &colorAttachment,
-					.subpassCount = 1,
-					.pSubpasses = &subpass,
-					.dependencyCount = 1,
-					.pDependencies = &dependency,
-				};
-
-				auto result = vkCreateRenderPass(logicDevice, &createInfo, nullptr, &renderpass);
-
-				switch (result)
-				{
-				case VK_SUCCESS: break;
-				default: throw std::runtime_error("Could not set up \"render pass\" for shader in pipeline.");
-				}
-			}
-			_render_pass = Private::from_vulkan(renderpass);
-
 			VkPipeline pipeline;
 			{
 				VkGraphicsPipelineCreateInfo createInfo{
@@ -442,7 +391,6 @@ namespace CompWolf::Graphics
 		for (auto& framebuffer : _frame_buffers) vkDestroyFramebuffer(logicDevice, Private::to_vulkan(framebuffer), nullptr);
 		_frame_buffers.clear();
 		if (_pipeline) vkDestroyPipeline(logicDevice, Private::to_vulkan(_pipeline), nullptr);
-		if (_render_pass) vkDestroyRenderPass(logicDevice, Private::to_vulkan(_render_pass), nullptr);
 
 		if (_descriptor_pool) vkDestroyDescriptorPool(logicDevice, Private::to_vulkan(_descriptor_pool), nullptr);
 

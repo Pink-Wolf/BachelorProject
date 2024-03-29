@@ -70,8 +70,7 @@ namespace CompWolf::Graphics
 
 		Private::vulkan_descriptor_pool _descriptor_pool;
 		std::vector<Private::vulkan_descriptor_set> _descriptor_sets;
-
-		Private::vulkan_render_pass _render_pass;
+		
 		Private::vulkan_pipeline _pipeline;
 		std::vector<Private::vulkan_frame_buffer> _frame_buffers;
 
@@ -92,7 +91,6 @@ namespace CompWolf::Graphics
 			return _descriptor_sets;
 		}
 
-		inline auto vulkan_render_pass() const noexcept { return _render_pass; }
 		inline auto vulkan_pipeline() const noexcept { return _pipeline; }
 		inline auto vulkan_frame_buffer(std::size_t index) const noexcept { return _frame_buffers[index]; }
 
