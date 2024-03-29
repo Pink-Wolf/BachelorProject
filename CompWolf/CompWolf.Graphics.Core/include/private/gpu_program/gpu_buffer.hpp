@@ -3,6 +3,7 @@
 
 #include "vulkan_types"
 #include "gpu"
+#include "shader_field.hpp"
 #include <freeable>
 #include <span>
 #include <initializer_list>

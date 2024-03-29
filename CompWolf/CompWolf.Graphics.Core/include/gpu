@@ -6,4 +6,3 @@
 
 #include "private/gpu/gpu_fence.hpp"
 #include "private/gpu/gpu_semaphore.hpp"
-#include "private/gpu/gpu_program_pool.hpp"

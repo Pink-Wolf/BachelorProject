@@ -2,6 +2,7 @@
 #define COMPWOLF_GRAPHICS_GPU_PROGRAM_HEADER
 
 #include "vulkan_types"
+#include "gpu_program_pool.hpp"
 #include <freeable>
 #include <functional>
 #include <owned>

@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_DRAW_COMMAND_HEADER
 
 #include "vulkan_types"
-#include "gpu_buffer.hpp"
+#include "gpu_program"
 #include "draw_pipeline.hpp"
 #include "draw_program.hpp"
 #include "window"

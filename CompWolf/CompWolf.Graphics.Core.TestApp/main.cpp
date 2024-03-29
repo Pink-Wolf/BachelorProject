@@ -1,7 +1,7 @@
 #include <iostream>
 #include <graphics>
 #include <window>
-#include <shader>
+#include <draw_program>
 #include <fstream>
 #include <dimensions>
 #include <vector>

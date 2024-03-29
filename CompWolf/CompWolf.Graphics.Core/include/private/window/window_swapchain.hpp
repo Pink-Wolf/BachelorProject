@@ -3,6 +3,7 @@
 
 #include "graphics"
 #include "gpu"
+#include "gpu_program"
 #include "vulkan_types"
 #include "window_settings.hpp"
 #include "window_surface.hpp"

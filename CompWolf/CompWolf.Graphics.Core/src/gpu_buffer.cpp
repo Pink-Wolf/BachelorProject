@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "shader"
+#include "gpu_program"
 
 #include "compwolf_vulkan.hpp"
 #include <compwolf_utility>

@@ -72,10 +72,10 @@
     <ClInclude Include="include\private\window\window_surface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\shader.hpp">
+    <ClInclude Include="include\private\gpu_program\shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shader">
+    <ClInclude Include="include\gpu_program">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\window\window_swapchain.hpp">
@@ -99,46 +99,49 @@
     <ClInclude Include="include\private\window\window_user.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\shader_field.hpp">
+    <ClInclude Include="include\private\gpu_program\shader_field.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\shader_field_type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\vertex_shader.hpp">
+    <ClInclude Include="include\private\gpu_program\vertex_shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\gpu_buffer.hpp">
+    <ClInclude Include="include\private\gpu_program\gpu_buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\shader_field\shader_field_info.hpp">
+    <ClInclude Include="include\private\gpu_program\shader_field\shader_field_info.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\shader_field\primitive_shader_field.hpp">
+    <ClInclude Include="include\private\gpu_program\shader_field\primitive_shader_field.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\shader_field\combine_shader_fields.hpp">
+    <ClInclude Include="include\private\gpu_program\shader_field\combine_shader_fields.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\shader_field\shader_field_info_extractor.hpp">
+    <ClInclude Include="include\private\gpu_program\shader_field\shader_field_info_extractor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\gpu_program.hpp">
+    <ClInclude Include="include\private\gpu_program\gpu_program.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_program_pool.hpp">
+    <ClInclude Include="include\private\gpu_program\gpu_program_pool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\draw_command.hpp">
+    <ClInclude Include="include\private\draw_program\draw_command.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\draw_pipeline.hpp">
+    <ClInclude Include="include\private\draw_program\draw_pipeline.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shader\draw_program.hpp">
+    <ClInclude Include="include\private\draw_program\draw_program.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\window\window_settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\draw_program">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

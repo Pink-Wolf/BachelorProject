@@ -1,0 +1,7 @@
+#include "private/gpu_program/gpu_buffer.hpp"
+#include "private/gpu_program/shader_field.hpp"
+#include "private/gpu_program/shader.hpp"
+#include "private/gpu_program/vertex_shader.hpp"
+
+#include "private/gpu_program/gpu_program_pool.hpp"
+#include "private/gpu_program/gpu_program.hpp"

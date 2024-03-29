@@ -4,9 +4,7 @@
 #include "vulkan_types"
 #include "graphics"
 #include "window"
-#include "shader.hpp"
-#include "vertex_shader.hpp"
-#include "shader_field.hpp"
+#include "gpu_program"
 
 #include <utility>
 #include <vector>
