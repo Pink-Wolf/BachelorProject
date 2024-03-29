@@ -8,6 +8,7 @@
 #include <span>
 #include <initializer_list>
 #include <utility>
+#include <exception>
 
 namespace CompWolf::Graphics
 {
@@ -74,7 +75,7 @@ namespace CompWolf::Graphics
 			auto operator=(base_gpu_buffer_data&&)->base_gpu_buffer_data & = default;
 			inline ~base_gpu_buffer_data() noexcept { free(); }
 
-			base_gpu_buffer_data(base_gpu_buffer&);
+			explicit base_gpu_buffer_data(base_gpu_buffer&);
 
 		public: // CompWolf::freeable
 			inline auto empty() const noexcept -> bool final
@@ -93,6 +94,7 @@ namespace CompWolf::Graphics
 
 		public: // other methods
 			auto data();
+			auto single_data();
 
 		public: // constructor
 			gpu_buffer() = default;
@@ -104,6 +106,7 @@ namespace CompWolf::Graphics
 			{};
 
 			gpu_buffer(gpu& target_device, gpu_buffer_type type, std::initializer_list<T> data);
+			gpu_buffer(gpu& target_device, gpu_buffer_type type, T data);
 		};
 #define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_BUFFER_TYPE(name, type)									\
 		template <typename T>																		\
@@ -148,10 +151,37 @@ namespace CompWolf::Graphics
 		gpu_buffer_data(gpu_buffer_data&&) = default;
 		auto operator=(gpu_buffer_data&&) -> gpu_buffer_data& = default;
 
-		gpu_buffer_data(BufferType& target_buffer)
+		explicit gpu_buffer_data(BufferType& target_buffer)
 			: _data(target_buffer)
 		{
 			super_span::operator=(super_span(static_cast<typename BufferType::type*>(_data.pointer()), target_buffer.size()));
+		}
+	};
+	template <typename BufferType>
+	class gpu_single_buffer_data
+	{
+	public: // fields
+		using data_type = typename BufferType::type;
+	private:
+		Private::base_gpu_buffer_data _data;
+
+	public: // getters
+		auto operator->() noexcept -> data_type* { return static_cast<data_type*>(_data.pointer()); }
+		auto operator->() const noexcept -> const data_type* { return static_cast<const data_type*>(_data.pointer()); }
+
+		auto operator*() noexcept -> data_type& { return *this->operator->(); }
+		auto operator*() const noexcept -> const data_type& { return *this->operator->(); }
+
+	public: // constructor
+		gpu_single_buffer_data() = default;
+		gpu_single_buffer_data(gpu_single_buffer_data&&) = default;
+		auto operator=(gpu_single_buffer_data&&) -> gpu_single_buffer_data& = default;
+
+		explicit gpu_single_buffer_data(BufferType& target_buffer)
+			: _data(target_buffer)
+		{
+			if (target_buffer.size() != 1)
+				throw std::invalid_argument("Tried creating a gpu_single_buffer_data for a buffer that did not have exactly 1 element.");
 		}
 	};
 
@@ -183,6 +213,9 @@ namespace CompWolf::Graphics
 	{
 		template <typename T>
 		inline auto gpu_buffer<T>::data() { return gpu_buffer_data<gpu_buffer<T>>(*this); }
+
+		template <typename T>
+		inline auto gpu_buffer<T>::single_data() { return gpu_single_buffer_data<gpu_buffer<T>>(*this); }
 
 		template <typename T>
 		gpu_buffer<T>::gpu_buffer(gpu& target_device, gpu_buffer_type type, std::initializer_list<T> data_list)

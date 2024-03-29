@@ -34,14 +34,9 @@ namespace CompWolf
 		static constexpr bool is_nothrow_new_default = noexcept(new_default::function());
 		T value;
 	public: // getters
-		operator T& () noexcept
-		{
-			return value;
-		}
-		operator const T& () const noexcept
-		{
-			return value;
-		}
+		operator T& () noexcept { return value; }
+		operator const T& () const noexcept { return value; }
+
 		template <typename TOut = bool>
 			requires is_explicitly_convertible_v<const T, TOut>
 		explicit operator TOut() const

@@ -107,11 +107,10 @@ int main()
             }
 
             {
-                auto transform_data = trans.data();
-                auto& data = transform_data.front();
+                auto t = trans.single_data();
 
-                data.position.x() = static_cast<float>(std::cos(total_time)) / 2;
-                data.position.y() = static_cast<float>(std::sin(total_time)) / 2;
+                t->position.x() = static_cast<float>(std::cos(total_time)) / 2;
+                t->position.y() = static_cast<float>(std::sin(total_time)) / 2;
             }
 
             drawer.execute(win);
