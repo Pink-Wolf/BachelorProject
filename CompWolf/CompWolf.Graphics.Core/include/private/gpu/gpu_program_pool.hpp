@@ -1,5 +1,5 @@
-#ifndef COMPWOLF_GRAPHICS_COMMAND_POOL_HEADER
-#define COMPWOLF_GRAPHICS_COMMAND_POOL_HEADER
+#ifndef COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER
+#define COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER
 
 #include "gpu"
 #include "vulkan_types"
@@ -10,7 +10,7 @@
 
 namespace CompWolf::Graphics
 {
-	class command_pool : public basic_freeable
+	class gpu_program_pool : public basic_freeable
 	{
 	public: // fields
 		using synchronizations_element_type = std::pair<gpu_fence, gpu_semaphore>;
@@ -59,12 +59,12 @@ namespace CompWolf::Graphics
 		}
 
 	public: // constructors
-		command_pool() = default;
-		command_pool(command_pool&&) = default;
-		auto operator=(command_pool&&) -> command_pool& = default;
-		~command_pool() noexcept { free(); }
+		gpu_program_pool() = default;
+		gpu_program_pool(gpu_program_pool&&) = default;
+		auto operator=(gpu_program_pool&&) -> gpu_program_pool& = default;
+		~gpu_program_pool() noexcept { free(); }
 
-		command_pool(gpu& device, size_t thread_family_index, size_t thread_index);
+		gpu_program_pool(gpu& device, size_t thread_family_index, size_t thread_index);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
@@ -75,4 +75,4 @@ namespace CompWolf::Graphics
 	};
 }
 
-#endif // ! COMPWOLF_GRAPHICS_COMMAND_POOL_HEADER
+#endif // ! COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER

@@ -195,7 +195,7 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					frame.pool = command_pool(device(), job.family_index(), job.thread_index());
+					frame.pool = gpu_program_pool(device(), job.family_index(), job.thread_index());
 				}
 			}
 

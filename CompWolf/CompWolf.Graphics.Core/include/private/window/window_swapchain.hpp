@@ -18,7 +18,7 @@ namespace CompWolf::Graphics
 		Private::vulkan_image_view image;
 		Private::vulkan_frame_buffer frame_buffer;
 
-		command_pool pool;
+		gpu_program_pool pool;
 	};
 
 	/* The actual images of the window' that's surface. */

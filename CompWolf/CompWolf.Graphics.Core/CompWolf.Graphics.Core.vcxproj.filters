@@ -126,7 +126,7 @@
     <ClInclude Include="include\private\shader\gpu_program.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\command_pool.hpp">
+    <ClInclude Include="include\private\gpu\gpu_program_pool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\shader\draw_command.hpp">
@@ -200,7 +200,7 @@
     <ClCompile Include="src\gpu_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\command_pool.cpp">
+    <ClCompile Include="src\gpu_program_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\draw_command.cpp">

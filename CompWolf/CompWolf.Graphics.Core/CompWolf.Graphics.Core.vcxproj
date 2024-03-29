@@ -183,7 +183,7 @@
     <ClInclude Include="include\private\gpu\gpu_job.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
-    <ClInclude Include="include\private\gpu\command_pool.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_program_pool.hpp" />
     <ClInclude Include="include\private\shader\draw_command.hpp" />
     <ClInclude Include="include\private\shader\draw_pipeline.hpp" />
     <ClInclude Include="include\private\shader\draw_program.hpp" />
@@ -207,7 +207,7 @@
     <ClInclude Include="include\window" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\command_pool.cpp" />
+    <ClCompile Include="src\gpu_program_pool.cpp" />
     <ClCompile Include="src\draw_command.cpp" />
     <ClCompile Include="src\draw_pipeline.cpp" />
     <ClCompile Include="src\draw_program.cpp" />

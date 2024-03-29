@@ -18,15 +18,15 @@ namespace CompWolf::Graphics
 	{
 	public:
 		owned_ptr<gpu*> _device;
-		command_pool* _command_pool;
+		gpu_program_pool* _command_pool;
 		Private::vulkan_command _vulkan_command;
 
 	public: // getters
 		inline auto device() -> gpu& { return *_device; }
 		inline auto device() const -> const gpu& { return *_device; }
 
-		inline auto pool() -> command_pool& { return *_command_pool; }
-		inline auto pool() const -> const command_pool& { return *_command_pool; }
+		inline auto pool() -> gpu_program_pool& { return *_command_pool; }
+		inline auto pool() const -> const gpu_program_pool& { return *_command_pool; }
 
 		inline auto vulkan_command() const { return _vulkan_command; }
 
@@ -39,7 +39,7 @@ namespace CompWolf::Graphics
 		auto operator=(gpu_program&&) -> gpu_program& = default;
 
 		gpu_program(gpu& target_device
-			, command_pool& pool
+			, gpu_program_pool& pool
 			, gpu_program_code code
 		);
 	public: // CompWolf::freeable

@@ -7,7 +7,7 @@
 namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
-	command_pool::command_pool(gpu& target_device, size_t thread_family_index, size_t thread_index)
+	gpu_program_pool::gpu_program_pool(gpu& target_device, size_t thread_family_index, size_t thread_index)
 		: _device(&target_device)
 		, _thread_family_index(thread_family_index)
 		, _thread_index(thread_index)
@@ -36,7 +36,7 @@ namespace CompWolf::Graphics
 	}
 	/******************************** CompWolf::freeable ********************************/
 
-	void command_pool::free() noexcept
+	void gpu_program_pool::free() noexcept
 	{
 		if (empty()) return;
 

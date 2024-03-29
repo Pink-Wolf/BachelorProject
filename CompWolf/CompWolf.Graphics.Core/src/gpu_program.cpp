@@ -9,7 +9,7 @@ namespace CompWolf::Graphics
 	/******************************** constructors ********************************/
 
 	gpu_program::gpu_program(gpu& target_device
-		, command_pool& pool
+		, gpu_program_pool& pool
 		, gpu_program_code code
 	) : _device(&target_device)
 		, _command_pool(&pool)
