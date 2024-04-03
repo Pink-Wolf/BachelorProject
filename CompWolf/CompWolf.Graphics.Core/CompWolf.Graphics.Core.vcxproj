@@ -163,14 +163,18 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="header\gpu_memory_type.hpp" />
     <ClInclude Include="header\present_device_info.hpp" />
     <ClInclude Include="header\shader_field_type.hpp" />
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
     <ClInclude Include="include\draw_program" />
     <ClInclude Include="include\gpu" />
     <ClInclude Include="include\graphics" />
+    <ClInclude Include="include\images" />
     <ClInclude Include="include\private\gpu\gpu_fence.hpp" />
     <ClInclude Include="include\private\gpu\gpu_semaphore.hpp" />
+    <ClInclude Include="include\private\gpu_program\gpu_image.hpp" />
+    <ClInclude Include="include\private\gpu_program\gpu_memory.hpp" />
     <ClInclude Include="include\private\graphics\glfw_handle.hpp" />
     <ClInclude Include="include\private\gpu\gpu.hpp" />
     <ClInclude Include="include\private\gpu\gpu_manager.hpp" />
@@ -208,6 +212,8 @@
     <ClInclude Include="include\window" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gpu_image.cpp" />
+    <ClCompile Include="src\gpu_memory.cpp" />
     <ClCompile Include="src\gpu_program_pool.cpp" />
     <ClCompile Include="src\draw_command.cpp" />
     <ClCompile Include="src\draw_pipeline.cpp" />

@@ -8,7 +8,7 @@ namespace CompWolf::Graphics
 {
 	/******************************** getters ********************************/
 
-	auto shader::shader_module(const gpu& vulkan_device) const -> Private::vulkan_shader
+	auto Private::base_shader::shader_module(const gpu& vulkan_device) const -> Private::vulkan_shader
 	{
 		auto compiled_shader_iterator = _compiled_shader.find(&vulkan_device);
 		Private::vulkan_shader shader_module_pointer;
@@ -24,7 +24,7 @@ namespace CompWolf::Graphics
 
 				VkShaderModuleCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-					.codeSize = _raw_code.size() * sizeof(spv_byte_type),
+					.codeSize = _raw_code.size() * sizeof(shader_code_char_type),
 					.pCode = reinterpret_cast<const uint32_t*>(_raw_code.data()),
 				};
 
@@ -47,7 +47,7 @@ namespace CompWolf::Graphics
 
 	/******************************** CompWolf::freeable ********************************/
 
-	void shader::free() noexcept
+	void Private::base_shader::free() noexcept
 	{
 		for (auto& [vulkan_device, shader_module] : _compiled_shader)
 		{

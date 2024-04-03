@@ -55,14 +55,19 @@ namespace CompWolf::Graphics
 			}
 		);
 		std::vector<const char*> enabled_extensions;
+		VkPhysicalDeviceFeatures enabled_features{};
 
-		// VK_EXT_SWAPCHAIN_MAINTENANCE_1_EXTENSION_NAME depends on/includes VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		bool has_swapchain_extension = std::any_of(extensionProperties.cbegin(), extensionProperties.cend(), [](VkExtensionProperties a) { return 0 == strcmp(a.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME); });
+		bool has_swapchain_extension = std::any_of(
+			extensionProperties.cbegin(),
+			extensionProperties.cend(),
+			[](VkExtensionProperties a) { return 0 == strcmp(a.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME); }
+		);
 		
-		bool is_present_device = has_swapchain_extension;
+		bool is_present_device = has_swapchain_extension && features.samplerAnisotropy;
 		if (is_present_device)
 		{
 			enabled_extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+			enabled_features.samplerAnisotropy = VK_TRUE;
 		}
 
 		const float queue_priority_item = .5f;
@@ -118,6 +123,7 @@ namespace CompWolf::Graphics
 			.pQueueCreateInfos = queueCreateInfos.data(),
 			.enabledExtensionCount = static_cast<uint32_t>(enabled_extensions.size()),
 			.ppEnabledExtensionNames = enabled_extensions.data(),
+			.pEnabledFeatures = &enabled_features
 		};
 
 		VkDevice logicDevice;

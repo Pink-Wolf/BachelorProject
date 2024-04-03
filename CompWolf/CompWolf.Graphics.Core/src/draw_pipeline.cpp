@@ -40,24 +40,49 @@ namespace CompWolf::Graphics
 
 		VkDescriptorSetLayout uniformLayout;
 		{
-			std::vector<VkDescriptorSetLayoutBinding> uniformBindings;
-			uniformBindings.reserve(data.uniform_buffer_count);
-			for (std::size_t i = 0; i < data.uniform_buffer_count; ++i)
+			std::vector<VkDescriptorSetLayoutBinding> uniformVertexBindings;
+			uniformVertexBindings.reserve(data.vertex_uniform_types.size() + data.fragment_uniform_types.size());
+			for (std::size_t i = 0; i < data.vertex_uniform_types.size(); ++i)
 			{
-				uniformBindings.emplace_back(VkDescriptorSetLayoutBinding
-					{
-						.binding = static_cast<uint32_t>(i),
-						.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-						.descriptorCount = 1,
-						.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-					}
-				);
+				switch (data.vertex_uniform_types[i])
+				{
+				case draw_pipeline_data::uniform_data_type::buffer: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
+					.binding = static_cast<uint32_t>(i),
+					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+					.descriptorCount = 1,
+					.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+					}); break;
+				case draw_pipeline_data::uniform_data_type::image: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
+					.binding = static_cast<uint32_t>(i),
+					.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+					.descriptorCount = 1,
+					.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+					}); break;
+				}
+			}
+			for (std::size_t i = 0; i < data.fragment_uniform_types.size(); ++i)
+			{
+				switch (data.fragment_uniform_types[i])
+				{
+				case draw_pipeline_data::uniform_data_type::buffer: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
+					.binding = static_cast<uint32_t>(i + data.vertex_uniform_types.size()),
+					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+					.descriptorCount = 1,
+					.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+					}); break;
+				case draw_pipeline_data::uniform_data_type::image: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
+					.binding = static_cast<uint32_t>(i + data.vertex_uniform_types.size()),
+					.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+					.descriptorCount = 1,
+					.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+					}); break;
+				}
 			}
 
 			VkDescriptorSetLayoutCreateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-				.bindingCount = static_cast<uint32_t>(uniformBindings.size()),
-				.pBindings = uniformBindings.data(),
+				.bindingCount = static_cast<uint32_t>(uniformVertexBindings.size()),
+				.pBindings = uniformVertexBindings.data(),
 			};
 
 			auto result = vkCreateDescriptorSetLayout(logicDevice, &createInfo, nullptr, &uniformLayout);
@@ -176,18 +201,24 @@ namespace CompWolf::Graphics
 				.pDynamicStates = dynamicStates.data(),
 			};
 
-			auto descriptorSize = static_cast<uint32_t>(frames.size());
+			auto descriptorSize = 2 * static_cast<uint32_t>(frames.size());
 			VkDescriptorPool descriptorPool;
 			{
-				VkDescriptorPoolSize poolSize{
+				std::vector<VkDescriptorPoolSize> poolSizes{
+					{
 					.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 					.descriptorCount = descriptorSize,
+					},
+					{
+					.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+					.descriptorCount = descriptorSize,
+					}
 				};
 				VkDescriptorPoolCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 					.maxSets = descriptorSize,
-					.poolSizeCount = 1,
-					.pPoolSizes = &poolSize,
+					.poolSizeCount = static_cast<uint32_t>(poolSizes.size()),
+					.pPoolSizes = poolSizes.data(),
 				};
 
 				auto result = vkCreateDescriptorPool(logicDevice, &createInfo, nullptr, &descriptorPool);

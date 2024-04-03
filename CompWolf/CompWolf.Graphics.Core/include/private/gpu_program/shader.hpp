@@ -13,54 +13,69 @@
 
 namespace CompWolf::Graphics
 {
-	class shader : public basic_freeable
+	using shader_code_char_type = char;
+	using shader_code_type = std::vector<shader_code_char_type>;
+
+	namespace Private
 	{
-	public: // fields
-		using spv_byte_type = char;
-	private:
-		owned_ptr<graphics_environment*> _environment;
-
-		using code_type = std::vector<spv_byte_type>;
-		code_type _raw_code;
-
-		using compiled_shader_type = std::map<const gpu*, Private::vulkan_shader>;
-		mutable compiled_shader_type _compiled_shader;
-
-	public: // getters
-		inline auto environment() noexcept -> graphics_environment&
+		class base_shader : public basic_freeable
 		{
-			return *_environment;
-		}
-		inline auto environment() const noexcept -> const graphics_environment&
-		{
-			return *_environment;
-		}
+		private: // fields
+			owned_ptr<graphics_environment*> _environment;
+			shader_code_type _raw_code;
 
-		auto shader_module(const gpu&) const -> Private::vulkan_shader;
+			using compiled_shader_type = std::map<const gpu*, Private::vulkan_shader>;
+			mutable compiled_shader_type _compiled_shader;
 
-	public: // constructors
-		shader() = default;
-		shader(shader&&) = default;
-		auto operator =(shader&&) -> shader& = default;
-		inline ~shader() noexcept
-		{
-			free();
-		}
+		public: // getters
+			inline auto environment() noexcept -> graphics_environment&
+			{
+				return *_environment;
+			}
+			inline auto environment() const noexcept -> const graphics_environment&
+			{
+				return *_environment;
+			}
 
-		template<typename T>
-			requires std::convertible_to<T, code_type>
-		shader(graphics_environment& environment, T&& code) : _environment(&environment),
-			_raw_code(std::forward<T>(code))
-		{
+			auto shader_module(const gpu&) const -> Private::vulkan_shader;
 
-		}
+		public: // constructors
+			base_shader() = default;
+			base_shader(base_shader&&) = default;
+			auto operator =(base_shader&&) -> base_shader& = default;
+			inline ~base_shader() noexcept
+			{
+				free();
+			}
 
-	public: // CompWolf::freeable
-		inline auto empty() const noexcept -> bool final
-		{
-			return !_environment;
-		}
-		void free() noexcept final;
+			template<typename T>
+				requires std::constructible_from<shader_code_type, T>
+			base_shader(graphics_environment& environment, T&& code) : _environment(&environment),
+				_raw_code(std::forward<T>(code))
+			{
+
+			}
+
+		public: // CompWolf::freeable
+			inline auto empty() const noexcept -> bool final
+			{
+				return !_environment;
+			}
+			void free() noexcept final;
+		};
+	}
+
+	template <typename UniformDataTypeList>
+	class shader : public Private::base_shader
+	{
+		static_assert(std::same_as<UniformDataTypeList, UniformDataTypeList>,
+			"shader was not given type_lists of uniform data types"
+			);
+	};
+	template <typename... UniformDataTypes>
+	class shader<type_list<UniformDataTypes...>> : public Private::base_shader
+	{
+		using Private::base_shader::base_shader;
 	};
 }
 

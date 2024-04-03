@@ -20,7 +20,8 @@ namespace CompWolf::Graphics
 		{
 			gpu_index_buffer* indices;
 			base_gpu_buffer* vertices;
-			std::vector<base_gpu_buffer*> uniform_vertex_data;
+			std::vector<gpu_memory*> uniform_vertex_data;
+			std::vector<gpu_memory*> uniform_fragment_data;
 		};
 
 		class window_draw_command
@@ -52,12 +53,13 @@ namespace CompWolf::Graphics
 		static_assert(std::same_as<PipelineType, PipelineType>, "draw_command was not given a proper pipeline");
 	};
 
-	template <typename VertexType, typename... UniformDataTypes>
-	class draw_command<draw_pipeline<vertex_shader<VertexType, type_list<UniformDataTypes...>>>>
+	template <typename VertexType, typename... UniformVertexTypes, typename... FragmentVertexTypes>
+	class draw_command<draw_pipeline<vertex_shader<VertexType, type_list<UniformVertexTypes...>>, shader<type_list<FragmentVertexTypes...>>>>
 	{
 	private: // fields
-		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformDataTypes...>>;
-		using pipeline_type = draw_pipeline<vertex_shader_type>;
+		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformVertexTypes...>>;
+		using fragment_shader_type = shader<type_list<FragmentVertexTypes...>>;
+		using pipeline_type = draw_pipeline<vertex_shader_type, fragment_shader_type>;
 		pipeline_type* _pipeline;
 		Private::draw_data _data;
 
@@ -88,11 +90,19 @@ namespace CompWolf::Graphics
 		draw_command(pipeline_type& pipeline
 			, gpu_index_buffer& indices
 			, gpu_vertex_buffer<VertexType>& vertices
-			, gpu_uniform_buffer<UniformDataTypes>&... uniform_data
+			, std::conditional_t<std::same_as<UniformVertexTypes, shader_image>
+				, gpu_image_buffer
+				, gpu_uniform_buffer<UniformVertexTypes>
+				>&... uniform_vertex_data
+			, std::conditional_t<std::same_as<FragmentVertexTypes, shader_image>
+				, gpu_image_buffer
+				, gpu_uniform_buffer<FragmentVertexTypes>
+				>&... uniform_fragment_data
 		) : _pipeline(&pipeline), _data{
 			.indices = &indices,
 			.vertices = &vertices,
-			.uniform_vertex_data = std::vector<Private::base_gpu_buffer*>({&uniform_data...}),
+			.uniform_vertex_data = std::vector<gpu_memory*>({&uniform_vertex_data.memory()...}),
+			.uniform_fragment_data = std::vector<gpu_memory*>({&uniform_fragment_data.memory()...})
 		}
 		{}
 	};
@@ -100,7 +110,7 @@ namespace CompWolf::Graphics
 	template <typename PipelineType, typename... BufferTypes>
 	auto new_draw_command(PipelineType& pipeline
 		, gpu_index_buffer& indices
-		, BufferTypes&... buffers)
+		, BufferTypes&... buffers) -> draw_command<PipelineType>
 	{
 		return draw_command<PipelineType>(pipeline, indices, buffers...);
 	}

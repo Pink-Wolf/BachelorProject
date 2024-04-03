@@ -38,7 +38,9 @@ namespace CompWolf::Graphics::Private
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(glfw, GLFWwindow*, glfw_window)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSurfaceKHR, vulkan_surface)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSwapchainKHR, vulkan_swapchain)
+
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkImageView, vulkan_image_view)
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkSampler, vulkan_sampler)
 		
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkBuffer, vulkan_buffer)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkDeviceMemory, vulkan_memory)
@@ -52,6 +54,8 @@ namespace CompWolf::Graphics::Private
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkFramebuffer, vulkan_frame_buffer)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkCommandPool, vulkan_command_pool)
 	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(vulkan, VkCommandBuffer, vulkan_command)
+		
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(vulkan, VkImage, vulkan_image)
 
 	inline uint32_t to_vulkan(version_number a) { return VK_MAKE_API_VERSION(0, a.major, a.minor, a.patch); }
 

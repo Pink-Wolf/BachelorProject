@@ -12,24 +12,24 @@
 using namespace CompWolf;
 using namespace CompWolf::Graphics;
 
-auto load_shader(std::string path) -> std::vector<shader::spv_byte_type>
+auto load_shader(std::string path) -> shader_code_type
 {
-    static const auto word_size = sizeof(shader::spv_byte_type);
+    static const auto word_size = sizeof(shader_code_char_type);
 
     std::ifstream stream(path, std::ios::binary | std::ios::in | std::ios::ate);
     if (!stream.is_open()) throw std::runtime_error("Could not open " + path + "; make sure to run compile.bat to create the file.");
 
-    std::vector<shader::spv_byte_type> data;
+    shader_code_type data;
     data.reserve(stream.tellg() * word_size);
 
     stream.seekg(0);
     char new_word[word_size];
     while (stream.read(new_word, word_size))
     {
-        shader::spv_byte_type new_data = 0;
+        shader_code_char_type new_data = 0;
         for (std::size_t i = 0; i < word_size; ++i)
         {
-            new_data |= static_cast<shader::spv_byte_type>(new_word[i]) << (i * 8);
+            new_data |= static_cast<shader_code_char_type>(new_word[i]) << (i * 8);
         }
         data.push_back(new_data);
     }
@@ -40,11 +40,11 @@ auto load_shader(std::string path) -> std::vector<shader::spv_byte_type>
 struct vertex
 {
     float2 position;
-    float3 color;
+    float2 uv;
 };
 template<> struct shader_field_info<vertex> : public combine_shader_fields<
     type_value_pair<float2, offsetof(vertex, position)>,
-    type_value_pair<float3, offsetof(vertex, color)>
+    type_value_pair<float2, offsetof(vertex, uv)>
 > {};
 
 struct transform
@@ -66,22 +66,35 @@ int main()
             }
         );
 
-        auto vert_shader = vertex_shader<vertex, type_list<transform, float>>(environment, load_shader("vertex.spv"));
-        auto frag_shader = shader(environment, load_shader("frag.spv"));
+        auto vert_shader = vertex_shader<vertex, type_list<transform>>(environment, load_shader("vertex.spv"));
+        auto frag_shader = shader<type_list<shader_image>>(environment, load_shader("frag.spv"));
         auto pipeline = new_draw_pipeline(vert_shader, frag_shader);
 
         gpu_vertex_buffer<vertex> vertices(win.device(), {
-            {{-.5f, -.5f}, {1.f, 0.f, 0.f}},
-            {{+.5f, -.5f}, {0.f, 1.f, 0.f}},
-            {{+.5f, +.5f}, {0.f, 0.f, 1.f}},
-            {{-.5f, +.5f}, {1.f, 1.f, 1.f}}
+            {{-.5f, -.5f}, {0.f, 0.f}},
+            {{+.5f, -.5f}, {1.f, 0.f}},
+            {{+.5f, +.5f}, {1.f, 1.f}},
+            {{-.5f, +.5f}, {0.f, 1.f}}
             });
         gpu_index_buffer indices(win.device(), { 0, 1, 2, 2, 3, 0 });
 
         gpu_uniform_buffer<transform> trans(win.device(), transform());
         gpu_uniform_buffer<float> scaler(win.device(), .5f);
 
-        auto drawer_command = new_draw_command(pipeline, indices, vertices, trans, scaler);
+        gpu_image_buffer image(win.device(),
+            {
+                {{255,255,255,255}, {255,255,255,255},  {255,255,255,255},  {255,255,255,255}},
+                {{255,0,0,255},     {0,255,0,255},      {0,0,255,255},      {255,0,0,255}},
+                {{255,0,0,255},     {0,255,0,255},      {0,0,255,255},      {255,0,0,255}},
+                {{0,0,0,255},       {0,0,0,255},        {0,0,0,255},        {0,0,0,255}}
+            }
+        );
+        gpu_uniform_buffer<float> tinter(win.device(), .75f);
+
+        auto drawer_command = new_draw_command(pipeline
+            , indices, vertices
+            , trans
+            , image);
 
         auto drawer = draw_program
         (

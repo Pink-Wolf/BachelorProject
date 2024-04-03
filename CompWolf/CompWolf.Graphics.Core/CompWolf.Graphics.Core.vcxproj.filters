@@ -144,6 +144,18 @@
     <ClInclude Include="include\draw_program">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\images">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_program\gpu_image.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_program\gpu_memory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\gpu_memory_type.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -213,6 +225,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\draw_program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

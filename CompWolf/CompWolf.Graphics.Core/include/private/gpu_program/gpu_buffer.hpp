@@ -2,13 +2,9 @@
 #define COMPWOLF_GRAPHICS_GPU_BUFFER_HEADER
 
 #include "vulkan_types"
-#include "gpu"
+#include "gpu_memory.hpp"
 #include "shader_field.hpp"
-#include <freeable>
-#include <span>
-#include <initializer_list>
 #include <utility>
-#include <exception>
 
 namespace CompWolf::Graphics
 {
@@ -20,216 +16,155 @@ namespace CompWolf::Graphics
 			vertex,
 			uniform,
 		};
+		class gpu_buffer_allocator : public gpu_memory_allocator
+		{
+		public: // fields
+			std::size_t size;
+			std::size_t element_stride;
+			gpu_buffer_type type;
+		public: // other methods
+			auto from_buffer(Private::vulkan_buffer) const noexcept -> data_handle;
+			auto to_buffer(data_handle) const noexcept -> Private::vulkan_buffer;
+		public: // constructors
+			gpu_buffer_allocator() = default;
+			gpu_buffer_allocator(const gpu_buffer_allocator&) = default;
+			auto operator=(const gpu_buffer_allocator&) -> gpu_buffer_allocator& = default;
+			gpu_buffer_allocator(gpu_buffer_allocator&&) = default;
+			auto operator=(gpu_buffer_allocator&&) -> gpu_buffer_allocator& = default;
+
+			gpu_buffer_allocator(gpu& device, gpu_buffer_type type, std::size_t size, std::size_t element_stride)
+				: gpu_memory_allocator(device), type(type), size(size), element_stride(element_stride) {}
+		public: // gpu_buffer_allocator
+			auto alloc_data() const -> data_handle final;
+			void bind_data(data_handle, vulkan_memory) const final;
+			void free_data(data_handle) const noexcept final;
+			void private_info(data_handle data, private_info_handle out) const final;
+		};
 
 		class base_gpu_buffer : public basic_freeable
 		{
 		private: // fields
-			owned_ptr<gpu*> _device;
-			std::size_t _memory_size;
-			std::size_t _item_count;
-			Private::vulkan_buffer _vulkan_buffer;
-			Private::vulkan_memory _vulkan_memory;
+			gpu_buffer_allocator _allocator;
+			gpu_memory _memory;
 
-		public: // getters
-			inline auto device() noexcept -> gpu& { return *_device; }
-			inline auto device() const noexcept -> const gpu& { return *_device; }
+		public: // getter
+			inline auto& memory() noexcept { return _memory; }
+			inline auto& memory() const noexcept { return _memory; }
 
-			inline auto vulkan_memory_size() const noexcept -> std::size_t { return _memory_size; }
-			inline auto size() const noexcept { return _item_count; }
+			inline auto& device() noexcept { return memory().device(); }
+			inline auto& device() const noexcept { return memory().device(); }
 
-			inline auto vulkan_buffer() const noexcept -> Private::vulkan_buffer { return _vulkan_buffer; }
-			inline auto vulkan_memory() const noexcept -> Private::vulkan_memory { return _vulkan_memory; }
+			inline auto& allocator() noexcept { return _allocator; }
+			inline auto& allocator() const noexcept { return _allocator; }
 
+			auto size() const { return allocator().size; }
+
+			inline auto vulkan_buffer() const noexcept { return _allocator.to_buffer(memory().vulkan_data()); }
+
+		public: // other methods
+			void bind_to_shader(gpu_memory::bind_handle) const;
+			
 		public: // constructor
 			base_gpu_buffer() = default;
 			base_gpu_buffer(base_gpu_buffer&&) = default;
 			auto operator=(base_gpu_buffer&&) -> base_gpu_buffer& = default;
-			inline ~base_gpu_buffer() noexcept { free(); }
+			~base_gpu_buffer() noexcept { free(); }
 
-			base_gpu_buffer(gpu& target_device, gpu_buffer_type type, std::size_t item_count, std::size_t item_stride);
-
-		public: // CompWolf::freeable
-			inline auto empty() const noexcept -> bool final
-			{
-				return !_device;
-			}
-			void free() noexcept final;
-		};
-
-		class base_gpu_buffer_data : public basic_freeable
-		{
-		private: // fields
-			owned_ptr<base_gpu_buffer*> _buffer;
-			void* _data;
-
-		public: // getters
-			auto buffer() noexcept -> base_gpu_buffer& { return *_buffer; }
-			auto buffer() const noexcept -> const base_gpu_buffer& { return *_buffer; }
-
-			auto pointer() noexcept -> void* { return _data; }
-			auto pointer() const noexcept -> const void* { return _data; }
-
-		public: // constructor
-			base_gpu_buffer_data() = default;
-			base_gpu_buffer_data(base_gpu_buffer_data&&) = default;
-			auto operator=(base_gpu_buffer_data&&)->base_gpu_buffer_data & = default;
-			inline ~base_gpu_buffer_data() noexcept { free(); }
-
-			explicit base_gpu_buffer_data(base_gpu_buffer&);
+			base_gpu_buffer(gpu& device, gpu_buffer_type type, std::size_t size, std::size_t element_stride)
+				: _allocator(device, type, size, element_stride)
+				, _memory(&_allocator, std::bind_front(&base_gpu_buffer::bind_to_shader, this))
+			{}
+			template <typename DataType>
+			base_gpu_buffer(gpu& device, gpu_buffer_type type, std::initializer_list<DataType> data)
+				: _allocator(device, type, data.size(), sizeof(DataType))
+				, _memory(&_allocator, std::bind_front(&base_gpu_buffer::bind_to_shader, this), data)
+			{}
 
 		public: // CompWolf::freeable
 			inline auto empty() const noexcept -> bool final
 			{
-				return !_buffer;
+				return memory().empty();
 			}
-			void free() noexcept final;
+			inline void free() noexcept final { _memory.free(); }
 		};
-
-
-		template <typename T>
-		class gpu_buffer : public Private::base_gpu_buffer
-		{
-		public: // fields
-			using type = T;
-
-		public: // other methods
-			auto data();
-			auto single_data();
-
-		public: // constructor
-			gpu_buffer() = default;
-			gpu_buffer(gpu_buffer&&) = default;
-			auto operator=(gpu_buffer&&) -> gpu_buffer& = default;
-
-			inline gpu_buffer(gpu& target_device, gpu_buffer_type type, std::size_t size)
-				: Private::base_gpu_buffer(target_device, type, size, sizeof(T))
-			{};
-
-			gpu_buffer(gpu& target_device, gpu_buffer_type type, std::initializer_list<T> data);
-			gpu_buffer(gpu& target_device, gpu_buffer_type type, T data);
-		};
-#define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_BUFFER_TYPE(name, type)									\
-		template <typename T>																		\
-		class name : public ::CompWolf::Graphics::Private::gpu_buffer<T>							\
-		{																							\
-		private:																					\
-			using super = Private::gpu_buffer<T>;													\
-																									\
-		public:																						\
-			name() = default;																		\
-			name(name&&) = default;																	\
-			auto operator=(name&&) -> name& = default;												\
-																									\
-			inline name(::CompWolf::Graphics::gpu& target_device, std::size_t size)					\
-				: super(target_device, type, size)													\
-			{}																						\
-																									\
-			inline name(::CompWolf::Graphics::gpu& target_device, std::initializer_list<T> data)	\
-				: super(target_device, type, data)													\
-			{}																						\
-			inline name(::CompWolf::Graphics::gpu& target_device, T data)							\
-				: super(target_device, type, { std::move(data) })									\
-			{}																						\
-		}																							\
-
 	}
 
-	template <typename BufferType>
-	class gpu_buffer_data : public std::span<typename BufferType::type, std::dynamic_extent>
-	{
-	private: // fields
-		using super_span = std::span<typename BufferType::type, std::dynamic_extent>;
 
-		Private::base_gpu_buffer_data _data;
-
-	public: // getters
-		auto buffer() noexcept -> BufferType& { return *static_cast<BufferType*>(&_data.buffer()); }
-		auto buffer() const noexcept -> const BufferType& { return *static_cast<const BufferType*>(&_data.buffer()); }
-
-	public: // constructor
-		gpu_buffer_data() = default;
-		gpu_buffer_data(gpu_buffer_data&&) = default;
-		auto operator=(gpu_buffer_data&&) -> gpu_buffer_data& = default;
-
-		explicit gpu_buffer_data(BufferType& target_buffer)
-			: _data(target_buffer)
-		{
-			super_span::operator=(super_span(static_cast<typename BufferType::type*>(_data.pointer()), target_buffer.size()));
-		}
-	};
-	template <typename BufferType>
-	class gpu_single_buffer_data
+	class gpu_index_buffer : public Private::base_gpu_buffer
 	{
 	public: // fields
-		using data_type = typename BufferType::type;
+		using value_type = shader_int;
 	private:
-		Private::base_gpu_buffer_data _data;
+		using super = Private::base_gpu_buffer;
 
-	public: // getters
-		auto operator->() noexcept -> data_type* { return static_cast<data_type*>(_data.pointer()); }
-		auto operator->() const noexcept -> const data_type* { return static_cast<const data_type*>(_data.pointer()); }
+	public: // other methods
+		inline auto data() { return gpu_memory_access<value_type>(memory()); }
 
-		auto operator*() noexcept -> data_type& { return *this->operator->(); }
-		auto operator*() const noexcept -> const data_type& { return *this->operator->(); }
-
-	public: // constructor
-		gpu_single_buffer_data() = default;
-		gpu_single_buffer_data(gpu_single_buffer_data&&) = default;
-		auto operator=(gpu_single_buffer_data&&) -> gpu_single_buffer_data& = default;
-
-		explicit gpu_single_buffer_data(BufferType& target_buffer)
-			: _data(target_buffer)
-		{
-			if (target_buffer.size() != 1)
-				throw std::invalid_argument("Tried creating a gpu_single_buffer_data for a buffer that did not have exactly 1 element.");
-		}
-	};
-
-
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_BUFFER_TYPE(gpu_vertex_buffer, Private::gpu_buffer_type::vertex);
-	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_BUFFER_TYPE(gpu_uniform_buffer, Private::gpu_buffer_type::uniform);
-
-	class gpu_index_buffer : public ::CompWolf::Graphics::Private::gpu_buffer<shader_int>
-	{
-	private:
-		using super = Private::gpu_buffer<shader_int>;
-
-	public:
+	public: // cosntructors
 		gpu_index_buffer() = default;
 		gpu_index_buffer(gpu_index_buffer&&) = default;
-		auto operator=(gpu_index_buffer&&)->gpu_index_buffer & = default;
+		auto operator=(gpu_index_buffer&&) -> gpu_index_buffer& = default;
 
-		inline gpu_index_buffer(::CompWolf::Graphics::gpu& target_device, std::size_t size)
-			: super(target_device, Private::gpu_buffer_type::index, size)
+		inline gpu_index_buffer(gpu& target_device, std::size_t size)
+			: super(target_device, Private::gpu_buffer_type::index, size, sizeof(shader_int))
 		{}
 
-		inline gpu_index_buffer(::CompWolf::Graphics::gpu& target_device, std::initializer_list<shader_int> data)
+		inline gpu_index_buffer(gpu& target_device, std::initializer_list<shader_int> data)
 			: super(target_device, Private::gpu_buffer_type::index, data)
 		{}
 	};
-
-
-	namespace Private
+	template <typename VertexType>
+	class gpu_vertex_buffer : public Private::base_gpu_buffer
 	{
-		template <typename T>
-		inline auto gpu_buffer<T>::data() { return gpu_buffer_data<gpu_buffer<T>>(*this); }
+	public: // fields
+		using value_type = VertexType;
+	private:
+		using super = Private::base_gpu_buffer;
 
-		template <typename T>
-		inline auto gpu_buffer<T>::single_data() { return gpu_single_buffer_data<gpu_buffer<T>>(*this); }
+	public: // other methods
+		inline auto data() { return gpu_memory_access<value_type>(memory()); }
 
-		template <typename T>
-		gpu_buffer<T>::gpu_buffer(gpu& target_device, gpu_buffer_type type, std::initializer_list<T> data_list)
-			: gpu_buffer(target_device, type, data_list.size())
-		{
-			auto dest_buffer = data();
+	public: // cosntructors
+		gpu_vertex_buffer() = default;
+		gpu_vertex_buffer(gpu_vertex_buffer&&) = default;
+		auto operator=(gpu_vertex_buffer&&) -> gpu_vertex_buffer& = default;
 
-			auto src = data_list.begin();
-			for (auto dest = dest_buffer.begin(); dest != dest_buffer.end(); ++dest, ++src)
-			{
-				new (&*dest) (T) (std::move(*src));
-			}
-		}
-	}
+		inline gpu_vertex_buffer(gpu& target_device, std::size_t size)
+			: super(target_device, Private::gpu_buffer_type::vertex, size, sizeof(VertexType))
+		{}
+
+		inline gpu_vertex_buffer(gpu& target_device, std::initializer_list<VertexType> data)
+			: super(target_device, Private::gpu_buffer_type::vertex, data)
+		{}
+	};
+	template <typename DataType>
+	class gpu_uniform_buffer : public Private::base_gpu_buffer
+	{
+	public: // fields
+		using value_type = DataType;
+	private:
+		using super = Private::base_gpu_buffer;
+
+	public: // other methods
+		inline auto data() { return gpu_memory_access<value_type>(memory()); }
+		inline auto single_data() { return gpu_single_memory_access<value_type>(memory()); }
+
+	public: // cosntructors
+		gpu_uniform_buffer() = default;
+		gpu_uniform_buffer(gpu_uniform_buffer&&) = default;
+		auto operator=(gpu_uniform_buffer&&) -> gpu_uniform_buffer& = default;
+
+		inline gpu_uniform_buffer(gpu& target_device, std::size_t size)
+			: super(target_device, Private::gpu_buffer_type::uniform, size, sizeof(DataType))
+		{}
+
+		inline gpu_uniform_buffer(gpu& target_device, std::initializer_list<DataType> data)
+			: super(target_device, Private::gpu_buffer_type::uniform, data)
+		{}
+		inline gpu_uniform_buffer(gpu& target_device, DataType data)
+			: gpu_uniform_buffer(target_device, { data })
+		{}
+	};
 }
 
 #endif // ! COMPWOLF_GRAPHICS_GPU_BUFFER_HEADER

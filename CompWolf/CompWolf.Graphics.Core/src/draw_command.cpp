@@ -2,6 +2,7 @@
 #include "draw_program"
 
 #include "compwolf_vulkan.hpp"
+#include "gpu_memory_type.hpp"
 
 namespace CompWolf::Graphics
 {
@@ -43,33 +44,22 @@ namespace CompWolf::Graphics
 		}
 		for (size_t i = 0; i < _data->uniform_vertex_data.size(); ++i)
 		{
-			auto& buffer = *_data->uniform_vertex_data[i];
-			auto vkBuffer = Private::to_vulkan(buffer.vulkan_buffer());
-			auto descriptorSet = Private::to_vulkan(window_pipeline().vulkan_descriptor_sets()[args.frame_index]);
+			auto& memory = *_data->uniform_vertex_data[i];
 
-			VkDescriptorBufferInfo bufferInfo{
-				.buffer = vkBuffer,
-				.offset = 0,
-				.range = static_cast<VkDeviceSize>(buffer.size()),
-			};
-			VkWriteDescriptorSet writer{
-				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-				.dstSet = descriptorSet,
-				.dstBinding = static_cast<uint32_t>(i),
-				.dstArrayElement = 0,
-				.descriptorCount = 1,
-				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-				.pBufferInfo = &bufferInfo,
+			Private::gpu_memory_bind_data bind_data{
+				.commandBuffer = command,
+				.descriptorSet = Private::to_vulkan(window_pipeline().vulkan_descriptor_sets()[args.frame_index]),
+				.bindingIndex = static_cast<uint32_t>(i),
 			};
 
-			vkUpdateDescriptorSets(logicDevice, 1, &writer, 0, nullptr);
+			memory.bind_to_shader(Private::from_private(&bind_data));
 
 			vkCmdBindDescriptorSets(command
 				, VK_PIPELINE_BIND_POINT_GRAPHICS
 				, Private::to_vulkan(window_pipeline().gpu_data().layout())
 				, 0
 				, 1
-				, &descriptorSet
+				, &bind_data.descriptorSet
 				, 0
 				, nullptr
 			);
@@ -78,6 +68,29 @@ namespace CompWolf::Graphics
 			auto indexBuffer = Private::to_vulkan(_data->indices->vulkan_buffer());
 
 			vkCmdBindIndexBuffer(command, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		}
+
+		for (size_t i = 0; i < _data->uniform_fragment_data.size(); ++i)
+		{
+			auto& memory = *_data->uniform_fragment_data[i];
+
+			Private::gpu_memory_bind_data bind_data{
+				.commandBuffer = command,
+				.descriptorSet = Private::to_vulkan(window_pipeline().vulkan_descriptor_sets()[args.frame_index]),
+				.bindingIndex = static_cast<uint32_t>(i + _data->uniform_vertex_data.size()),
+			};
+
+			memory.bind_to_shader(Private::from_private(&bind_data));
+
+			vkCmdBindDescriptorSets(command
+				, VK_PIPELINE_BIND_POINT_GRAPHICS
+				, Private::to_vulkan(window_pipeline().gpu_data().layout())
+				, 0
+				, 1
+				, &bind_data.descriptorSet
+				, 0
+				, nullptr
+			);
 		}
 
 		vkCmdDrawIndexed(command, static_cast<uint32_t>(_data->indices->size()), 1, 0, 0, 0);

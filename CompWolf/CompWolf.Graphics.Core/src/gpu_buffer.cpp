@@ -2,25 +2,59 @@
 #include "gpu_program"
 
 #include "compwolf_vulkan.hpp"
+#include "gpu_memory_type.hpp"
 #include <compwolf_utility>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Graphics
 {
-	/******************************** constructor ********************************/
+	/******************************** other methods ********************************/
 
-	base_gpu_buffer::base_gpu_buffer(gpu& target_device, gpu_buffer_type type, std::size_t item_count, std::size_t item_stride)
-		: _device(&target_device)
-		, _item_count(item_count)
-		, _vulkan_buffer(nullptr), _vulkan_memory(nullptr)
+	void Private::base_gpu_buffer::bind_to_shader(gpu_memory::bind_handle bind_handle) const
 	{
-		auto logicDevice = Private::to_vulkan(target_device.vulkan_device());
-		auto physicalDevice = Private::to_vulkan(target_device.vulkan_physical_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto vkBuffer = Private::to_vulkan(vulkan_buffer());
+		auto& bind_data = *Private::to_private(bind_handle);
+
+		VkDescriptorBufferInfo bufferInfo{
+			.buffer = vkBuffer,
+			.offset = 0,
+			.range = static_cast<VkDeviceSize>(size()),
+		};
+		VkWriteDescriptorSet writer{
+			.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+			.dstSet = bind_data.descriptorSet,
+			.dstBinding = bind_data.bindingIndex,
+			.dstArrayElement = 0,
+			.descriptorCount = 1,
+			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.pBufferInfo = &bufferInfo,
+		};
+
+		vkUpdateDescriptorSets(logicDevice, 1, &writer, 0, nullptr);
+	}
+
+	/******************************** CompWolf::Graphics::gpu_buffer_allocator ********************************/
+
+	COMPWOLF_GRAPHICS_PRIVATE_DEFINE_NONDISPATCH_CONVERTERS(VkBuffer, VkBuffer, Private::gpu_buffer_allocator::data_handle)
+
+	auto Private::gpu_buffer_allocator::from_buffer(Private::vulkan_buffer data) const noexcept -> data_handle
+	{
+		return from_VkBuffer(to_vulkan(data));
+	}
+	auto Private::gpu_buffer_allocator::to_buffer(data_handle data) const noexcept -> Private::vulkan_buffer
+	{
+		return from_vulkan(to_VkBuffer(data));
+	}
+
+	auto Private::gpu_buffer_allocator::alloc_data() const -> data_handle
+	{
+		auto logicDevice = Private::to_vulkan(target_device->vulkan_device());
 
 		VkBuffer buffer;
 		{
 			VkBufferCreateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-				.size = item_count * item_stride,
+				.size = static_cast<VkDeviceSize>(size * element_stride),
 				.sharingMode = VK_SHARING_MODE_EXCLUSIVE,
 			};
 			switch (type)
@@ -30,6 +64,7 @@ namespace CompWolf::Graphics::Private
 			case gpu_buffer_type::uniform: createInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT; break;
 			default: throw std::invalid_argument("Could not create buffer on GPU; the given type is unknown.");
 			}
+
 			auto result = vkCreateBuffer(logicDevice, &createInfo, nullptr, &buffer);
 
 			switch (result)
@@ -39,96 +74,34 @@ namespace CompWolf::Graphics::Private
 			case VK_ERROR_OUT_OF_DEVICE_MEMORY: throw std::runtime_error("Could not create buffer on GPU; not enough GPU space.");
 			default: throw std::runtime_error("Could not create buffer on GPU.");
 			}
-
-			_vulkan_buffer = Private::from_vulkan(buffer);
 		}
-
-		VkMemoryRequirements memoryRequirement;
-		vkGetBufferMemoryRequirements(logicDevice, buffer, &memoryRequirement);
-		_memory_size = memoryRequirement.size;
-
-		VkPhysicalDeviceMemoryProperties memoryProperties;
-		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-
-		uint32_t heap_index;
-		{
-			VkMemoryPropertyFlags requiredProperties
-				= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-				| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-				;
-
-			for (heap_index = 0; heap_index < memoryProperties.memoryTypeCount; ++heap_index)
-			{
-				auto& memoryType = memoryProperties.memoryTypes[heap_index];
-
-				if ((memoryRequirement.memoryTypeBits & (1_uint32 << heap_index)) == 0) continue;
-				if ((memoryType.propertyFlags & requiredProperties) != requiredProperties) continue;
-				break;
-			}
-			if (heap_index == memoryProperties.memoryTypeCount)
-				throw std::runtime_error("Could not create buffer on GPU; no suitable type of memory on the GPU.");
-		}
-
-		VkDeviceMemory memory;
-		{
-			VkMemoryAllocateInfo allocateInfo{
-				.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-				.allocationSize = memoryRequirement.size,
-				.memoryTypeIndex = heap_index,
-			};
-			auto result = vkAllocateMemory(logicDevice, &allocateInfo, nullptr, &memory);
-
-			switch (result)
-			{
-			case VK_SUCCESS: break;
-			case VK_ERROR_OUT_OF_HOST_MEMORY: throw std::runtime_error("Could not allocate memory on GPU; not enough CPU space.");
-			case VK_ERROR_OUT_OF_DEVICE_MEMORY: throw std::runtime_error("Could not allocate memory on GPU; not enough GPU space.");
-			default: throw std::runtime_error("Could not allocate memory on GPU.");
-			}
-
-			_vulkan_memory = Private::from_vulkan(memory);
-		}
-
-		vkBindBufferMemory(logicDevice, buffer, memory, 0);
+		return from_VkBuffer(buffer);
 	}
 
-	base_gpu_buffer_data::base_gpu_buffer_data(base_gpu_buffer& target_buffer)
-		: _buffer(&target_buffer)
+	void Private::gpu_buffer_allocator::bind_data(data_handle data, vulkan_memory memory) const
 	{
-		auto logicDevice = Private::to_vulkan(buffer().device().vulkan_device());
-		auto vkBuffer = Private::to_vulkan(buffer().vulkan_buffer());
-		auto vkMemory = Private::to_vulkan(buffer().vulkan_memory());
-		auto bufferSize = static_cast<VkDeviceSize>(buffer().vulkan_memory_size());
-
-		vkMapMemory(logicDevice, vkMemory, 0, bufferSize, 0, &_data);
+		vkBindBufferMemory(Private::to_vulkan(target_device->vulkan_device())
+			, to_VkBuffer(data)
+			, Private::to_vulkan(memory)
+			, 0
+		);
 	}
 
-	/******************************** CompWolf::freeable ********************************/
-
-	void base_gpu_buffer::free() noexcept
+	void Private::gpu_buffer_allocator::free_data(data_handle data) const noexcept
 	{
-		if (empty()) return;
-
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
-		auto buffer = Private::to_vulkan(_vulkan_buffer);
-		auto memory = Private::to_vulkan(_vulkan_memory);
-
-		if (memory) vkFreeMemory(logicDevice, memory, nullptr);
-		if (buffer) vkDestroyBuffer(logicDevice, buffer, nullptr);
-
-		_device = nullptr;
+		vkDestroyBuffer(Private::to_vulkan(target_device->vulkan_device())
+			, to_VkBuffer(data)
+			, nullptr
+		);
 	}
 
-	void base_gpu_buffer_data::free() noexcept
+	void Private::gpu_buffer_allocator::private_info(data_handle data, private_info_handle out_pointer) const
 	{
-		if (empty()) return;
+		auto logicDevice = Private::to_vulkan(target_device->vulkan_device());
+		auto buffer = to_VkBuffer(data);
+		auto& out = *to_private(out_pointer);
 
-		auto logicDevice = Private::to_vulkan(buffer().device().vulkan_device());
-		auto vkBuffer = Private::to_vulkan(buffer().vulkan_buffer());
-		auto vkMemory = Private::to_vulkan(buffer().vulkan_memory());
-
-		vkUnmapMemory(logicDevice, vkMemory);
-
-		_buffer = nullptr;
+		out.size = size;
+		vkGetBufferMemoryRequirements(logicDevice, buffer, &out.memoryRequirements);
 	}
 }

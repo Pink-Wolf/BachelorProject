@@ -23,10 +23,16 @@ namespace CompWolf::Graphics
 			const std::vector<std::size_t>* input_offsets;
 			std::size_t input_stride;
 
-			std::size_t uniform_buffer_count;
+			enum class uniform_data_type
+			{
+				buffer,
+				image,
+			};
+			std::vector<uniform_data_type> vertex_uniform_types;
+			std::vector<uniform_data_type> fragment_uniform_types;
 
-			shader* vertex_shader;
-			shader* fragment_shader;
+			base_shader* vertex_shader;
+			base_shader* fragment_shader;
 		};
 
 		class gpu_specific_pipeline : public basic_freeable
@@ -46,7 +52,7 @@ namespace CompWolf::Graphics
 		public: // constructor
 			gpu_specific_pipeline() = default;
 			gpu_specific_pipeline(gpu_specific_pipeline&&) = default;
-			auto operator=(gpu_specific_pipeline&&)->gpu_specific_pipeline & = default;
+			auto operator=(gpu_specific_pipeline&&) -> gpu_specific_pipeline& = default;
 			inline ~gpu_specific_pipeline() noexcept { free(); }
 
 			gpu_specific_pipeline(gpu&, const draw_pipeline_data&);
@@ -164,19 +170,19 @@ namespace CompWolf::Graphics
 		};
 	}
 
-	template <typename VertexShaderType>
+	template <typename VertexShaderType, typename FragmentShaderType>
 	class draw_pipeline
 	{
-		static_assert(std::same_as<VertexShaderType, VertexShaderType>, "draw_pipeline was not given a proper vertex shader");
+		static_assert(std::same_as<VertexShaderType, VertexShaderType>, "draw_pipeline was not given a proper vertex and fragment shader");
 	};
 
-	template <typename VertexType, typename... UniformDataTypes>
-	class draw_pipeline<vertex_shader<VertexType, type_list<UniformDataTypes...>>>
+	template <typename VertexType, typename... UniformVertexTypes, typename... FragmentVertexTypes>
+	class draw_pipeline<vertex_shader<VertexType, type_list<UniformVertexTypes...>>, shader<type_list<FragmentVertexTypes...>>>
 		: public Private::base_draw_pipeline
 	{
 	public: // fields
-		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformDataTypes...>>;
-		using fragment_shader_type = shader;
+		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformVertexTypes...>>;
+		using fragment_shader_type = shader<type_list<FragmentVertexTypes...>>;
 
 	public: // constructors
 		draw_pipeline() = default;
@@ -193,18 +199,29 @@ namespace CompWolf::Graphics
 				.input_types = &shader_field_info_handles<VertexType, std::vector<Private::shader_field_info_handle>>(),
 				.input_offsets = &shader_field_info_offsets<VertexType, std::vector<std::size_t>>(),
 				.input_stride = sizeof(VertexType),
-				.uniform_buffer_count = type_list<UniformDataTypes...>::size,
-				.vertex_shader = static_cast<shader*>(&vertex_shader),
-				.fragment_shader = &fragment_shader,
+				.vertex_uniform_types = std::vector<Private::draw_pipeline_data::uniform_data_type>
+					({
+						std::same_as<UniformVertexTypes, shader_image>
+						? Private::draw_pipeline_data::uniform_data_type::image
+						: Private::draw_pipeline_data::uniform_data_type::buffer
+					...}),
+				.fragment_uniform_types = std::vector<Private::draw_pipeline_data::uniform_data_type>
+					({
+						std::same_as<FragmentVertexTypes, shader_image>
+						? Private::draw_pipeline_data::uniform_data_type::image
+						: Private::draw_pipeline_data::uniform_data_type::buffer
+					...}),
+				.vertex_shader = static_cast<Private::base_shader*>(&vertex_shader),
+				.fragment_shader = static_cast<Private::base_shader*>(&fragment_shader),
 			}
 		)
 		{}
 	};
 
-	template <typename VertexShaderType>
-	auto new_draw_pipeline(VertexShaderType& vertex_shader, shader& fragment_shader)
+	template <typename VertexShaderType, typename FragmentShaderType>
+	auto new_draw_pipeline(VertexShaderType& vertex_shader, FragmentShaderType& fragment_shader)
 	{
-		return draw_pipeline<VertexShaderType>(vertex_shader, fragment_shader);
+		return draw_pipeline<VertexShaderType, FragmentShaderType>(vertex_shader, fragment_shader);
 	}
 }
 

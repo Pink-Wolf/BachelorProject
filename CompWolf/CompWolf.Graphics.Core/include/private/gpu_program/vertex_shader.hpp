@@ -9,16 +9,9 @@
 namespace CompWolf::Graphics
 {
 	template <typename VertexType, typename UniformDataTypeList>
-	class vertex_shader
+	class vertex_shader : public shader<UniformDataTypeList>
 	{
-		static_assert(std::same_as<vertex_shader, vertex_shader>,
-			"vertex_shader was not given type_lists of uniform-data-types"
-			);
-	};
-	template <typename VertexType, typename... UniformDataTypes>
-	class vertex_shader<VertexType, type_list<UniformDataTypes...>> : public shader
-	{
-		using shader::shader;
+		using shader<UniformDataTypeList>::shader;
 	};
 }
 
