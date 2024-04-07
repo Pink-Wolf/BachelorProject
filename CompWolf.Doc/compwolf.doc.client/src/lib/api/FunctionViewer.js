@@ -1,10 +1,8 @@
-import Link from "next/link";
-import { CodeViewer, Declaration, Reference } from "./CodeComponents";
+import { Declaration } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 
 export default function FunctionViewer(props) {
 	const data = props.data;
-	if (data == undefined) return <div />
 
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 

@@ -1,21 +1,27 @@
 {
+  "type": "class",
+
   "namespace": "CompWolf",
   "declaration": "class graphics_environment;",
-  "brief-description": "Sets up program-wide logic used for connecting to gpus.",
+  "briefDescription": "Sets up program-wide logic used for connecting to gpus.",
   "warnings": [
     "It is undefined behaviour to construct a graphics_environment on a thread other than the one that started the program."
   ],
 
-  "detailed-description": "Sets up and manages program-wide logic used for connecting to the gpus.\nThe environment's update-method should normally be called continually.\nThe thread that constructed the graphics_environment is considered the \"main graphics thread\".",
+  "detailedDescription": "Sets up and manages program-wide logic used for connecting to the gpus.\nThe environment's update-method should normally be called continually.\nThe thread that constructed the graphics_environment is considered the \"main graphics thread\".",
 
-  "data-members": [
+  "dataMembers": [
     {
       "name": "updating",
-      "description": "Event invoked before any other logic in the environment's update-method."
+      "declaration": "event<graphics_environment_update_parameter> updating;",
+      "briefDescription": "Event invoked before any other logic in the environment's update-method.",
+      "detailedDescription": "Event invoked before any other logic in the environment's update-method."
     },
     {
       "name": "updated",
-      "description": "Event invoked after all other logic in the environment's update-method."
+      "declaration": "event<graphics_environment_update_parameter> updated;",
+      "briefDescription": "Event invoked after all other logic in the environment's update-method.",
+      "detailedDescription": "Event invoked before any other logic in the environment's update-method."
     }
   ],
 
@@ -43,13 +49,13 @@
       "graphics_environment_settings"
     ]
   },
-  "method-groups": [
+  "methodGroups": [
     {
       "name": "Accessors",
       "items": [
         {
           "name": "gpus",
-          "brief-description": "Returns the environment's gpu_manager.",
+          "briefDescription": "Returns the environment's gpu_manager.",
           "overloads": [
             {
               "declaration": "auto gpus() noexcept -> gpu_manager&;",
@@ -66,7 +72,7 @@
         },
         {
           "name": "is_main_thread",
-          "brief-description": "Whether the given thread is the main graphics thread.",
+          "briefDescription": "Whether the given thread is the main graphics thread.",
           "overloads": [
             {
               "declaration": "auto is_main_thread(std::thread::id) const noexcept -> bool;",
@@ -76,7 +82,7 @@
         },
         {
           "name": "is_this_main_thread",
-          "brief-description": "Whether the thread calling this is the main graphics thread.",
+          "briefDescription": "Whether the thread calling this is the main graphics thread.",
           "overloads": [
             {
               "declaration": "auto is_this_main_thread() const noexcept -> bool;",
@@ -91,7 +97,7 @@
       "items": [
         {
           "name": "update",
-          "brief-description": "Handles any accumilated jobs, like keyboard inputs.",
+          "briefDescription": "Handles any accumilated jobs, like keyboard inputs.",
           "overloads": [
             {
               "declaration": "void update();",
@@ -110,7 +116,7 @@
       "items": [
         {
           "name": "vulkan_instance",
-          "brief-description": "Returns the environment's vulkan_instance, representing a VkInstance.",
+          "briefDescription": "Returns the environment's vulkan_instance, representing a VkInstance.",
           "overloads": [
             {
               "declaration": "auto vulkan_instance() const noexcept -> Private::vulkan_instance;",

@@ -1,11 +1,9 @@
-import Link from "next/link";
 import { Fragment } from "react";
-import { CodeViewer, Declaration, Reference } from "./CodeComponents";
+import { Declaration, Reference } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 
 export default function ClassViewer(props) {
 	const data = props.data;
-	if (data == undefined) return <div/>
 
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 
@@ -44,7 +42,7 @@ export default function ClassViewer(props) {
 									<td>
 										<MemberReference name={x.name} />
 									</td>
-									<td>{x.description}</td>
+									<td>{x.briefDescription}</td>
 								</tr>
 							)
 						})}

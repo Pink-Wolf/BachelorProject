@@ -1,20 +1,36 @@
-import FunctionViewer from "@/lib/api/FunctionViewer";
 import { getEntity } from "@/lib/api/Entity";
+import FunctionViewer from "@/lib/api/FunctionViewer";
+import VariableViewer from "@/lib/api/VariableViewer";
+import BaseEntityViewer from "@/lib/api/BaseEntityViewer";
 
 export default async function ApiPage({ params }) {
     const owner = await getEntity(params.project, params.header, params.entity)
     const target = params.subentity
 
-    var data = undefined;
-    if (target == params.entity) data = owner.constructor
-    else if (target in owner.dataMembers) data = owner.dataMembers[target]
-    else owner.methodGroups.find((i) => {
-        i.items.find((j) => {
-            if (j.name == target) data = j;
-            return (data != undefined);
+    var data = undefined
+    var isFunction = true
+    if (target == params.entity) {
+        data = owner.constructor
+    }
+    if (data === undefined) {
+        data = owner.dataMembers.find((i) => {
+            return i.name === target
         })
-        return (data != undefined);
-    })
+        if (data !== undefined) isFunction = false
+    }
+    if (data === undefined) {
+        owner.methodGroups.find((i) => {
+            i.items.find((j) => {
+                if (j.name === target) {
+                    data = j
+                    isFunction = true
+                }
+
+                return (data !== undefined)
+            })
+            return (data !== undefined)
+        })
+    }
 
     data = {
         ...data,
@@ -25,5 +41,7 @@ export default async function ApiPage({ params }) {
         name: target,
     }
 
-    return <FunctionViewer data={data} />
+    if (data === undefined) return <BaseEntityViewer />
+    else if (isFunction) return <FunctionViewer data={data} />
+    else return <VariableViewer data={data} />
 }
