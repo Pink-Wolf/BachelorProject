@@ -3,7 +3,7 @@ import FunctionViewer from "@/lib/api/FunctionViewer";
 import VariableViewer from "@/lib/api/VariableViewer";
 import BaseEntityViewer from "@/lib/api/BaseEntityViewer";
 
-export default async function ApiPage({ params }) {
+export default async function SubEntityPage({ params }) {
     const owner = await getEntity(params.project, params.header, params.entity)
     const target = params.subentity
 

@@ -1,7 +1,7 @@
 import { getHeader, getOverview } from "@/lib/api/Entity";
 import HeaderViewer from "@/lib/api/HeaderViewer";
 
-export default async function ApiPage({ params }) {
+export default async function HeaderApi({ params }) {
     const overview = await getOverview()
     const data = {
         ...(await getHeader(params.project, params.header)),

@@ -42,11 +42,15 @@ export default function BaseEntityViewer(props) {
 
 			<section hidden={is_empty(data.related)} id="Related">
 				<h2>Related</h2>
-				{data.related?.map((x, i) => {
-					return (
-						<Reference key={i} path={x}>{x}</Reference>
-					)
-				})}
+				<ul>
+					{data.related?.map((x, i) => {
+						return (
+							<li key={i}>
+								<Reference path={x}>{x}</Reference>
+							</li>
+						)
+					})}
+				</ul>
 			</section>
 
 		</section>

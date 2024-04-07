@@ -12,14 +12,12 @@ async function getJson(path) {
     return await response.json()
 }
 
-export async function getEntity(project, header, name) {
-    const entity = await getJson(`${DATABASE_URL}${project}/${header}/${name}`)
+export async function getProject(project) {
+    const entity = await getJson(`${DATABASE_URL}${project}`)
     if (entity == null) return null
     return {
         ...entity,
         project: project,
-        header: header,
-        name: name,
     }
 }
 export async function getHeader(project, header) {
@@ -29,6 +27,16 @@ export async function getHeader(project, header) {
         ...entity,
         project: project,
         header: header,
+    }
+}
+export async function getEntity(project, header, name) {
+    const entity = await getJson(`${DATABASE_URL}${project}/${header}/${name}`)
+    if (entity == null) return null
+    return {
+        ...entity,
+        project: project,
+        header: header,
+        name: name,
     }
 }
 
