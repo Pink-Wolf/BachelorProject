@@ -26,5 +26,17 @@ namespace CompWolf.Doc.Server.Controllers
             if (output is null) return NotFound();
             return output;
         }
+
+        [HttpGet("{project}/{header}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public virtual async Task<ActionResult<string>> GetHeaderAsync(
+            [FromRoute] string project,
+            [FromRoute] string header)
+        {
+            var output = await Database.GetHeaderAsync(project, header);
+            if (output is null) return NotFound();
+            return output;
+        }
     }
 }

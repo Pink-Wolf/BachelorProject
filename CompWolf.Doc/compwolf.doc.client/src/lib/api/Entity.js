@@ -22,6 +22,15 @@ export async function getEntity(project, header, name) {
         name: name,
     }
 }
+export async function getHeader(project, header) {
+    const entity = await getJson(`${DATABASE_URL}${project}/${header}`)
+    if (entity == null) return null
+    return {
+        ...entity,
+        project: project,
+        header: header,
+    }
+}
 
 export async function getOverview() {
     return await getJson(`${DATABASE_URL}overview`)
