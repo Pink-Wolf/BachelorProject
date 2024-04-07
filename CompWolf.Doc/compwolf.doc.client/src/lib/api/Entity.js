@@ -8,7 +8,6 @@ async function getJson(path) {
             'Content-Type': 'application/json',
         }
     })
-    console.log(path)
     if (!response.ok) return null
     return await response.json()
 }
@@ -22,4 +21,8 @@ export async function getEntity(project, header, name) {
         header: header,
         name: name,
     }
+}
+
+export async function getOverview() {
+    return await getJson(`${DATABASE_URL}overview`)
 }

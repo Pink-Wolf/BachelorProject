@@ -1,7 +1,7 @@
 import Style from "@/styles/EntityViewer.css";
 
 import Link from "next/link";
-import { CodeViewer, Declaration, Reference } from "./CodeComponents";
+import { CodeViewer, Reference } from "./CodeComponents";
 
 export default function BaseEntityViewer(props) {
 	const data = props.data;
@@ -44,11 +44,7 @@ export default function BaseEntityViewer(props) {
 				<h2>Related</h2>
 				{data.related?.map((x, i) => {
 					return (
-						<p key={i}>
-							<Link href={"/api/" + x}>
-								<code>{x}</code>
-							</Link>
-						</p>
+						<Reference key={i} path={x}>{x}</Reference>
 					)
 				})}
 			</section>
