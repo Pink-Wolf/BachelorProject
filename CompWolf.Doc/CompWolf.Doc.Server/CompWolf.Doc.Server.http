@@ -1,0 +1,6 @@
+@CompWolf.Doc.Server_HostAddress = http://localhost:5042
+
+GET {{CompWolf.Doc.Server_HostAddress}}/swaggers/
+Accept: application/json
+
+###

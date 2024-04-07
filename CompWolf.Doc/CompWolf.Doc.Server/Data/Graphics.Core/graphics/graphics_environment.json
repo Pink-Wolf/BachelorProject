@@ -1,0 +1,134 @@
+{
+  "namespace": "CompWolf",
+  "declaration": "class graphics_environment;",
+  "brief-description": "Sets up program-wide logic used for connecting to gpus.",
+  "warnings": [
+    "It is undefined behaviour to construct a graphics_environment on a thread other than the one that started the program."
+  ],
+
+  "detailed-description": "Sets up and manages program-wide logic used for connecting to the gpus.\nThe environment's update-method should normally be called continually.\nThe thread that constructed the graphics_environment is considered the \"main graphics thread\".",
+
+  "data-members": [
+    {
+      "name": "updating",
+      "description": "Event invoked before any other logic in the environment's update-method."
+    },
+    {
+      "name": "updated",
+      "description": "Event invoked after all other logic in the environment's update-method."
+    }
+  ],
+
+  "constructor": {
+    "warnings": [
+      "It is undefined behaviour to construct a graphics_environment on a thread other than the one that started the program."
+    ],
+
+    "overloads": [
+      {
+        "declaration": "graphics_environment();",
+        "description": "Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus."
+      },
+      {
+        "declaration": "graphics_environment(graphics_environment_settings);",
+        "description": "Like (1), but the environment has the given properties."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during setup due to causes outside of the program.",
+      "Throws std::logic_error if an environment already exists."
+    ],
+
+    "related": [
+      "graphics_environment_settings"
+    ]
+  },
+  "method-groups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "gpus",
+          "brief-description": "Returns the environment's gpu_manager.",
+          "overloads": [
+            {
+              "declaration": "auto gpus() noexcept -> gpu_manager&;",
+              "description": "Returns the environment's gpu_manager."
+            },
+            {
+              "declaration": "auto gpus() const noexcept -> const gpu_manager&;",
+              "description": "Like (1), but the returned value is const."
+            }
+          ],
+          "related": [
+            "gpu_manager"
+          ]
+        },
+        {
+          "name": "is_main_thread",
+          "brief-description": "Whether the given thread is the main graphics thread.",
+          "overloads": [
+            {
+              "declaration": "auto is_main_thread(std::thread::id) const noexcept -> bool;",
+              "description": "Whether the given thread is the main graphics thread."
+            }
+          ]
+        },
+        {
+          "name": "is_this_main_thread",
+          "brief-description": "Whether the thread calling this is the main graphics thread.",
+          "overloads": [
+            {
+              "declaration": "auto is_this_main_thread() const noexcept -> bool;",
+              "description": "Whether the thread calling this is the main graphics thread."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "name": "update",
+          "brief-description": "Handles any accumilated jobs, like keyboard inputs.",
+          "overloads": [
+            {
+              "declaration": "void update();",
+              "description": "Handles any accumilated jobs, like keyboard inputs."
+            }
+          ],
+          "exceptions": [
+            "Throws any exception thrown by code handling the jobs."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "name": "vulkan_instance",
+          "brief-description": "Returns the environment's vulkan_instance, representing a VkInstance.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_instance() const noexcept -> Private::vulkan_instance;",
+              "description": "Returns the environment's vulkan_instance, representing a VkInstance."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "related": [
+    "graphics_environment_settings",
+    "gpu_manager"
+  ],
+
+  "example": {
+    "description": "The following code creates an environment, uses it to create a window, and then keeps them alive until the window is closed.",
+    "code": "#include <graphics>\n#include <windows>\nusing namespace CompWolf;\n\nint main()\n{\n\tgraphics_environment environment(graphics_environment_settings{\n\t\t.program_name = \"Test Program\",\n\t});\n\n\twindow win(environment, window_settings{\n\t\t.name = \"Test Window\",\n\t});\n\n\twhile (win.is_open())\n\t{\n\t\tenvironment.update();\n\t}\n}"
+  }
+}
