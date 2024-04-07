@@ -3,33 +3,25 @@ import Style from "@/styles/EntityViewer.css";
 import Link from "next/link";
 import { CodeViewer, Declaration, Reference } from "./CodeComponents";
 
-export default function MethodViewer(props) {
+export default function BaseEntityViewer(props) {
 	const data = props.data;
-	if (data == undefined) return <div />
+	if (data == undefined) return <p>{`404: Could not get the entity's data.`}</p>
 
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
+	const is_owned = (data.owner != undefined)
 
 	return (
 		<section>
 			<h1 id="Path">
-				{`${data.namespace}::${data.owner}::${data.name}`}
+				{`${data.namespace}${is_owned ? `::${data.owner}` : ``}::${data.name}`}
 			</h1>
 			<small>
 				<p id="Project">In project <Reference path={data.project}>{data.project}</Reference></p>
 				<p id="Header">Defined in header <Reference path={`${data.project}/${data.header}`}>&lt;{data.header}&gt;</Reference></p>
-				<p id="Class">Member of <Reference path={`${data.project}/${data.header}/${data.owner}`}>{data.owner}</Reference></p>
+				<p id="Owner" hidden={!is_owned}>Member of <Reference path={`${data.project}/${data.header}/${data.owner}`}>{data.owner}</Reference></p>
 			</small>
 
-			<ol id="Declarations" type="1">
-				{data.overloads.map((x, i) => {
-					return (
-						<li key={i + 1}>
-							<Declaration>{x.declaration}</Declaration>
-							{x.description}
-						</li>
-					)
-				})}
-			</ol>
+			{props.top}
 
 			<section hidden={is_empty(data.warnings)} className="warning" id="Warnings">
 				<h2>Warning</h2>
@@ -38,12 +30,7 @@ export default function MethodViewer(props) {
 				})}
 			</section>
 
-			<section hidden={is_empty(data.exceptions)} id="Exceptions">
-				<h2>Exceptions</h2>
-				{data.exceptions?.map((x, i) => {
-					return <blockquote key={i}>{x}</blockquote>
-				})}
-			</section>
+			{props.children}
 
 			<section hidden={!data.example} id="Example">
 				<h2>Example</h2>

@@ -1,4 +1,4 @@
-import MethodViewer from "@/lib/api/MethodViewer";
+import FunctionViewer from "@/lib/api/FunctionViewer";
 import { getEntity } from "@/lib/api/Entity";
 
 export default async function ApiPage({ params }) {
@@ -25,5 +25,5 @@ export default async function ApiPage({ params }) {
         name: target,
     }
 
-    return <MethodViewer data={data} />
+    return <FunctionViewer data={data} />
 }
