@@ -13,13 +13,13 @@ export default async function SubEntityPage({ params }) {
         data = owner.constructor
     }
     if (data === undefined) {
-        data = owner.dataMembers.find((i) => {
+        data = owner.dataMembers?.find((i) => {
             return i.name === target
         })
         if (data !== undefined) isFunction = false
     }
     if (data === undefined) {
-        owner.methodGroups.find((i) => {
+        owner.methodGroups?.find((i) => {
             i.items.find((j) => {
                 if (j.name === target) {
                     data = j

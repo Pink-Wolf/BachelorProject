@@ -6,7 +6,18 @@ async function getJson(path) {
         cache: 'no-cache',
         headers: {
             'Content-Type': 'application/json',
-        }
+        },
+    })
+    if (!response.ok) return null
+    return await response.json()
+}
+async function postJson(path, data) {
+    const response = await fetch(path, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
     })
     if (!response.ok) return null
     return await response.json()
@@ -38,6 +49,10 @@ export async function getEntity(project, header, name) {
         header: header,
         name: name,
     }
+}
+
+export async function postEntity({ project, header, name, ...data }) {
+    return await postJson(`${DATABASE_URL}${data.project}/${data.header}/${data.name}`, data)
 }
 
 export async function getOverview() {

@@ -15,13 +15,19 @@
       "name": "updating",
       "declaration": "event<graphics_environment_update_parameter> updating;",
       "briefDescription": "Event invoked before any other logic in the environment's update-method.",
-      "detailedDescription": "Event invoked before any other logic in the environment's update-method."
+      "detailedDescription": "Event invoked before any other logic in the environment's update-method.",
+      "related": [
+        "event"
+      ]
     },
     {
       "name": "updated",
       "declaration": "event<graphics_environment_update_parameter> updated;",
       "briefDescription": "Event invoked after all other logic in the environment's update-method.",
-      "detailedDescription": "Event invoked before any other logic in the environment's update-method."
+      "detailedDescription": "Event invoked before any other logic in the environment's update-method.",
+      "related": [
+        "event"
+      ]
     }
   ],
 
