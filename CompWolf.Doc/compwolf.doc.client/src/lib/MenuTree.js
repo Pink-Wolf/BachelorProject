@@ -19,7 +19,7 @@ export default function MenuTree({ path, data, fields, name }) {
 			{targetData.map((x, i) => {
 				return (
 					<li key={i}>
-						{name(x.name, `${path}${x.name}`)}
+						{name(x.name, `${path ?? ""}${x.name}`)}
 						<MenuTree
 							data={x}
 							fields={fields.slice(1)}
