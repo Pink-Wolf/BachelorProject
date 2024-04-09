@@ -32,12 +32,24 @@ export async function getHeader(project, header) {
 export async function getEntity(project, header, name) {
     const entity = await getJson(`${DATABASE_URL}${project}/${header}/${name}`)
     if (entity == null) return null
-    return {
+    const returnVal = {
         ...entity,
         project: project,
         header: header,
         name: name,
     }
+    switch (entity.type) {
+        case `class`: return { ...returnVal,
+            constructor: {
+                ...returnVal.constructor,
+                briefDescription: `${returnVal.copyable ? "This can be copied." : "This cannot be copied."} ${returnVal.movable ? "This can be moved." : "This cannot be moved."}`,
+                detailedDescription: `${returnVal.copyable ? "This can be copied." : "This cannot be copied."} ${returnVal.movable ? "This can be moved." : "This cannot be moved."}`
+            }
+        }
+        default: return returnVal
+    }
+
+    
 }
 
 export async function getOverview() {

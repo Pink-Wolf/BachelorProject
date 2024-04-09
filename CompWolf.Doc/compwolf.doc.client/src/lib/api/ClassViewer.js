@@ -61,10 +61,13 @@ export default function ClassViewer({ data }) {
 					</thead>
 					<tbody>
 						<tr hidden={!data.constructor}>
-							<td colSpan="2">
+							<td>
 								<Reference path={`${data.project}/${data.header}/${data.name}/${data.name}`}>
 									(constructors)
 								</Reference>
+							</td>
+							<td>
+								{data.constructor?.briefDescription}
 							</td>
 						</tr>
 						{data.methodGroups?.map((x, i) => {

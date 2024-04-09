@@ -1,56 +1,58 @@
 {
-    "type": "class",
-    "briefDescription": "Contains a connection to each gpu on the machine.",
-    "detailedDescription": "Contains a connection to each gpu on the machine.",
-    "declaration": "class gpu_manager;",
-    "namespace": "CompWolf",
+  "type": "class",
+  "briefDescription": "Contains a connection to each gpu on the machine.",
+  "detailedDescription": "Contains a connection to each gpu on the machine.",
+  "declaration": "class gpu_manager;",
+  "namespace": "CompWolf",
+  "warnings": [
+    "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
+  ],
+  "copyable": false,
+  "movable": true,
+  "constructor": {
     "warnings": [
-        "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
+      "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
     ],
-    "constructor": {
-        "warnings": [
-            "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
-        ],
-        "overloads": [
-            {
-                "declaration": "gpu_manager() noexcept;",
-                "description": "Constructs a gpu_manager with no connections."
-            },
-            {
-                "declaration": "gpu_manager(const graphics_environment_settings&, Private::vulkan_instance);",
-                "description": "Sets up connections to each gpu based on the given settings."
-            }
-        ],
-        "related": [
-            "graphics_environment",
-            "graphics_environment_settings"
-        ]
-    },
-    "methodGroups": [
-        {
-            "name": "Accessors",
-            "items": [
-                {
-                    "name": "gpus",
-                    "briefDescription": "Returns the individual connections to each gpu.",
-                    "overloads": [
-                        {
-                            "declaration": "auto gpus() noexcept -> std::vector<gpu>&",
-                            "description": "Returns the individual connections to each gpu."
-                        },
-                        {
-                            "declaration": "auto gpus() const noexcept -> const std::vector<gpu>&",
-                            "description": "Like (1), but the connections are const."
-                        }
-                    ],
-                    "related": [
-                        "gpu"
-                    ]
-                }
-            ]
-        }
+    "overloads": [
+      {
+        "declaration": "gpu_manager() noexcept;",
+        "description": "Constructs a gpu_manager with no connections."
+      },
+      {
+        "declaration": "gpu_manager(const graphics_environment_settings&, Private::vulkan_instance);",
+        "description": "Sets up connections to each gpu based on the given settings."
+      }
     ],
     "related": [
-        "gpu"
+      "graphics_environment",
+      "graphics_environment_settings"
     ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "gpus",
+          "briefDescription": "Returns the individual connections to each gpu.",
+          "overloads": [
+            {
+              "declaration": "auto gpus() noexcept -> std::vector<gpu>&",
+              "description": "Returns the individual connections to each gpu."
+            },
+            {
+              "declaration": "auto gpus() const noexcept -> const std::vector<gpu>&",
+              "description": "Like (1), but the connections are const."
+            }
+          ],
+          "related": [
+            "gpu"
+          ]
+        }
+      ]
+    }
+  ],
+  "related": [
+    "gpu"
+  ]
 }

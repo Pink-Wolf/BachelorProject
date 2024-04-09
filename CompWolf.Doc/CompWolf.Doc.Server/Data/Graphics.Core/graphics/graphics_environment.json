@@ -31,6 +31,8 @@
     }
   ],
 
+  "copyable": false,
+  "movable": false,
   "constructor": {
     "warnings": [
       "It is undefined behaviour to construct a graphics_environment on a thread other than the one that started the program."
