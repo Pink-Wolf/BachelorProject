@@ -13,12 +13,12 @@ namespace CompWolf.Doc.Server.Controllers
 
         [HttpGet("overview")]
         [ProducesResponseType(200)]
-        public virtual ActionResult<ApiCollection> GetOverview() => Database.GetOverview();
+        public async Task<ActionResult<ApiCollection>> GetOverviewAsync() => await Database.GetOverviewAsync();
 
         [HttpGet("{project}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public virtual async Task<ActionResult<string>> GetProjectAsync([FromRoute] string project)
+        public async Task<ActionResult<string>> GetProjectAsync([FromRoute] string project)
         {
             var output = await Database.GetProjectAsync(project);
             if (output is null) return NotFound();
@@ -27,7 +27,7 @@ namespace CompWolf.Doc.Server.Controllers
         [HttpGet("{project}/{header}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public virtual async Task<ActionResult<string>> GetHeaderAsync(
+        public async Task<ActionResult<string>> GetHeaderAsync(
             [FromRoute] string project,
             [FromRoute] string header)
         {
@@ -38,7 +38,7 @@ namespace CompWolf.Doc.Server.Controllers
         [HttpGet("{project}/{header}/{name}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public virtual async Task<ActionResult<string>> GetEntityAsync(
+        public async Task<ActionResult<string>> GetEntityAsync(
             [FromRoute] string project,
             [FromRoute] string header,
             [FromRoute] string name)

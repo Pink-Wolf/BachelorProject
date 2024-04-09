@@ -16,7 +16,7 @@ export default function ProjectViewer({ data }) {
 				{data.headers.map((x, i) => {
 					return (
 						<li key={i}>
-							<Reference path={`${data.project}/${x.name}`}>{x.name}</Reference>
+							<Reference path={`${data.project}/${x.name}`}>{x.name}</Reference>: <FormattedText>{x.briefDescription}</FormattedText>
 						</li>
 					)
 				})}

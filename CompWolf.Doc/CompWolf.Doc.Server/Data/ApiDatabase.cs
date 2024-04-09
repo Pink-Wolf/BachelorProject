@@ -26,20 +26,42 @@ namespace CompWolf.Doc.Server.Data
             return await File.ReadAllTextAsync(path);
         }
 
-        public ApiCollection GetOverview() => new ApiCollection()
+        public async Task<string?> GetBriefDescriptionAsync(string path)
         {
-            Projects = Directory.GetDirectories(DataPath).Select(projectDirectory => new SimpleApiProject()
+            if (File.Exists(path) is false) return null;
+            var doc = await JsonDocument.ParseAsync(File.OpenRead(path));
+            return doc.RootElement.GetProperty("briefDescription").GetString();
+        }
+        public async Task<ApiCollection> GetOverviewAsync()
+        {
+            ApiCollection collection = new()
             {
-                Name = Path.GetFileName(projectDirectory)!,
-                Headers = Directory.GetDirectories(projectDirectory).Select(headerDirectory => new SimpleApiHeader()
+                Projects = Directory.GetDirectories(DataPath).Select(projectDirectory => new SimpleApiProject()
                 {
-                    Name = Path.GetFileName(headerDirectory)!,
-                    Entities = Directory.GetFiles(headerDirectory).Select(entityPath => new SimpleApiEntity()
+                    Name = Path.GetFileName(projectDirectory)!,
+                    Headers = Directory.GetDirectories(projectDirectory).Select(headerDirectory => new SimpleApiHeader()
                     {
-                        Name = Path.GetFileNameWithoutExtension(entityPath)!,
+                        Name = Path.GetFileName(headerDirectory)!,
+                        Entities = Directory.GetFiles(headerDirectory).Select(entityPath => new SimpleApiEntity()
+                        {
+                            Name = Path.GetFileNameWithoutExtension(entityPath)!,
+                        }).ToArray(),
                     }).ToArray(),
                 }).ToArray(),
-            }).ToArray(),
-        };
+            };
+            foreach (var project in collection.Projects)
+            {
+                project.BriefDescription = await GetBriefDescriptionAsync($"{DataPath}{project.Name}.json") ?? "";
+                foreach (var header in project.Headers)
+                {
+                    header.BriefDescription = await GetBriefDescriptionAsync($"{DataPath}{project.Name}/{header.Name}.json") ?? "";
+                    foreach (var entity in header.Entities)
+                    {
+                        entity.BriefDescription = await GetBriefDescriptionAsync($"{DataPath}{project.Name}/{header.Name}/{entity.Name}.json") ?? "";
+                    }
+                }
+            }
+            return collection;
+        }
     }
 }
