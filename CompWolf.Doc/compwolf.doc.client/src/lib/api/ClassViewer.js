@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Declaration, Reference } from "./CodeComponents";
+import { Declaration, FormattedText, Reference } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 
 export default function ClassViewer({ data }) {
@@ -20,7 +20,7 @@ export default function ClassViewer({ data }) {
 					<Declaration>{data.declaration}</Declaration>
 				</big>
 				<p id="Description">
-					{data.detailedDescription}
+					<FormattedText>{data.detailedDescription}</FormattedText>
 				</p>
 			</Fragment>
 		}>
@@ -40,7 +40,9 @@ export default function ClassViewer({ data }) {
 									<td>
 										<MemberReference name={x.name} />
 									</td>
-									<td>{x.briefDescription}</td>
+									<td>
+										<FormattedText>{x.briefDescription}</FormattedText>
+									</td>
 								</tr>
 							)
 						})}
@@ -71,7 +73,9 @@ export default function ClassViewer({ data }) {
 									<tr>
 										<td colSpan="2">
 											<h3>{x.name}</h3>
-											<p>{x.description}</p>
+											<p>
+												<FormattedText>{x.description}</FormattedText>
+											</p>
 										</td>
 									</tr>
 									{x.items.map((x, i) => {
@@ -80,7 +84,9 @@ export default function ClassViewer({ data }) {
 												<td>
 													<MemberReference name={x.name} />
 												</td>
-												<td>{x.briefDescription}</td>
+												<td>
+													<FormattedText>{x.briefDescription}</FormattedText>
+												</td>
 											</tr>
 										)
 									})}

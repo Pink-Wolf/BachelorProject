@@ -1,4 +1,4 @@
-import { Declaration, Reference } from "./CodeComponents";
+import { Declaration, FormattedText, Reference } from "./CodeComponents";
 
 export default function ProjectViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
@@ -9,7 +9,7 @@ export default function ProjectViewer({ data }) {
 				{`${data.project}`}
 			</h1>
 			<p id="Description">
-				{data.detailedDescription}
+				<FormattedText>{data.detailedDescription}</FormattedText>
 			</p>
 			<h2>Header-files:</h2>
 			<ul>

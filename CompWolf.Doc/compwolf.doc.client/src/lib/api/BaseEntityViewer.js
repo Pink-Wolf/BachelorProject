@@ -1,6 +1,6 @@
 import Style from "@/styles/EntityViewer.css";
 
-import { CodeViewer, Reference, SimpleReference } from "./CodeComponents";
+import { CodeViewer, FormattedText, Reference, SimpleReference } from "./CodeComponents";
 
 export default function BaseEntityViewer({ data, top, children }) {
 	if (data == undefined) return <p>{`404: Could not get the entity's data.`}</p>
@@ -24,7 +24,7 @@ export default function BaseEntityViewer({ data, top, children }) {
 			<section hidden={is_empty(data.warnings)} className="warning" id="Warnings">
 				<h2>Warning</h2>
 				{data.warnings?.map((x, i) => {
-					return <blockquote key={i}>{x}</blockquote>
+					return <blockquote key={i}><FormattedText>{x}</FormattedText></blockquote>
 				})}
 			</section>
 

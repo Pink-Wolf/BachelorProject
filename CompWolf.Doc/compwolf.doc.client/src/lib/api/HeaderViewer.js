@@ -1,4 +1,4 @@
-import { Declaration, Reference } from "./CodeComponents";
+import { Declaration, FormattedText, Reference } from "./CodeComponents";
 
 export default function HeaderViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
@@ -12,7 +12,7 @@ export default function HeaderViewer({ data }) {
 				<Declaration>{`<${data.header}>`}</Declaration>
 			</h1>
 			<p id="Description">
-				{data.detailedDescription}
+				<FormattedText>{data.detailedDescription}</FormattedText>
 			</p>
 			<h2>Entities:</h2>
 			<ul>

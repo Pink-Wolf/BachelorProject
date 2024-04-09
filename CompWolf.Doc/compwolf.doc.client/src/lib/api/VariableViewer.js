@@ -1,4 +1,4 @@
-import { Declaration } from "./CodeComponents";
+import { Declaration, FormattedText } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 import { Fragment } from "react";
 
@@ -12,7 +12,7 @@ export default function VariableViewer({ data }) {
 					<Declaration>{data.declaration}</Declaration>
 				</p>
 				<p id="Description">
-					{data.detailedDescription}
+					<FormattedText>{data.detailedDescription}</FormattedText>
 				</p>
 			</Fragment>
 		}>
