@@ -43,3 +43,22 @@ export async function getEntity(project, header, name) {
 export async function getOverview() {
     return await getJson(`${DATABASE_URL}overview`)
 }
+export async function getPathTo(name) {
+    const overview = await getOverview()
+
+    var path = undefined
+    overview.projects?.find(project => {
+        if (project.name === name) path = `${project.name}/`
+        project.headers?.find(header => {
+            if (header.name === name) path = `${project.name}/${header.name}/`
+            header.entities?.find(entity => {
+                if (entity.name === name) path = `${project.name}/${header.name}/${entity.name}/`
+                return (path !== undefined)
+            })
+            return (path !== undefined)
+        })
+        return (path !== undefined)
+    })
+
+    return path
+}

@@ -1,7 +1,6 @@
 import Style from "@/styles/EntityViewer.css";
 
-import Link from "next/link";
-import { CodeViewer, Reference } from "./CodeComponents";
+import { CodeViewer, Reference, SimpleReference } from "./CodeComponents";
 
 export default function BaseEntityViewer(props) {
 	const data = props.data;
@@ -46,7 +45,7 @@ export default function BaseEntityViewer(props) {
 					{data.related?.map((x, i) => {
 						return (
 							<li key={i}>
-								<Reference path={x}>{x}</Reference>
+								{<SimpleReference name={x} />}
 							</li>
 						)
 					})}
