@@ -63,13 +63,3 @@ blockquote {
     --activeSecondaryBackground: #AA0;
     background: var(--background);
 }
-
-input {
-    display: inline;
-    margin: 0;
-}
-textarea {
-    width: 100%;
-    height: 3em;
-    resize: vertical;
-}

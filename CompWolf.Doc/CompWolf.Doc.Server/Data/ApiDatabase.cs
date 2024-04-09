@@ -26,16 +26,6 @@ namespace CompWolf.Doc.Server.Data
             return await File.ReadAllTextAsync(path);
         }
 
-        public async Task<bool> PostEntityAsync(string dataString, string project, string header, string name)
-        {
-            var directoryPath = $"{DataPath}{project}/{header}/";
-            var path = $"{directoryPath}{name}.json";
-            if (Directory.Exists(directoryPath) is false) return false;
-
-            await File.WriteAllTextAsync(path, dataString);
-            return true;
-        }
-
         public ApiCollection GetOverview() => new ApiCollection()
         {
             Projects = Directory.GetDirectories(DataPath).Select(projectDirectory => new SimpleApiProject()

@@ -47,19 +47,5 @@ namespace CompWolf.Doc.Server.Controllers
             if (output is null) return NotFound();
             return output;
         }
-
-        [HttpPost("{project}/{header}/{name}")]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(404)]
-        public virtual async Task<ActionResult<string>> PostClass([FromBody] JsonDocument body,
-            [FromRoute] string project,
-            [FromRoute] string header,
-            [FromRoute] string name)
-        {
-            var data = body.RootElement.GetRawText();
-            var result = await Database.PostEntityAsync(data, project, header, name);
-            if (result is false) return NotFound();
-            return Created();
-        }
     }
 }
