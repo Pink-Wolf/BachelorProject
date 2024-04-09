@@ -21,6 +21,10 @@
       {
         "declaration": "gpu_manager(const graphics_environment_settings&, Private::vulkan_instance);",
         "description": "Sets up connections to each gpu based on the given settings."
+      },
+      {
+        "declaration": "gpu_manager(gpu_manager&&) noexcept;",
+        "description": "gpu_manager is movable."
       }
     ],
     "related": [

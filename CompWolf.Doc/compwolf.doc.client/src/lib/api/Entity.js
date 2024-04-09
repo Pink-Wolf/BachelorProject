@@ -39,13 +39,25 @@ export async function getEntity(project, header, name) {
         name: name,
     }
     switch (entity.type) {
-        case `class`: return { ...returnVal,
-            constructor: {
-                ...returnVal.constructor,
-                briefDescription: `${returnVal.copyable ? "This can be copied." : "This cannot be copied."} ${returnVal.movable ? "This can be moved." : "This cannot be moved."}`,
-                detailedDescription: `${returnVal.copyable ? "This can be copied." : "This cannot be copied."} ${returnVal.movable ? "This can be moved." : "This cannot be moved."}`
+        case `class`:
+            if (returnVal.copyable && returnVal.movable) {
+                returnVal.constructor.briefDescription = `${returnVal.name} is copyable and movable.`
+                returnVal.constructor.detailedDescription = ``
             }
-        }
+            else if (returnVal.copyable && !returnVal.movable) {
+                returnVal.constructor.briefDescription = `${returnVal.name} is copyable, but not movable.`
+                returnVal.constructor.detailedDescription = `${returnVal.name} is not movable.`
+            }
+            else if (!returnVal.copyable && returnVal.movable) {
+                returnVal.constructor.briefDescription = `${returnVal.name} is not copyable, but is movable.`
+                returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable.`
+            }
+            else if (!returnVal.copyable && !returnVal.movable) {
+                returnVal.constructor.briefDescription = `${returnVal.name} is not copyable nor movable.`
+                returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable nor movable.`
+            }
+
+            return returnVal
         default: return returnVal
     }
 
