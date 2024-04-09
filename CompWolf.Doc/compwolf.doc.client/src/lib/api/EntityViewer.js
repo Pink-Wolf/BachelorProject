@@ -3,8 +3,7 @@ import ClassViewer from "./ClassViewer";
 import FunctionViewer from "./FunctionViewer";
 import VariableViewer from "./VariableViewer";
 
-export default function EntityViewer(props) {
-	const data = props.data;
+export default function EntityViewer({ data }) {
 	switch (data?.type) {
 		case `class`: return <ClassViewer data={data} />
 		case `function`: return <FunctionViewer data={data} />

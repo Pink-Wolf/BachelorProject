@@ -1,8 +1,6 @@
 import { Declaration, Reference } from "./CodeComponents";
 
-export default function HeaderViewer(props) {
-	const data = props.data;
-
+export default function HeaderViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 
 	return (

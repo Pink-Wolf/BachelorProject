@@ -2,8 +2,7 @@ import Style from "@/styles/EntityViewer.css";
 
 import { CodeViewer, Reference, SimpleReference } from "./CodeComponents";
 
-export default function BaseEntityViewer(props) {
-	const data = props.data;
+export default function BaseEntityViewer({ data, top, children }) {
 	if (data == undefined) return <p>{`404: Could not get the entity's data.`}</p>
 
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
@@ -20,7 +19,7 @@ export default function BaseEntityViewer(props) {
 				<p id="Owner" hidden={!is_owned}>Member of <Reference path={`${data.project}/${data.header}/${data.owner}`}>{data.owner}</Reference></p>
 			</small>
 
-			{props.top}
+			{top}
 
 			<section hidden={is_empty(data.warnings)} className="warning" id="Warnings">
 				<h2>Warning</h2>
@@ -29,7 +28,7 @@ export default function BaseEntityViewer(props) {
 				})}
 			</section>
 
-			{props.children}
+			{children}
 
 			<section hidden={!data.example} id="Example">
 				<h2>Example</h2>

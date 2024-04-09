@@ -2,15 +2,13 @@ import { Fragment } from "react";
 import { Declaration, Reference } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 
-export default function ClassViewer(props) {
-	const data = props.data;
-
+export default function ClassViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 
-	function MemberReference(props) {
+	function MemberReference({ name }) {
 		return (
-			<Reference path={`${data.project}/${data.header}/${data.name}/${props.name}`}>
-				{props.name}
+			<Reference path={`${data.project}/${data.header}/${data.name}/${name}`}>
+				{name}
 			</Reference>
 		)
 	}

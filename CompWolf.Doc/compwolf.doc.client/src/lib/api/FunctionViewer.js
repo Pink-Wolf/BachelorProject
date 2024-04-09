@@ -1,9 +1,7 @@
 import { Declaration } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 
-export default function FunctionViewer(props) {
-	const data = props.data;
-
+export default function FunctionViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 
 	return (

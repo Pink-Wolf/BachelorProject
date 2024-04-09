@@ -3,11 +3,11 @@ import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlig
 import { xcode } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { getPathTo } from "./Entity";
 
-export function Reference(props) {
+export function Reference({ path, children }) {
 	return (
-		<Link href={"/api/" + props.path}>
+		<Link href={"/api/" + path}>
 			<code>
-				{props.children}
+				{children}
 			</code>
 		</Link>
 	)
@@ -17,18 +17,18 @@ export async function SimpleReference({ name }) {
 	return <Reference path={path}>{name}</Reference>
 }
 
-export function CodeViewer(props) {
+export function CodeViewer({ children }) {
 	return (
 		<SyntaxHighlighter language="cpp" style={xcode}>
-			{props.children}
+			{children}
 		</SyntaxHighlighter>
 	)
 }
-export function Declaration(props) {
+export function Declaration({ children }) {
 	return (
 		<big className="declaration">
 			<CodeViewer>
-				{props.children}
+				{children}
 			</CodeViewer>
 		</big>
 	)

@@ -1,15 +1,14 @@
 import Style from "@/styles/MenuTree.css";
 
-export default function MenuTree(props) {
-	const path = props.path ?? ""
-	const data = props.data[props.fields[0]]
+export default function MenuTree({ path, data, fields, name }) {
+	const targetData = data[fields[0]]
 
-	if (props.fields.length === 1 || data.length === 0) return (
+	if (fields.length === 1 || targetData.length === 0) return (
 		<ul className="menuTree">
-			{props.data[props.fields[0]].map((x, i) => {
+			{data[fields[0]].map((x, i) => {
 				return (
 					<li key={i}>
-						{props.name(x.name, `${path}${x.name}`)}
+						{name(x.name, `${path ?? ""}${x.name}`)}
 					</li>
 				)
 			})}
@@ -17,15 +16,15 @@ export default function MenuTree(props) {
 	)
 	else return (
 		<ul className="menuTree">
-			{data.map((x, i) => {
+			{targetData.map((x, i) => {
 				return (
 					<li key={i}>
-						{props.name(x.name, `${path}${x.name}`)}
+						{name(x.name, `${path}${x.name}`)}
 						<MenuTree
 							data={x}
-							fields={props.fields.slice(1)}
-							name={props.name}
-							path={`${path}${x.name}/`}
+							fields={fields.slice(1)}
+							name={name}
+							path={`${path ?? ""}${x.name}/`}
 						/>
 					</li>
 				)

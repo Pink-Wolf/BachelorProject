@@ -2,9 +2,7 @@ import { Declaration } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 import { Fragment } from "react";
 
-export default function VariableViewer(props) {
-	const data = props.data;
-
+export default function VariableViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 
 	return (
