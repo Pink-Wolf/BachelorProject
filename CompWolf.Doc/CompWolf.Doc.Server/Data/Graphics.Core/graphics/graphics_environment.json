@@ -4,11 +4,10 @@
   "namespace": "CompWolf",
   "declaration": "class graphics_environment;",
   "briefDescription": "Sets up program-wide logic used for connecting to gpus.",
-  "warnings": [
-    "It is undefined behaviour to construct a graphics_environment on a thread other than the one that started the program."
-  ],
-
   "detailedDescription": "Sets up and manages program-wide logic used for connecting to the gpus.\nThe environment's update-method should normally be called continually.\nThe thread that constructed the graphics_environment is considered the \"main graphics thread\".",
+  "warnings": [
+    "It is undefined behaviour to construct a [[graphics_environment]] on a thread other than the one that started the program."
+  ],
 
   "dataMembers": [
     {
@@ -35,7 +34,7 @@
   "movable": false,
   "constructor": {
     "warnings": [
-      "It is undefined behaviour to construct a graphics_environment on a thread other than the one that started the program."
+      "It is undefined behaviour to construct a [[graphics_environment]] on a thread other than the one that started the program."
     ],
 
     "overloads": [
