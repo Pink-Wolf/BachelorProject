@@ -29,7 +29,8 @@ namespace CompWolf.Doc.Server.Data
         public async Task<string?> GetBriefDescriptionAsync(string path)
         {
             if (File.Exists(path) is false) return null;
-            var doc = await JsonDocument.ParseAsync(File.OpenRead(path));
+            using var stream = File.OpenRead(path);
+            var doc = await JsonDocument.ParseAsync(stream);
             return doc.RootElement.GetProperty("briefDescription").GetString();
         }
         public async Task<ApiCollection> GetOverviewAsync()
