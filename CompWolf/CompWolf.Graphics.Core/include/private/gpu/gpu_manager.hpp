@@ -25,12 +25,12 @@ namespace CompWolf::Graphics
 
 	public: // getters
 		/* Returns the gpu-connections the manager contains. */
-		auto gpu_container() noexcept -> _gpus_type&
+		auto gpus() noexcept -> _gpus_type&
 		{
 			return _gpus;
 		}
 		/* Returns the gpu-connections the manager contains. */
-		auto gpu_container() const noexcept -> const _gpus_type&
+		auto gpus() const noexcept -> const _gpus_type&
 		{
 			return _gpus;
 		}
