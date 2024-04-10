@@ -40,21 +40,23 @@ export async function getEntity(project, header, name) {
     }
     switch (entity.type) {
         case `class`:
-            if (returnVal.copyable && returnVal.movable) {
-                returnVal.constructor.briefDescription = `${returnVal.name} is copyable and movable.`
-                returnVal.constructor.detailedDescription = ``
-            }
-            else if (returnVal.copyable && !returnVal.movable) {
-                returnVal.constructor.briefDescription = `${returnVal.name} is copyable, but not movable.`
-                returnVal.constructor.detailedDescription = `${returnVal.name} is not movable.`
-            }
-            else if (!returnVal.copyable && returnVal.movable) {
-                returnVal.constructor.briefDescription = `${returnVal.name} is not copyable, but is movable.`
-                returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable.`
-            }
-            else if (!returnVal.copyable && !returnVal.movable) {
-                returnVal.constructor.briefDescription = `${returnVal.name} is not copyable nor movable.`
-                returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable nor movable.`
+            if (returnVal.hasOwnProperty("constructor")) {
+                if (returnVal.copyable && returnVal.movable) {
+                    returnVal.constructor.briefDescription = `${returnVal.name} is copyable and movable.`
+                    returnVal.constructor.detailedDescription = ``
+                }
+                else if (returnVal.copyable && !returnVal.movable) {
+                    returnVal.constructor.briefDescription = `${returnVal.name} is copyable, but not movable.`
+                    returnVal.constructor.detailedDescription = `${returnVal.name} is not movable.`
+                }
+                else if (!returnVal.copyable && returnVal.movable) {
+                    returnVal.constructor.briefDescription = `${returnVal.name} is not copyable, but is movable.`
+                    returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable.`
+                }
+                else if (!returnVal.copyable && !returnVal.movable) {
+                    returnVal.constructor.briefDescription = `${returnVal.name} is not copyable nor movable.`
+                    returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable nor movable.`
+                }
             }
 
             return returnVal

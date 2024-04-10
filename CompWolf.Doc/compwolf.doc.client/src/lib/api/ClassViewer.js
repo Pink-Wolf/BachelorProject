@@ -65,7 +65,7 @@ export default function ClassViewer({ data }) {
 				</table>
 			</section>
 
-			<section hidden={is_empty(data.methodGroups) && !data.constructor} id="MemberFunctions">
+			<section hidden={is_empty(data.methodGroups) && !data.hasOwnProperty("constructor")} id="MemberFunctions">
 				<h2>Member Functions</h2>
 				<table className="memberTable">
 					<thead>
@@ -75,7 +75,7 @@ export default function ClassViewer({ data }) {
 						</tr>
 					</thead>
 					<tbody>
-						<tr hidden={!data.constructor}>
+						<tr hidden={!data.hasOwnProperty("constructor")}>
 							<td>
 								<Reference path={`${data.project}/${data.header}/${data.name}/${data.name}`}>
 									(constructors)
