@@ -38,7 +38,7 @@ h6 {
     font-size: 1.015625em;
 }
 
-ul {
+ul, ol {
     margin: 0 0 0 0;
 }
 

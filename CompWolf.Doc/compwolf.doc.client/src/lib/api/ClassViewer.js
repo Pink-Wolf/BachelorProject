@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Declaration, FormattedText, Reference } from "./CodeComponents";
+import { Declaration, FormattedText, Reference, SimpleReference } from "./CodeComponents";
 import BaseEntityViewer from "./BaseEntityViewer";
 
 export default function ClassViewer({ data }) {
@@ -16,6 +16,21 @@ export default function ClassViewer({ data }) {
 	return (
 		<BaseEntityViewer data={data} top={
 			<Fragment>
+				<small>
+					<p hidden={is_empty(data.baseClasses)}>
+						Inherits from: {
+							is_empty(data.baseClasses) ? "nothing." : <ul>
+								{data.baseClasses.map((x, i) => {
+									return (
+										<li key={i}>
+											<SimpleReference name={x} />
+										</li>
+									)
+								})}
+							</ul>
+						}
+					</p>
+				</small>
 				<big id="Declaration">
 					<Declaration>{data.declaration}</Declaration>
 				</big>

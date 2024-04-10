@@ -9,6 +9,8 @@
     "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
   ],
 
+  "baseClasses": [ "basic_freeable" ],
+
   "copyable": false,
   "movable": true,
   "constructor": {
