@@ -25,7 +25,6 @@
   <ItemGroup>
     <Folder Include="Data\Core\dimensions\" />
     <Folder Include="Data\Core\events\" />
-    <Folder Include="Data\Graphics.Core\windows\" />
   </ItemGroup>
 
 </Project>

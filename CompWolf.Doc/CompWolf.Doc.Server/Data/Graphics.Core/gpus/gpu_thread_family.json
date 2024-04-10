@@ -1,0 +1,45 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct gpu_thread_family;",
+  "briefDescription": "Aggregate type representing a collection of threads on a gpu.",
+  "detailedDescription": "Aggregate type representing a collection of threads on a gpu, where a \"thread\" is a gpu queue.",
+
+  "dataMembers": [
+    {
+      "name": "job_types",
+      "declaration": "gpu_job_type_set job_types;",
+      "briefDescription": "The type of work that the threads can perform.",
+      "detailedDescription": "The type of work that the threads can perform.",
+      "related": [
+        "gpu_job_type_set"
+      ]
+    },
+    {
+      "name": "threads",
+      "declaration": "std::vector<gpu_thread> threads;",
+      "briefDescription": "The family's threads.",
+      "detailedDescription": "The family's threads, where a \"thread\" is a gpu queue.",
+      "related": [
+        "gpu_thread"
+      ]
+    },
+    {
+      "name": "job_count",
+      "declaration": "std::size_t job_count;",
+      "briefDescription": "The amount of jobs currently running on any of the family's threads.",
+      "detailedDescription": "The amount of jobs currently running on any of the family's threads.",
+      "related": [
+        "gpu_job"
+      ]
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+
+  "related": [
+    "gpu_thread"
+  ]
+}

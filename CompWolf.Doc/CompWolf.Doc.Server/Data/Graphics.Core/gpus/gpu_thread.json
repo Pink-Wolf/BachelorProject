@@ -1,0 +1,29 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct gpu_thread;",
+  "briefDescription": "Aggregate type representing a thread on a gpu.",
+  "detailedDescription": "Aggregate type representing a thread on a gpu, where a \"thread\" is a gpu queue.\nA gpu queue is like a thread, in that commands send to the gpu will run on a single queue, and queues can execute commands in parallel.",
+
+  "dataMembers": [
+    {
+      "name": "job_count",
+      "declaration": "std::size_t job_count;",
+      "briefDescription": "The amount of jobs currently running on any of the family's threads.",
+      "detailedDescription": "The amount of jobs currently running on any of the family's threads.",
+      "related": [
+        "gpu_job"
+      ]
+    },
+    {
+      "name": "queue",
+      "declaration": "Private::vulkan_queue queue;",
+      "briefDescription": "Represents the VkQueue representing the gpu queue.",
+      "detailedDescription": "Represents the VkQueue representing the gpu queue.\nThis reveals a lower level of abstractions, and so should rarely be used."
+    }
+  ],
+
+  "copyable": true,
+  "movable": true
+}

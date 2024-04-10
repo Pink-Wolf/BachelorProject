@@ -1,0 +1,44 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct gpu_job_settings;",
+  "briefDescription": "Parameter for [[gpu_manager]].new_job.",
+  "detailedDescription": "Aggregate type used by [[gpu_manager]].new_job to specify the job to create.",
+
+  "dataMembers": [
+    {
+      "name": "type",
+      "declaration": "gpu_job_type_set type;",
+      "briefDescription": "The type of work the job should be able to perform.",
+      "detailedDescription": "The type of work the job should be able to perform.",
+      "related": [
+        "gpu_job_type_set"
+      ]
+    },
+    {
+      "name": "gpu_scorer",
+      "declaration": "std::function<std::optional<float>(const gpu_connection&)> gpu_scorer;",
+      "briefDescription": "Determines what gpu to use; may be null.",
+      "detailedDescription": "Used on each thread's gpu to determine what thread to use.\nThis and family_scorer's scores are summed to determine the threads' scores; the thread with the highest score is generally picked.\n[[gpu_manager]].new_job may still pick a lower-scoring thread, for example when the highest scoring thread is already busy with work.\nIf this returns std::nullopt, no thread on the given gpu will be picked; this should only be done if the gpu actually cannot perform the work.\nIf empty, [[gpu_manager]].new_job will score the gpus 0.",
+      "related": [
+        "gpu_connection"
+      ]
+    },
+    {
+      "name": "family_scorer",
+      "declaration": "std::function<std::optional<float>(const gpu_thread_family&)> family_scorer;",
+      "briefDescription": "Determines what family of threads to use; may be null.",
+      "detailedDescription": "Used on each thread's family to determine what thread to use.\nThis and gpu_scorer's scores are summed to determine the threads' scores; the thread with the highest score is generally picked.\n[[gpu_manager]].new_job may still pick a lower-scoring thread, for example when the highest scoring thread is already busy with work.\nIf this returns std::nullopt, no thread in the given family will be picked; this should only be done if the family actually cannot perform the work.\nIf empty, [[gpu_manager]].new_job will score the families 0.",
+      "related": [
+        "gpu_thread_family"
+      ]
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "related": [
+    "gpu_manager"
+  ]
+}

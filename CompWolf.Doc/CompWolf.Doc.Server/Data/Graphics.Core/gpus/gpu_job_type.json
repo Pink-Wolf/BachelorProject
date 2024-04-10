@@ -1,0 +1,30 @@
+﻿{
+  "type": "enum",
+
+  "namespace": "CompWolf",
+  "declaration": "enum class gpu_job_type : std::size_t;",
+  "briefDescription": "A type of work that a thread on a gpu may be able to do.",
+  "detailedDescription": "A type of work that a thread on a gpu may be able to do.",
+  "values": [
+    {
+      "name": "draw",
+      "briefDescription": "Rendering/drawing images.",
+      "detailedDescription": "Rendering/drawing images.\nThis is different from making the drawn images visible on a window."
+    },
+    {
+      "name": "present",
+      "briefDescription": "Sets what image is visible on a window.",
+      "detailedDescription": "Sets what image is visible on a window."
+    },
+    {
+      "name": "size",
+      "briefDescription": "The amount of values in the enum, excluding this.",
+      "detailedDescription": "The amount of values in the enum, excluding this."
+    }
+  ],
+
+  "related": [
+    "gpu_job_type_set",
+    "gpu_job"
+  ]
+}

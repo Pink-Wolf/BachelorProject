@@ -1,0 +1,13 @@
+﻿{
+  "type": "alias",
+
+  "namespace": "CompWolf",
+  "declaration": "using gpu_job_type_set = enum_bitset<gpu_job_type>;",
+  "briefDescription": "A set of [[gpu_job_type]]s.",
+  "detailedDescription": "A set of [[gpu_job_type]]s, as in some types of work that a thread on a gpu may be able to do.",
+
+  "related": [
+    "gpu_job_type",
+    "gpu_job"
+  ]
+}

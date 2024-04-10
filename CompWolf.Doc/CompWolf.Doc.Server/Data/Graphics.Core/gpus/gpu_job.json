@@ -1,0 +1,118 @@
+﻿{
+  "type": "class",
+
+  "declaration": "class gpu_job;",
+  "namespace": "CompWolf",
+  "briefDescription": "A reference to a gpu-thread that is ready to perform some work.",
+  "detailedDescription": "A reference to a gpu-thread that is ready to perform some work.",
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "gpu_job() noexcept;",
+        "description": "Constructs a freed gpu_job, as in one that does not reference any thread."
+      },
+      {
+        "declaration": "gpu_job(gpu_connection&, std::size_t family_index, std::size_t thread_index);",
+        "description": "Creates a job referencing a thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
+      },
+      {
+        "declaration": "gpu_job(gpu_job&&) noexcept;",
+        "description": "gpu_job is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::out_of_range if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index."
+    ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "gpu",
+          "briefDescription": "Returns the gpu that the job is on.",
+          "overloads": [
+            {
+              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "description": "Returns the gpu that the job is on."
+            },
+            {
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_connection"
+          ]
+        },
+        {
+          "name": "family",
+          "briefDescription": "Returns the family of threads that the job is on.",
+          "overloads": [
+            {
+              "declaration": "auto family() noexcept -> gpu_thread_family&",
+              "description": "Returns the family of threads that the job is on."
+            },
+            {
+              "declaration": "auto family() const noexcept -> const gpu_thread_family&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_thread_family"
+          ]
+        },
+        {
+          "name": "thread",
+          "briefDescription": "Returns the thread that the job is on.",
+          "overloads": [
+            {
+              "declaration": "auto thread() noexcept -> gpu_thread&",
+              "description": "Returns the family of threads that the job is on."
+            },
+            {
+              "declaration": "auto thread() const noexcept -> const gpu_thread&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_thread"
+          ]
+        },
+        {
+          "name": "family_index",
+          "briefDescription": "Returns the index of family() in gpu().families().",
+          "overloads": [
+            {
+              "declaration": "auto family_index() const noexcept -> std::size_t",
+              "description": "Returns the index of the gpu-thread-family in the gpu's families()-vector."
+            }
+          ],
+          "related": [
+            "gpu_connection",
+            "gpu_thread_family"
+          ]
+        },
+        {
+          "name": "thread_index",
+          "briefDescription": "Returns the index of thread() in family().threads.",
+          "overloads": [
+            {
+              "declaration": "auto thread_index() const noexcept -> std::size_t",
+              "description": "Returns the index of the gpu-thread in the gpu-thread-family's threads-vector."
+            }
+          ],
+          "related": [
+            "gpu_thread_family",
+            "gpu_thread"
+          ]
+        }
+      ]
+    }
+  ]
+}

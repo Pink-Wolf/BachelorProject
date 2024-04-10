@@ -5,9 +5,6 @@
   "namespace": "CompWolf",
   "briefDescription": "Contains a connection to each gpu on the machine.",
   "detailedDescription": "Contains a connection to each gpu on the machine.",
-  "warnings": [
-    "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
-  ],
 
   "baseClasses": [ "basic_freeable" ],
 
@@ -31,6 +28,9 @@
         "description": "gpu_manager is movable."
       }
     ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error while setting up the connections due to causes outside of the program."
+    ],
     "related": [
       "graphics_environment",
       "graphics_environment_settings"
@@ -45,22 +45,44 @@
           "briefDescription": "Returns the individual connections to each gpu.",
           "overloads": [
             {
-              "declaration": "auto gpus() noexcept -> std::vector<gpu>&",
+              "declaration": "auto gpus() noexcept -> std::vector<gpu_connection>&",
               "description": "Returns the individual connections to each gpu."
             },
             {
-              "declaration": "auto gpus() const noexcept -> const std::vector<gpu>&",
-              "description": "Like (1), but the connections are const."
+              "declaration": "auto gpus() const noexcept -> const std::vector<gpu_connection>&",
+              "description": "Like (1), but const."
             }
           ],
           "related": [
-            "gpu"
+            "gpu_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "name": "new_job",
+          "briefDescription": "Finds a thread on the gpu to perform a job.",
+          "detailedDescription": "This method will try to find the best thread possible, prioritising for example threads that no jobs are currently running on.",
+          "overloads": [
+            {
+              "declaration": "auto new_job(gpu_job_settings) -> gpu_job",
+              "description": "Finds a thread on the gpu based on the given settings, and returns a gpu_job with a reference to that thread."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if the machine has no threads at all to perform the given type of work."
+          ],
+          "related": [
+            "gpu_job"
           ]
         }
       ]
     }
   ],
   "related": [
-    "gpu"
+    "gpu_connection"
   ]
 }

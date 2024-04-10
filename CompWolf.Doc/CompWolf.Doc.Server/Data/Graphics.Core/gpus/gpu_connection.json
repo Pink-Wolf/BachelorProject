@@ -1,0 +1,127 @@
+﻿{
+  "type": "class",
+
+  "declaration": "class gpu_connection;",
+  "namespace": "CompWolf",
+  "briefDescription": "A connection to a gpu.",
+  "detailedDescription": "A connection to a gpu.",
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "warnings": [
+      "A gpu_connection should not be constructed directly; it should be constructed by the [[gpu_manager]]."
+    ],
+    "overloads": [
+      {
+        "declaration": "gpu_connection() noexcept;",
+        "description": "Constructs a freed gpu_connection, that is a gpu_connection that does not represent an actual connection."
+      },
+      {
+        "declaration": "gpu_connection(Private::vulkan_instance, Private::vulkan_physical_device);",
+        "description": "Sets up a connection to the given gpu."
+      },
+      {
+        "declaration": "gpu_connection(gpu_connection&&) noexcept;",
+        "description": "gpu_connection is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error while setting up the connection due to causes outside of the program."
+    ],
+    "related": [
+      "gpu_manager"
+    ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "families",
+          "briefDescription": "Returns the groups of threads on the gpu.",
+          "overloads": [
+            {
+              "declaration": "auto families() noexcept -> std::vector<gpu_thread_family>&",
+              "description": "Returns the gpu's families of threads."
+            },
+            {
+              "declaration": "auto families() const noexcept -> const std::vector<gpu_thread_family>&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_thread_family"
+          ]
+        },
+        {
+          "name": "index_of_family",
+          "briefDescription": "Returns the index of a given family.",
+          "overloads": [
+            {
+              "declaration": "auto index_of_family(gpu_thread_family&) const -> std::size_t",
+              "description": "Returns the index of the given family in the vector returned by families()"
+            }
+          ],
+          "exceptions": [
+            "Throws std::invalid_argument if the gpu does not have the given thread."
+          ],
+          "related": [
+            "gpu_thread_family"
+          ]
+        },
+        {
+          "name": "work_types",
+          "briefDescription": "Returns the types of work doable by the gpu.",
+          "overloads": [
+            {
+              "declaration": "auto work_types() const noexcept -> gpu_job_type_set",
+              "description": "Returns the types of work at least 1 thread can perform on the gpu"
+            }
+          ],
+          "related": [
+            "gpu_job_type_set"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "name": "vulkan_device",
+          "briefDescription": "Returns the gpu's vulkan_device, representing a VkDevice.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_device() const noexcept -> Private::vulkan_device;",
+              "description": "Returns the gpu's vulkan_device, representing a VkDevice."
+            }
+          ]
+        },
+        {
+          "name": "vulkan_physical_device",
+          "briefDescription": "Returns the gpu's vulkan_physical_device, representing a VkPhysicalDevice.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_physical_device() const noexcept -> Private::vulkan_physical_device;",
+              "description": "Returns the gpu's vulkan_physical_device, representing a VkPhysicalDevice."
+            }
+          ]
+        },
+        {
+          "name": "vulkan_instance",
+          "briefDescription": "Returns the gpu's vulkan_instance, representing a VkInstance.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_instance() const noexcept -> Private::vulkan_instance;",
+              "description": "Returns the gpu's vulkan_instance, representing a VkInstance."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

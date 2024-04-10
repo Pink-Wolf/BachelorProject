@@ -70,7 +70,7 @@
             },
             {
               "declaration": "auto gpus() const noexcept -> const gpu_manager&;",
-              "description": "Like (1), but the returned value is const."
+              "description": "Like (1), but const."
             }
           ],
           "related": [
