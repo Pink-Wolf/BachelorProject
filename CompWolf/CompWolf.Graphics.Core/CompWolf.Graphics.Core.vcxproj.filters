@@ -39,10 +39,10 @@
     <ClInclude Include="include\vulkan_types">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_manager.hpp">
+    <ClInclude Include="include\private\gpus\gpu_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_connection.hpp">
+    <ClInclude Include="include\private\gpus\gpu_connection.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\graphics\glfw_handle.hpp">
@@ -60,10 +60,10 @@
     <ClInclude Include="header\vulkan_debug_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_job_settings.hpp">
+    <ClInclude Include="include\private\gpus\gpu_job_settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_thread.hpp">
+    <ClInclude Include="include\private\gpus\gpu_thread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\present_device_info.hpp">
@@ -81,19 +81,19 @@
     <ClInclude Include="include\private\window\window_swapchain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_job.hpp">
+    <ClInclude Include="include\private\gpus\gpu_job.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\window">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\gpu">
+    <ClInclude Include="include\gpus">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_fence.hpp">
+    <ClInclude Include="include\private\gpus\gpu_fence.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu_semaphore.hpp">
+    <ClInclude Include="include\private\gpus\gpu_semaphore.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\window\window_user.hpp">

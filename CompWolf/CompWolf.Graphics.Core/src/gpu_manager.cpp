@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "gpu"
+#include "gpus"
 
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>

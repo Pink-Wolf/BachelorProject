@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_HEADER
 
-#include <gpu>
+#include "gpus"
 #include "graphics"
 #include "vulkan_types"
 #include "window_settings.hpp"

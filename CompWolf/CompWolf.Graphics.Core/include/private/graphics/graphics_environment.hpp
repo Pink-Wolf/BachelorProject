@@ -10,7 +10,7 @@
 #include "glfw_handle.hpp"
 #include "vulkan_handle.hpp"
 #include "vulkan_debug_handle.hpp"
-#include "gpu"
+#include "gpus"
 
 
 namespace CompWolf::Graphics

@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER
 #define COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER
 
-#include "gpu"
+#include "gpus"
 #include "vulkan_types"
 #include <freeable>
 #include <owned>

@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_GPU_MEMORY_HEADER
 
 #include "vulkan_types"
-#include "gpu"
+#include "gpus"
 #include "shader_field.hpp"
 #include <freeable>
 #include <span>

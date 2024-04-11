@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_WINDOW_SWAPCHAIN_HEADER
 
 #include "graphics"
-#include "gpu"
+#include "gpus"
 #include "gpu_program"
 #include "vulkan_types"
 #include "window_settings.hpp"

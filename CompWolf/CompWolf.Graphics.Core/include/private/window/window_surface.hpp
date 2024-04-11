@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_WINDOW_SURFACE_HEADER
 
 #include "vulkan_types"
-#include "gpu"
+#include "gpus"
 #include "graphics"
 #include "window_settings.hpp"
 #include <vector>

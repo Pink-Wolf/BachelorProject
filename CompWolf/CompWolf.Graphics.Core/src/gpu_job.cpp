@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "gpu"
+#include "gpus"
 
 namespace CompWolf::Graphics
 {
