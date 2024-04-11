@@ -38,13 +38,13 @@ namespace CompWolf::Graphics
 		class gpu_specific_pipeline : public basic_freeable
 		{
 		private: // fields
-			owned_ptr<gpu*> _device;
+			owned_ptr<gpu_connection*> _device;
 			Private::vulkan_pipeline_layout_descriptor _layout_descriptor;
 			Private::vulkan_pipeline_layout _layout;
 
 		public: // getters
-			auto device() noexcept -> gpu& { return *_device; }
-			auto device() const noexcept -> const gpu& { return *_device; }
+			auto device() noexcept -> gpu_connection& { return *_device; }
+			auto device() const noexcept -> const gpu_connection& { return *_device; }
 
 			inline auto layout_descriptor() const noexcept { return _layout_descriptor; }
 			inline auto layout() const noexcept { return _layout; }
@@ -55,7 +55,7 @@ namespace CompWolf::Graphics
 			auto operator=(gpu_specific_pipeline&&) -> gpu_specific_pipeline& = default;
 			inline ~gpu_specific_pipeline() noexcept { free(); }
 
-			gpu_specific_pipeline(gpu&, const draw_pipeline_data&);
+			gpu_specific_pipeline(gpu_connection&, const draw_pipeline_data&);
 
 		public: // CompWolf::freeable
 			inline auto empty() const noexcept -> bool final
@@ -132,7 +132,7 @@ namespace CompWolf::Graphics
 		private: // fields
 			draw_pipeline_data _pipeline_data;
 
-			mutable std::map<gpu*, Private::gpu_specific_pipeline> _gpu_data;
+			mutable std::map<gpu_connection*, Private::gpu_specific_pipeline> _gpu_data;
 
 			mutable std::map<window*, window_specific_pipeline> _window_data;
 

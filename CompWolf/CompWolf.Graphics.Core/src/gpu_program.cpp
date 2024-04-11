@@ -8,7 +8,7 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	gpu_program::gpu_program(gpu& target_device
+	gpu_program::gpu_program(gpu_connection& target_device
 		, gpu_program_pool& pool
 		, gpu_program_code code
 	) : _device(&target_device)

@@ -8,7 +8,7 @@
 
 namespace CompWolf::Graphics
 {
-	class gpu;
+	class gpu_connection;
 	struct gpu_thread_family;
 
 	/* The different type of work a job for a gpu can be. */
@@ -47,7 +47,7 @@ namespace CompWolf::Graphics
 		 * May be empty to give all gpus the same score.
 		 * @see family_scorer
 		 */
-		std::function<std::optional<float>(const gpu&)> gpu_scorer;
+		std::function<std::optional<float>(const gpu_connection&)> gpu_scorer;
 		/* How good a given gpu-thread-family is for this job.
 		 * A higher scoring family will be picked over a lower scoring one; one without a score will never be picked.
 		 * This score is combined with gpu_scorer. Specfifically, a family's score is the sum of its own score and its gpu's score.

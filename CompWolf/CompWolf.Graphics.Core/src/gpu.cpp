@@ -17,7 +17,7 @@ namespace CompWolf::Graphics
 {
 	/******************************** getters ********************************/
 
-	auto gpu::index_of_family(const gpu_thread_family& target) const -> std::size_t
+	auto gpu_connection::index_of_family(const gpu_thread_family& target) const -> std::size_t
 	{
 		for (std::size_t i = 0; i < _families.size(); ++i)
 		{
@@ -28,7 +28,7 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	gpu::gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device)
+	gpu_connection::gpu_connection(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device vulkan_physical_device)
 		: _vulkan_instance(vulkan_instance)
 		, _vulkan_physical_device(vulkan_physical_device)
 		, _vulkan_device(nullptr)
@@ -155,7 +155,7 @@ namespace CompWolf::Graphics
 
 	/******************************** CompWolf::freeable ********************************/
 
-	void gpu::free() noexcept
+	void gpu_connection::free() noexcept
 	{
 		if (empty()) return;
 		vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);

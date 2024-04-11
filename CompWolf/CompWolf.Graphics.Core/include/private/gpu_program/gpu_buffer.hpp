@@ -32,7 +32,7 @@ namespace CompWolf::Graphics
 			gpu_buffer_allocator(gpu_buffer_allocator&&) = default;
 			auto operator=(gpu_buffer_allocator&&) -> gpu_buffer_allocator& = default;
 
-			gpu_buffer_allocator(gpu& device, gpu_buffer_type type, std::size_t size, std::size_t element_stride)
+			gpu_buffer_allocator(gpu_connection& device, gpu_buffer_type type, std::size_t size, std::size_t element_stride)
 				: gpu_memory_allocator(device), type(type), size(size), element_stride(element_stride) {}
 		public: // gpu_buffer_allocator
 			auto alloc_data() const -> data_handle final;
@@ -70,12 +70,12 @@ namespace CompWolf::Graphics
 			auto operator=(base_gpu_buffer&&) -> base_gpu_buffer& = default;
 			~base_gpu_buffer() noexcept { free(); }
 
-			base_gpu_buffer(gpu& device, gpu_buffer_type type, std::size_t size, std::size_t element_stride)
+			base_gpu_buffer(gpu_connection& device, gpu_buffer_type type, std::size_t size, std::size_t element_stride)
 				: _allocator(device, type, size, element_stride)
 				, _memory(&_allocator, std::bind_front(&base_gpu_buffer::bind_to_shader, this))
 			{}
 			template <typename DataType>
-			base_gpu_buffer(gpu& device, gpu_buffer_type type, std::initializer_list<DataType> data)
+			base_gpu_buffer(gpu_connection& device, gpu_buffer_type type, std::initializer_list<DataType> data)
 				: _allocator(device, type, data.size(), sizeof(DataType))
 				, _memory(&_allocator, std::bind_front(&base_gpu_buffer::bind_to_shader, this), data)
 			{}
@@ -105,11 +105,11 @@ namespace CompWolf::Graphics
 		gpu_index_buffer(gpu_index_buffer&&) = default;
 		auto operator=(gpu_index_buffer&&) -> gpu_index_buffer& = default;
 
-		inline gpu_index_buffer(gpu& target_device, std::size_t size)
+		inline gpu_index_buffer(gpu_connection& target_device, std::size_t size)
 			: super(target_device, Private::gpu_buffer_type::index, size, sizeof(shader_int))
 		{}
 
-		inline gpu_index_buffer(gpu& target_device, std::initializer_list<shader_int> data)
+		inline gpu_index_buffer(gpu_connection& target_device, std::initializer_list<shader_int> data)
 			: super(target_device, Private::gpu_buffer_type::index, data)
 		{}
 	};
@@ -129,11 +129,11 @@ namespace CompWolf::Graphics
 		gpu_vertex_buffer(gpu_vertex_buffer&&) = default;
 		auto operator=(gpu_vertex_buffer&&) -> gpu_vertex_buffer& = default;
 
-		inline gpu_vertex_buffer(gpu& target_device, std::size_t size)
+		inline gpu_vertex_buffer(gpu_connection& target_device, std::size_t size)
 			: super(target_device, Private::gpu_buffer_type::vertex, size, sizeof(VertexType))
 		{}
 
-		inline gpu_vertex_buffer(gpu& target_device, std::initializer_list<VertexType> data)
+		inline gpu_vertex_buffer(gpu_connection& target_device, std::initializer_list<VertexType> data)
 			: super(target_device, Private::gpu_buffer_type::vertex, data)
 		{}
 	};
@@ -154,14 +154,14 @@ namespace CompWolf::Graphics
 		gpu_uniform_buffer(gpu_uniform_buffer&&) = default;
 		auto operator=(gpu_uniform_buffer&&) -> gpu_uniform_buffer& = default;
 
-		inline gpu_uniform_buffer(gpu& target_device, std::size_t size)
+		inline gpu_uniform_buffer(gpu_connection& target_device, std::size_t size)
 			: super(target_device, Private::gpu_buffer_type::uniform, size, sizeof(DataType))
 		{}
 
-		inline gpu_uniform_buffer(gpu& target_device, std::initializer_list<DataType> data)
+		inline gpu_uniform_buffer(gpu_connection& target_device, std::initializer_list<DataType> data)
 			: super(target_device, Private::gpu_buffer_type::uniform, data)
 		{}
-		inline gpu_uniform_buffer(gpu& target_device, DataType data)
+		inline gpu_uniform_buffer(gpu_connection& target_device, DataType data)
 			: gpu_uniform_buffer(target_device, { data })
 		{}
 	};

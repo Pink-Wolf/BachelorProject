@@ -42,7 +42,7 @@
     <ClInclude Include="include\private\gpu\gpu_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu\gpu.hpp">
+    <ClInclude Include="include\private\gpu\gpu_connection.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\graphics\glfw_handle.hpp">

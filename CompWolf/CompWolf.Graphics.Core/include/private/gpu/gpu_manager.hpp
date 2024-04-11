@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_MANAGER_HEADER
 #define COMPWOLF_GRAPHICS_GPU_MANAGER_HEADER
 
-#include "gpu.hpp"
+#include "gpu_connection.hpp"
 #include "gpu_job.hpp"
 #include "../graphics/graphics_environment_settings.hpp"
 #include "vulkan_types"
@@ -17,7 +17,7 @@ namespace CompWolf::Graphics
 	class gpu_manager : public basic_freeable
 	{
 	private: // fields
-		using _gpus_type = std::vector<gpu>;
+		using _gpus_type = std::vector<gpu_connection>;
 		/* The gpus contained by the manager. */
 		_gpus_type _gpus;
 		/* The amount of thread families the various GPUs have together. */
@@ -39,7 +39,7 @@ namespace CompWolf::Graphics
 		/* Creates a new persistent job. */
 		auto new_persistent_job(gpu_job_settings settings) -> gpu_job;
 	private:
-		auto find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, std::size_t>;
+		auto find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu_connection*, std::size_t>;
 		auto find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> std::size_t;
 
 	public: // constructor

@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_GPU_SEMAPHORE_HEADER
 
 #include "vulkan_types"
-#include "gpu.hpp"
+#include "gpu_connection.hpp"
 #include <freeable>
 #include <owned>
 
@@ -11,11 +11,11 @@ namespace CompWolf::Graphics
 	class gpu_semaphore : public basic_freeable
 	{
 	private: // fields
-		const gpu* _device;
+		const gpu_connection* _device;
 		owned_ptr<Private::vulkan_semaphore> _vulkan_semaphore;
 
 	public: // getters
-		inline auto device() const noexcept -> const gpu&
+		inline auto device() const noexcept -> const gpu_connection&
 		{
 			return *_device;
 		}
@@ -33,7 +33,7 @@ namespace CompWolf::Graphics
 			free();
 		}
 
-		gpu_semaphore(const gpu& target_gpu);
+		gpu_semaphore(const gpu_connection& target_gpu);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

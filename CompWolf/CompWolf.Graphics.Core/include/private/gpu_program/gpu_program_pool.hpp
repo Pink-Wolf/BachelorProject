@@ -16,7 +16,7 @@ namespace CompWolf::Graphics
 		using synchronizations_element_type = std::pair<gpu_fence, gpu_semaphore>;
 		using synchronizations_type = std::vector<synchronizations_element_type>;
 	private:
-		owned_ptr<gpu*> _device;
+		owned_ptr<gpu_connection*> _device;
 		size_t _thread_family_index;
 		size_t _thread_index;
 		Private::vulkan_command_pool _vulkan_pool;
@@ -24,8 +24,8 @@ namespace CompWolf::Graphics
 		synchronizations_type _synchronizations;
 
 	public: // getter
-		inline auto device() noexcept -> gpu& { return *_device; }
-		inline auto device() const noexcept -> const gpu& { return *_device; }
+		inline auto device() noexcept -> gpu_connection& { return *_device; }
+		inline auto device() const noexcept -> const gpu_connection& { return *_device; }
 
 		inline auto thread_family() noexcept -> gpu_thread_family& { return _device->families()[_thread_family_index]; }
 		inline auto thread_family() const noexcept -> const gpu_thread_family& { return _device->families()[_thread_family_index]; }
@@ -64,7 +64,7 @@ namespace CompWolf::Graphics
 		auto operator=(gpu_program_pool&&) -> gpu_program_pool& = default;
 		~gpu_program_pool() noexcept { free(); }
 
-		gpu_program_pool(gpu& device, size_t thread_family_index, size_t thread_index);
+		gpu_program_pool(gpu_connection& device, size_t thread_family_index, size_t thread_index);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

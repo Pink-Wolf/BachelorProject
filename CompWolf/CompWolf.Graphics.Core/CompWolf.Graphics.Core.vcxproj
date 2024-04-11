@@ -176,7 +176,7 @@
     <ClInclude Include="include\private\gpu_program\gpu_image.hpp" />
     <ClInclude Include="include\private\gpu_program\gpu_memory.hpp" />
     <ClInclude Include="include\private\graphics\glfw_handle.hpp" />
-    <ClInclude Include="include\private\gpu\gpu.hpp" />
+    <ClInclude Include="include\private\gpu\gpu_connection.hpp" />
     <ClInclude Include="include\private\gpu\gpu_manager.hpp" />
     <ClInclude Include="include\private\graphics\graphics_environment.hpp" />
     <ClInclude Include="header\framework.h" />

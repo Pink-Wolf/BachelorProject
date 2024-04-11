@@ -75,11 +75,11 @@ namespace CompWolf::Graphics
 			return *_environment;
 		}
 
-		auto device() noexcept -> gpu&
+		auto device() noexcept -> gpu_connection&
 		{
 			return _surface.device();
 		}
-		auto device() const noexcept -> const gpu&
+		auto device() const noexcept -> const gpu_connection&
 		{
 			return _surface.device();
 		}

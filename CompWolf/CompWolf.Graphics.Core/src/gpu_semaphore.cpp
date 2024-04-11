@@ -9,7 +9,7 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	gpu_semaphore::gpu_semaphore(const gpu& target_gpu)
+	gpu_semaphore::gpu_semaphore(const gpu_connection& target_gpu)
 	{
 		_device = &target_gpu;
 		auto logicDevice = Private::to_vulkan(device().vulkan_device());

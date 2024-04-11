@@ -9,7 +9,7 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	gpu_fence::gpu_fence(const gpu& target_gpu, bool signaled)
+	gpu_fence::gpu_fence(const gpu_connection& target_gpu, bool signaled)
 	{
 		_device = &target_gpu;
 		auto logicDevice = Private::to_vulkan(device().vulkan_device());

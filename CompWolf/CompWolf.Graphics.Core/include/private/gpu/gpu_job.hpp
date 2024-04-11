@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_JOB_KEY_HEADER
 #define COMPWOLF_GRAPHICS_GPU_JOB_KEY_HEADER
 
-#include "gpu.hpp"
+#include "gpu_connection.hpp"
 #include <stdexcept>
 #include "utility"
 #include <freeable>
@@ -14,7 +14,7 @@ namespace CompWolf::Graphics
 	{
 	private: // fields
 		/* The gpu containing the thread that the job is running on. */
-		owned_ptr<gpu*> _device;
+		owned_ptr<gpu_connection*> _device;
 		/* The family containing the thread that the job is running on. */
 		std::size_t _family_index;
 		/* The index of the thread in the family that the job is running on. */
@@ -23,11 +23,11 @@ namespace CompWolf::Graphics
 		bool _is_persistent;
 
 	public: // getters
-		inline auto device() noexcept -> gpu&
+		inline auto device() noexcept -> gpu_connection&
 		{
 			return *_device;
 		}
-		inline auto device() const noexcept -> const gpu&
+		inline auto device() const noexcept -> const gpu_connection&
 		{
 			return *_device;
 		}
@@ -70,7 +70,7 @@ namespace CompWolf::Graphics
 		gpu_job(gpu_job&&) = default;
 		auto operator=(gpu_job&&)->gpu_job& = default;
 
-		gpu_job(gpu& device, std::size_t family_index, std::size_t thread_index, bool is_persistent);
+		gpu_job(gpu_connection& device, std::size_t family_index, std::size_t thread_index, bool is_persistent);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

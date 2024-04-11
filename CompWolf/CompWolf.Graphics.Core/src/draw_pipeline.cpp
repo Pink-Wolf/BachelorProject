@@ -32,7 +32,7 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu& gpu_device, const draw_pipeline_data& data)
+	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu_connection& gpu_device, const draw_pipeline_data& data)
 		: _layout_descriptor(nullptr), _layout(nullptr)
 	{
 		_device = &gpu_device;

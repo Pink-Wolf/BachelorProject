@@ -1,6 +1,6 @@
 #include "private/gpu/gpu_job_settings.hpp"
 #include "private/gpu/gpu_thread.hpp"
-#include "private/gpu/gpu.hpp"
+#include "private/gpu/gpu_connection.hpp"
 #include "private/gpu/gpu_job.hpp"
 #include "private/gpu/gpu_manager.hpp"
 

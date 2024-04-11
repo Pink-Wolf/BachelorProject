@@ -27,7 +27,7 @@ namespace CompWolf::Graphics
 			gpu_image_allocator(gpu_image_allocator&&) = default;
 			auto operator=(gpu_image_allocator&&) -> gpu_image_allocator& = default;
 
-			gpu_image_allocator(gpu& device, int width, int height)
+			gpu_image_allocator(gpu_connection& device, int width, int height)
 				: gpu_memory_allocator(device), width(width), height(height) {}
 		public: // gpu_buffer_allocator
 			auto alloc_data() const -> data_handle final;
@@ -80,14 +80,14 @@ namespace CompWolf::Graphics
 		auto operator=(gpu_image_buffer&&) -> gpu_image_buffer& = default;
 		~gpu_image_buffer() noexcept { free(); }
 
-		inline gpu_image_buffer(gpu& target_device, int width, int height)
+		inline gpu_image_buffer(gpu_connection& target_device, int width, int height)
 			: _allocator(target_device, width, height)
 			, _memory(&_allocator, std::bind_front(&gpu_image_buffer::bind_to_shader, this))
 		{
 			setup();
 		}
 
-		inline gpu_image_buffer(gpu& target_device, std::initializer_list<std::initializer_list<item_type>> pixels)
+		inline gpu_image_buffer(gpu_connection& target_device, std::initializer_list<std::initializer_list<item_type>> pixels)
 			: gpu_image_buffer(target_device
 				, static_cast<int>(pixels.size())
 				, (pixels.size() == 0) ? 0 : static_cast<int>(pixels.begin()->size())

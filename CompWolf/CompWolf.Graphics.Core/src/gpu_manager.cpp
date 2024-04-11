@@ -23,13 +23,13 @@ namespace CompWolf::Graphics
 		return gpu_job(gpu_device, family_index, thread_index, true);
 	}
 
-	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu*, std::size_t>
+	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu_connection*, std::size_t>
 	{
 		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
 		static auto is_occupied_nonpersistent = [](gpu_thread a) { return a.job_count > 0; };
 		auto is_occupied = is_persistent_job ? is_occupied_persistent : is_occupied_nonpersistent;
 
-		gpu* best_gpu = nullptr;
+		gpu_connection* best_gpu = nullptr;
 		std::size_t best_family_index = 0;
 		float best_family_score = std::numeric_limits<float>::lowest();
 		float best_family_score_custom = 0;
@@ -174,7 +174,7 @@ namespace CompWolf::Graphics
 			for (auto& physical_device : physicalDevices)
 			{
 				auto vulkan_physical_device = Private::from_vulkan(physical_device);
-				gpu new_gpu(vulkan_instance, vulkan_physical_device);
+				gpu_connection new_gpu(vulkan_instance, vulkan_physical_device);
 				_thread_family_count += new_gpu.families().size();
 				_gpus.push_back(std::move(new_gpu));
 			}

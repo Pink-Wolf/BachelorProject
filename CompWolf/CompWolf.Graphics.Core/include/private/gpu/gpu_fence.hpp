@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_GPU_FENCE_HEADER
 
 #include "vulkan_types"
-#include "gpu.hpp"
+#include "gpu_connection.hpp"
 #include <freeable>
 #include <owned>
 
@@ -11,11 +11,11 @@ namespace CompWolf::Graphics
 	class gpu_fence : public basic_freeable
 	{
 	private: // fields
-		const gpu* _device;
+		const gpu_connection* _device;
 		owned_ptr<Private::vulkan_fence> _vulkan_fence;
 
 	public: // getters
-		inline auto device() const noexcept -> const gpu&
+		inline auto device() const noexcept -> const gpu_connection&
 		{
 			return *_device;
 		}
@@ -39,7 +39,7 @@ namespace CompWolf::Graphics
 			free();
 		}
 
-		gpu_fence(const gpu& target_gpu, bool signaled = false);
+		gpu_fence(const gpu_connection& target_gpu, bool signaled = false);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

@@ -24,7 +24,7 @@ namespace CompWolf::Graphics
 			owned_ptr<graphics_environment*> _environment;
 			shader_code_type _raw_code;
 
-			using compiled_shader_type = std::map<const gpu*, Private::vulkan_shader>;
+			using compiled_shader_type = std::map<const gpu_connection*, Private::vulkan_shader>;
 			mutable compiled_shader_type _compiled_shader;
 
 		public: // getters
@@ -37,7 +37,7 @@ namespace CompWolf::Graphics
 				return *_environment;
 			}
 
-			auto shader_module(const gpu&) const -> Private::vulkan_shader;
+			auto shader_module(const gpu_connection&) const -> Private::vulkan_shader;
 
 		public: // constructors
 			base_shader() = default;

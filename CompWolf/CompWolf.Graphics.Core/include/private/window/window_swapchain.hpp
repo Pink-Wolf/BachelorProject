@@ -26,17 +26,17 @@ namespace CompWolf::Graphics
 	class window_swapchain : basic_freeable
 	{
 	private: // fields
-		owned_ptr<gpu*> _target_gpu;
+		owned_ptr<gpu_connection*> _target_gpu;
 		Private::vulkan_swapchain _vulkan_swapchain;
 		std::vector<swapchain_frame> _frames;
 		std::size_t _current_frame_index;
 
 	public: // getters
-		inline auto device() noexcept -> gpu&
+		inline auto device() noexcept -> gpu_connection&
 		{
 			return *_target_gpu;
 		}
-		inline auto device() const noexcept -> const gpu&
+		inline auto device() const noexcept -> const gpu_connection&
 		{
 			return *_target_gpu;
 		}

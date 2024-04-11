@@ -18,7 +18,7 @@ namespace CompWolf::Graphics
 	struct gpu_memory_allocator
 	{
 	public: // fields
-		gpu* target_device;
+		gpu_connection* target_device;
 
 		struct data_handle_t {}; using data_handle = Private::vulkan_handle64<data_handle_t>;
 		struct private_info_handle_t {}; using private_info_handle = private_info_handle_t*;
@@ -35,7 +35,7 @@ namespace CompWolf::Graphics
 		gpu_memory_allocator(gpu_memory_allocator&&) = default;
 		auto operator=(gpu_memory_allocator&&) -> gpu_memory_allocator& = default;
 
-		gpu_memory_allocator(gpu& device) : target_device(&device) {}
+		gpu_memory_allocator(gpu_connection& device) : target_device(&device) {}
 	};
 	
 	class gpu_memory : public basic_freeable
@@ -44,7 +44,7 @@ namespace CompWolf::Graphics
 		struct bind_handle_t {}; using bind_handle = bind_handle_t*;
 		using bind_to_shader_function = std::function<void(bind_handle)>;
 	private:
-		owned_ptr<gpu*> _device;
+		owned_ptr<gpu_connection*> _device;
 		gpu_memory_allocator* _allocator;
 		bind_to_shader_function _bind_to_shader;
 

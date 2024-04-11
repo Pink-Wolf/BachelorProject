@@ -11,7 +11,7 @@
 namespace CompWolf::Graphics
 {
 	/* Contains a connection to a gpu on the machine that can be used by CompWolf::Graphics. */
-	class gpu : public basic_freeable
+	class gpu_connection : public basic_freeable
 	{
 	private: // fields
 		owned_ptr<Private::vulkan_instance> _vulkan_instance;
@@ -73,10 +73,10 @@ namespace CompWolf::Graphics
 
 	public: // constructors
 		/* Constructs a gpu that is not connected to any actual gpu. */
-		gpu() = default;
-		gpu(gpu&&) = default;
-		gpu& operator=(gpu&&) = default;
-		inline ~gpu() noexcept
+		gpu_connection() = default;
+		gpu_connection(gpu_connection&&) = default;
+		gpu_connection& operator=(gpu_connection&&) = default;
+		inline ~gpu_connection() noexcept
 		{
 			free();
 		}
@@ -85,7 +85,7 @@ namespace CompWolf::Graphics
 		 * @param device The actual graphics processing unit to make a gpu-object for.
 		 * @throws std::runtime_error when something went wrong during setup outside of the program.
 		 */
-		gpu(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device device);
+		gpu_connection(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device device);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

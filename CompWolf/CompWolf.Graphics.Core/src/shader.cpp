@@ -8,7 +8,7 @@ namespace CompWolf::Graphics
 {
 	/******************************** getters ********************************/
 
-	auto Private::base_shader::shader_module(const gpu& vulkan_device) const -> Private::vulkan_shader
+	auto Private::base_shader::shader_module(const gpu_connection& vulkan_device) const -> Private::vulkan_shader
 	{
 		auto compiled_shader_iterator = _compiled_shader.find(&vulkan_device);
 		Private::vulkan_shader shader_module_pointer;
