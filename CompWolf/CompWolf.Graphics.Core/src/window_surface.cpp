@@ -32,25 +32,15 @@ namespace CompWolf::Graphics
 				_vulkan_surface = Private::from_vulkan(surface);
 			}
 
-			Private::surface_format_info* surface_format;
-			{
-				std::unordered_map<Private::vulkan_physical_device, Private::surface_format_info> device_infos;
-				_draw_present_job = settings.environment->gpus().new_job(gpu_job_settings{
-					.type = {gpu_job_type::present, gpu_job_type::draw},
-					.gpu_scorer = Private::evaluate_gpu_for_present(device_infos, _vulkan_surface, settings),
-					});
-				auto& job_info = device_infos[_draw_present_job.device().vulkan_physical_device()];
-
-				_target_gpu = &_draw_present_job.device();
-				surface_format = new Private::surface_format_info(std::move(job_info));
-				_format = Private::from_private(surface_format);
-			}
+			auto& surface_format = *new Private::surface_format_info();
+			_format = Private::from_private(&surface_format);
+			_target_gpu = Private::find_gpu_for_present(_vulkan_surface, settings, &surface_format);
 			auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
 			VkRenderPass renderPass;
 			{
 				VkAttachmentDescription colorAttachment{
-					.format = surface_format->format.format,
+					.format = surface_format.format.format,
 					.samples = VK_SAMPLE_COUNT_1_BIT,
 					.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
 					.storeOp = VK_ATTACHMENT_STORE_OP_STORE,

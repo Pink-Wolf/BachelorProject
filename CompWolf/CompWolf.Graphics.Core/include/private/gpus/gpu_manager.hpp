@@ -9,6 +9,7 @@
 namespace CompWolf::Graphics
 {
 	class gpu_job;
+	struct gpu_job_settings;
 
 	/* Contains a connection to each gpu on the machine. */
 	class gpu_manager : public basic_freeable

@@ -190,7 +190,6 @@
     <ClInclude Include="include\private\gpus\gpu_job.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
-    <ClInclude Include="include\private\gpu_program\gpu_program_pool.hpp" />
     <ClInclude Include="include\private\draw_program\draw_command.hpp" />
     <ClInclude Include="include\private\draw_program\draw_pipeline.hpp" />
     <ClInclude Include="include\private\draw_program\draw_program.hpp" />
@@ -216,7 +215,6 @@
   <ItemGroup>
     <ClCompile Include="src\gpu_image.cpp" />
     <ClCompile Include="src\gpu_memory.cpp" />
-    <ClCompile Include="src\gpu_program_pool.cpp" />
     <ClCompile Include="src\draw_command.cpp" />
     <ClCompile Include="src\draw_pipeline.cpp" />
     <ClCompile Include="src\draw_program.cpp" />

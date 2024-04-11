@@ -3,15 +3,20 @@
 
 #include <freeable>
 #include <owned>
+#include "gpu_fence.hpp"
+#include "gpu_semaphore.hpp"
+#include "gpu_connection.hpp"
 #include "utility"
+#include <vector>
 
 namespace CompWolf::Graphics
 {
-	class gpu_connection;
-
 	/* A reference to a gpu-thread that is ready to perform some work. */
 	class gpu_job : public basic_freeable
 	{
+	public: // types
+		using synchronizations_element_type = std::pair<gpu_fence, gpu_semaphore>;
+		using synchronizations_type = std::vector<synchronizations_element_type>;
 	private: // fields
 		/* The gpu that the job is on. */
 		owned_ptr<gpu_connection*> _device;
@@ -19,6 +24,9 @@ namespace CompWolf::Graphics
 		std::size_t _family_index;
 		/* The index of the gpu-thread in the gpu-thread-family's threads-vector. */
 		std::size_t _thread_index;
+
+		Private::vulkan_command_pool _vulkan_pool;
+		synchronizations_type _synchronizations;
 
 	public: // accessors
 		/* Returns the gpu that the job is on. */
@@ -40,6 +48,30 @@ namespace CompWolf::Graphics
 		inline auto family_index() const noexcept { return _family_index; }
 		/* Returns the index of the gpu-thread in the gpu-thread-family's threads-vector. */
 		inline auto thread_index() const noexcept { return _thread_index; }
+
+		inline auto synchronizations() noexcept -> synchronizations_type& { return _synchronizations; }
+		inline auto synchronizations() const noexcept -> const synchronizations_type& { return _synchronizations; }
+
+	public: // modifiers
+		inline auto& insert_synchronization(gpu_fence&& fence, gpu_semaphore&& semaphore) noexcept
+		{
+			return synchronizations().emplace_back(std::move(fence), std::move(semaphore));
+		}
+
+	public: // vulkan-related
+		inline auto vulkan_pool() const noexcept { return _vulkan_pool; }
+
+		inline auto last_vulkan_fence() const noexcept -> Private::vulkan_fence
+		{
+			if (synchronizations().empty()) return nullptr;
+			return synchronizations().back().first.vulkan_fence();
+		}
+
+		inline auto last_vulkan_semaphore() const noexcept -> Private::vulkan_semaphore
+		{
+			if (synchronizations().empty()) return nullptr;
+			return synchronizations().back().second.vulkan_semaphore();
+		}
 
 	public: // constructors
 		/* Constructs a freed gpu_job, as in one that does not reference any thread. */

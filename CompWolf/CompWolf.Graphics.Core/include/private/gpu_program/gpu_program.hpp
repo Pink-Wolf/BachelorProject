@@ -2,13 +2,14 @@
 #define COMPWOLF_GRAPHICS_GPU_PROGRAM_HEADER
 
 #include "vulkan_types"
-#include "gpu_program_pool.hpp"
 #include <freeable>
 #include <functional>
 #include <owned>
 
 namespace CompWolf::Graphics
 {
+	class gpu_job;
+
 	struct gpu_program_input
 	{
 		Private::vulkan_command command;
@@ -19,15 +20,15 @@ namespace CompWolf::Graphics
 	{
 	public:
 		owned_ptr<gpu_connection*> _device;
-		gpu_program_pool* _command_pool;
+		gpu_job* _job;
 		Private::vulkan_command _vulkan_command;
 
 	public: // getters
 		inline auto device() -> gpu_connection& { return *_device; }
 		inline auto device() const -> const gpu_connection& { return *_device; }
 
-		inline auto pool() -> gpu_program_pool& { return *_command_pool; }
-		inline auto pool() const -> const gpu_program_pool& { return *_command_pool; }
+		inline auto& job() { return *_job; }
+		inline auto& job() const { return *_job; }
 
 		inline auto vulkan_command() const { return _vulkan_command; }
 
@@ -40,7 +41,7 @@ namespace CompWolf::Graphics
 		auto operator=(gpu_program&&) -> gpu_program& = default;
 
 		gpu_program(gpu_connection& target_device
-			, gpu_program_pool& pool
+			, gpu_job& job
 			, gpu_program_code code
 		);
 	public: // CompWolf::freeable

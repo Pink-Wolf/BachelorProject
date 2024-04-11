@@ -34,7 +34,7 @@ namespace CompWolf::Graphics
 
 		fence.wait();
 		vkDeviceWaitIdle(logicDevice); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
-		current_frame().pool.synchronizations().clear();
+		current_frame().draw_job.synchronizations().clear();
 	}
 
 	/******************************** constructors ********************************/
@@ -50,8 +50,6 @@ namespace CompWolf::Graphics
 
 		auto surface = Private::to_vulkan(window_surface.surface());
 		auto& surface_format = *Private::to_private(window_surface.format());
-
-		auto& job = window_surface.draw_present_job();
 
 		uint32_t width, height;
 		{
@@ -195,7 +193,11 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					frame.pool = gpu_program_pool(device(), job.family_index(), job.thread_index());
+					frame.draw_job = device().new_job(gpu_job_settings
+						{
+							.type = { gpu_job_type::draw, gpu_job_type::present },
+						}
+					);
 				}
 			}
 
@@ -225,7 +227,7 @@ namespace CompWolf::Graphics
 		{ 
 			if (frame.frame_buffer) vkDestroyFramebuffer(logicDevice, Private::to_vulkan(frame.frame_buffer), nullptr);
 			if (frame.image) vkDestroyImageView(logicDevice, Private::to_vulkan(frame.image), nullptr);
-			frame.pool.free();
+			frame.draw_job.free();
 		}
 		_frames.clear();
 		if (_vulkan_swapchain) vkDestroySwapchainKHR(logicDevice, Private::to_vulkan(_vulkan_swapchain), nullptr);

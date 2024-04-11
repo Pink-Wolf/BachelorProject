@@ -3,42 +3,56 @@
 
 #include <cmath>
 #include <algorithm>
+#include <stdexcept>
 
 namespace CompWolf::Graphics::Private
 {
-	std::function<std::optional<float>(const gpu_connection&)> evaluate_gpu_for_present(std::unordered_map<Private::vulkan_physical_device, surface_format_info>& out_device_info, Private::vulkan_surface vulkan_surface, const window_surface_settings& settings)
+	gpu_connection* find_gpu_for_present(Private::vulkan_surface vulkan_surface, window_surface_settings& settings, surface_format_info* out_info) noexcept
 	{
-		return [&out_device_info, vulkan_surface, &settings](const gpu_connection& device)->std::optional<float>
+		auto vkSurface = Private::to_vulkan(vulkan_surface);
+		if (settings.gpu)
+		{
+			*out_info = std::move(get_present_device_info(*settings.gpu, vkSurface).value());
+			return settings.gpu;
+		}
+
+		gpu_connection* best_gpu = nullptr;
+		float best_gpu_score = -1;
+		for (auto& gpu : settings.environment->gpus().gpus())
+		{
+			auto info_container = get_present_device_info(gpu, vkSurface);
+			if (!info_container.has_value()) continue;
+			auto& info = info_container.value();
+
+			float extent_score = static_cast<float>(info.capabilities.maxImageExtent.width) * info.capabilities.maxImageExtent.height;
+			extent_score = std::log2(extent_score);
+			float extent_score_step; // step is used to put format_score between steps
 			{
-				if (settings.target_device != nullptr) if (&device != settings.target_device) return std::nullopt;
+				float min = 16.f; // 480i has a value of ~18.4
+				float max = 48.f; //   4K has a value of ~29.6
+				extent_score_step = 1.f / (max - min);
 
-				auto surface = Private::to_vulkan(vulkan_surface);
+				extent_score -= min;
+				extent_score = static_cast<int>(extent_score) * extent_score_step;
+				extent_score = std::clamp(extent_score, 0.f, 1.f);
+			}
 
-				auto info_container = get_present_device_info(device, surface);
-				if (!info_container.has_value()) return std::nullopt;
-				auto& info = info_container.value();
+			float present_mode_score = (info.present_mode == VK_PRESENT_MODE_MAILBOX_KHR) ? 1.f : 0.f;
 
-				float extent_score = static_cast<float>(info.capabilities.maxImageExtent.width) * info.capabilities.maxImageExtent.height;
-				extent_score = std::log2(extent_score);
-				float extent_score_step; // step is used to put format_score between steps
-				{
-					float min = 16.f; // 480i has a value of ~18.4
-					float max = 48.f; //   4K has a value of ~29.6
-					extent_score_step = 1.f / (max - min);
-					
-					extent_score -= min;
-					extent_score = static_cast<int>(extent_score) * extent_score_step;
-					extent_score = std::clamp(extent_score, 0.f, 1.f);
-				}
+			float score = 0
+				+ get_surface_format_score(info.format).value() * extent_score_step
+				+ extent_score
+				+ present_mode_score * 2;
 
-				float present_mode_score = (info.present_mode == VK_PRESENT_MODE_MAILBOX_KHR) ? 1.f : 0.f;
+			if (score > best_gpu_score)
+			{
+				best_gpu = &gpu;
+				best_gpu_score = score;
+				*out_info = std::move(info);
+			}
+		}
 
-				out_device_info.insert({ device.vulkan_physical_device(), std::move(info)});
-				return 0
-					+ get_surface_format_score(info.format).value() * extent_score_step
-					+ extent_score
-					+ present_mode_score * 2;
-			};
+		return best_gpu;
 	}
 
 	std::optional<surface_format_info> get_present_device_info(const gpu_connection& device, VkSurfaceKHR surface)

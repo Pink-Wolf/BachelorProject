@@ -102,15 +102,6 @@ namespace CompWolf::Graphics
 			return _swapchain;
 		}
 
-		inline auto draw_present_job() noexcept -> gpu_job&
-		{
-			return surface().draw_present_job();
-		}
-		inline auto draw_present_job() const noexcept -> const gpu_job&
-		{
-			return surface().draw_present_job();
-		}
-
 		inline auto pixel_size() const -> const_value_event_wrapper<std::pair<int, int>>&
 		{
 			return _pixel_size.const_wrapper();

@@ -9,10 +9,10 @@ namespace CompWolf::Graphics
 	/******************************** constructors ********************************/
 
 	gpu_program::gpu_program(gpu_connection& target_device
-		, gpu_program_pool& pool
+		, gpu_job& job
 		, gpu_program_code code
 	) : _device(&target_device)
-		, _command_pool(&pool)
+		, _job(&job)
 		, _vulkan_command(nullptr)
 	{
 		auto logicDevice = Private::to_vulkan(target_device.vulkan_device());
@@ -21,7 +21,7 @@ namespace CompWolf::Graphics
 		{
 			VkCommandBufferAllocateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-				.commandPool = Private::to_vulkan(pool.vulkan_pool()),
+				.commandPool = Private::to_vulkan(job.vulkan_pool()),
 				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 				.commandBufferCount = 1,
 			};
@@ -76,11 +76,11 @@ namespace CompWolf::Graphics
 	{
 		auto& gpu_device = device();
 
-		auto& thread = pool().thread();
+		auto& thread = job().thread();
 		auto queue = Private::to_vulkan(thread.queue);
 
-		auto oldSemaphore = Private::to_vulkan(pool().last_vulkan_semaphore());
-		auto& sync = pool().insert_synchronization(gpu_fence(gpu_device), gpu_semaphore(gpu_device));
+		auto oldSemaphore = Private::to_vulkan(job().last_vulkan_semaphore());
+		auto& sync = job().insert_synchronization(gpu_fence(gpu_device), gpu_semaphore(gpu_device));
 		auto fence = Private::to_vulkan(sync.first.vulkan_fence());
 		auto semaphore = Private::to_vulkan(sync.second.vulkan_semaphore());
 
@@ -120,7 +120,7 @@ namespace CompWolf::Graphics
 		vkDeviceWaitIdle(logicDevice);
 
 		auto command = Private::to_vulkan(_vulkan_command);
-		vkFreeCommandBuffers(logicDevice, Private::to_vulkan(pool().vulkan_pool()), 1, &command);
+		vkFreeCommandBuffers(logicDevice, Private::to_vulkan(job().vulkan_pool()), 1, &command);
 
 		_device = nullptr;
 	}

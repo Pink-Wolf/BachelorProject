@@ -127,7 +127,6 @@ namespace CompWolf::Graphics
 		_pipeline = nullptr;
 
 		auto& gpu_device = target_window().device();
-		auto& thread_family = target_window().draw_present_job().family();
 		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
 		auto& surface_format = *Private::to_private(target_window().surface().format());
 		auto renderpass = Private::to_vulkan(target_window().surface().render_pass());

@@ -31,7 +31,7 @@ namespace CompWolf::Graphics
 
 		_surface = window_surface(_settings, _glfw_window, window_surface_settings{
 				.environment = _environment,
-				.target_device = &old_device,
+				.gpu = &old_device,
 			}
 		);
 		_swapchain = window_swapchain(_settings, _glfw_window, _surface);
@@ -51,10 +51,10 @@ namespace CompWolf::Graphics
 	{
 		{
 			auto& frame = swapchain().current_frame();
-			auto semaphore = Private::to_vulkan(frame.pool.last_vulkan_semaphore());
+			auto semaphore = Private::to_vulkan(frame.draw_job.last_vulkan_semaphore());
 			auto vkSwapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
 			auto frame_index = static_cast<uint32_t>(swapchain().current_frame_index());
-			auto queue = Private::to_vulkan(draw_present_job().thread().queue);
+			auto queue = Private::to_vulkan(frame.draw_job.thread().queue);
 
 			VkPresentInfoKHR presentInfo{
 				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,

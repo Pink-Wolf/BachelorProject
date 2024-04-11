@@ -2,6 +2,7 @@
 #include "draw_program"
 
 #include "compwolf_vulkan.hpp"
+#include "gpus"
 
 namespace CompWolf::Graphics
 {
@@ -72,7 +73,7 @@ namespace CompWolf::Graphics
 	Private::draw_frame_program::draw_frame_program(draw_program_data& data, window& target, std::size_t frame_index)
 		: _target_window(&target), _data(&data), _frame_index(frame_index)
 		, _program(target.device()
-			, target.swapchain().frames()[frame_index].pool
+			, target.swapchain().frames()[frame_index].draw_job
 			, std::bind_front(&draw_frame_program::gpu_code, this)
 		)
 	{

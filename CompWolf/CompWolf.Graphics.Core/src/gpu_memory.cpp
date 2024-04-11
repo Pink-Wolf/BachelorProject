@@ -18,58 +18,67 @@ namespace CompWolf::Graphics
 		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 		auto physicalDevice = Private::to_vulkan(device().vulkan_physical_device());
 
-		_vulkan_data = allocator->alloc_data();
-
-		Private::gpu_memory_private_info data_info;
+		try
 		{
-			allocator->private_info(_vulkan_data, Private::from_private(&data_info));
-			_item_count = data_info.size;
-			_memory_size = data_info.memoryRequirements.size;
-		}
+			_vulkan_data = allocator->alloc_data();
 
-		VkPhysicalDeviceMemoryProperties memoryProperties;
-		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-
-		uint32_t heap_index;
-		{
-			VkMemoryPropertyFlags requiredProperties
-				= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-				| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-				;
-
-			for (heap_index = 0; heap_index < memoryProperties.memoryTypeCount; ++heap_index)
+			Private::gpu_memory_private_info data_info;
 			{
-				auto& memoryType = memoryProperties.memoryTypes[heap_index];
-
-				if ((data_info.memoryRequirements.memoryTypeBits & (1_uint32 << heap_index)) == 0) continue;
-				if ((memoryType.propertyFlags & requiredProperties) != requiredProperties) continue;
-				break;
-			}
-			if (heap_index == memoryProperties.memoryTypeCount)
-				throw std::runtime_error("Could not create buffer on GPU; no suitable type of memory on the GPU.");
-		}
-
-		VkDeviceMemory memory;
-		{
-			VkMemoryAllocateInfo allocateInfo{
-				.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-				.allocationSize = data_info.memoryRequirements.size,
-				.memoryTypeIndex = heap_index,
-			};
-			auto result = vkAllocateMemory(logicDevice, &allocateInfo, nullptr, &memory);
-
-			switch (result)
-			{
-			case VK_SUCCESS: break;
-			case VK_ERROR_OUT_OF_HOST_MEMORY: throw std::runtime_error("Could not allocate memory on GPU; not enough CPU space.");
-			case VK_ERROR_OUT_OF_DEVICE_MEMORY: throw std::runtime_error("Could not allocate memory on GPU; not enough GPU space.");
-			default: throw std::runtime_error("Could not allocate memory on GPU.");
+				allocator->private_info(_vulkan_data, Private::from_private(&data_info));
+				_item_count = data_info.size;
+				_memory_size = data_info.memoryRequirements.size;
 			}
 
-			_vulkan_memory = Private::from_vulkan(memory);
+			VkPhysicalDeviceMemoryProperties memoryProperties;
+			vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+
+			uint32_t heap_index;
+			{
+				VkMemoryPropertyFlags requiredProperties
+					= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+					| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+					;
+
+				for (heap_index = 0; heap_index < memoryProperties.memoryTypeCount; ++heap_index)
+				{
+					auto& memoryType = memoryProperties.memoryTypes[heap_index];
+
+					if ((data_info.memoryRequirements.memoryTypeBits & (1_uint32 << heap_index)) == 0) continue;
+					if ((memoryType.propertyFlags & requiredProperties) != requiredProperties) continue;
+					break;
+				}
+				if (heap_index == memoryProperties.memoryTypeCount)
+					throw std::runtime_error("Could not create buffer on GPU; no suitable type of memory on the GPU.");
+			}
+
+			VkDeviceMemory memory;
+			{
+				VkMemoryAllocateInfo allocateInfo{
+					.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+					.allocationSize = data_info.memoryRequirements.size,
+					.memoryTypeIndex = heap_index,
+				};
+				auto result = vkAllocateMemory(logicDevice, &allocateInfo, nullptr, &memory);
+
+				switch (result)
+				{
+				case VK_SUCCESS: break;
+				case VK_ERROR_OUT_OF_HOST_MEMORY: throw std::runtime_error("Could not allocate memory on GPU; not enough CPU space.");
+				case VK_ERROR_OUT_OF_DEVICE_MEMORY: throw std::runtime_error("Could not allocate memory on GPU; not enough GPU space.");
+				default: throw std::runtime_error("Could not allocate memory on GPU.");
+				}
+
+				_vulkan_memory = Private::from_vulkan(memory);
+			}
+
+			allocator->bind_data(_vulkan_data, _vulkan_memory);
+		}
+		catch (...)
+		{
+			free();
+			throw;
 		}
 
-		allocator->bind_data(_vulkan_data, _vulkan_memory);
 	}
 
 	Private::base_gpu_memory_access::base_gpu_memory_access(gpu_memory& target)
