@@ -35,9 +35,8 @@ namespace CompWolf::Graphics
 			Private::surface_format_info* surface_format;
 			{
 				std::unordered_map<Private::vulkan_physical_device, Private::surface_format_info> device_infos;
-				_draw_present_job = settings.environment->gpus().new_persistent_job(gpu_job_settings{
+				_draw_present_job = settings.environment->gpus().new_job(gpu_job_settings{
 					.type = {gpu_job_type::present, gpu_job_type::draw},
-					.priority = gpu_job_priority::high,
 					.gpu_scorer = Private::evaluate_gpu_for_present(device_infos, _vulkan_surface, settings),
 					});
 				auto& job_info = device_infos[_draw_present_job.device().vulkan_physical_device()];

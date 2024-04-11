@@ -12,23 +12,19 @@ namespace CompWolf::Graphics
 {
 	/******************************** other methods ********************************/
 
-	auto gpu_manager::new_persistent_job(gpu_job_settings settings) -> gpu_job
+	auto gpu_manager::new_job(gpu_job_settings settings) -> gpu_job
 	{
-		auto [gpu_pointer, family_index] = find_job_family(settings, true);
+		auto [gpu_pointer, family_index] = find_job_family(settings);
 		auto& gpu_device = *gpu_pointer; auto& family = gpu_device.families()[family_index];
 
-		auto thread_index = find_job_thread_in_family(settings, true, family);
+		auto thread_index = find_job_thread_in_family(settings, family);
 		auto& thread = family.threads[thread_index];
 
-		return gpu_job(gpu_device, family_index, thread_index, true);
+		return gpu_job(gpu_device, family_index, thread_index);
 	}
 
-	auto gpu_manager::find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu_connection*, std::size_t>
+	auto gpu_manager::find_job_family(const gpu_job_settings& settings) -> std::pair<gpu_connection*, std::size_t>
 	{
-		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
-		static auto is_occupied_nonpersistent = [](gpu_thread a) { return a.job_count > 0; };
-		auto is_occupied = is_persistent_job ? is_occupied_persistent : is_occupied_nonpersistent;
-
 		gpu_connection* best_gpu = nullptr;
 		std::size_t best_family_index = 0;
 		float best_family_score = std::numeric_limits<float>::lowest();
@@ -55,20 +51,14 @@ namespace CompWolf::Graphics
 
 				float score = 0.f;
 				{
-					auto massive_score_addition = _thread_family_count;
-
 					score -= additional_work_types.count() / static_cast<float>(gpu_job_type::size);
 
-					if (is_occupied(family.threads[0])) score -= massive_score_addition;
-
-					auto old_job_count = is_persistent_job ? family.persistent_job_count : family.job_count;
-					score -= old_job_count;
-					if (old_job_count > family.threads.size()) score -= (old_job_count - family.threads.size()) * (massive_score_addition * 2);
+					score -= static_cast<float>(family.job_count / family.threads.size()); // Truncation of "job-count / thread-count" is intentional
 				}
 
 				constexpr float very_small_score_difference = .1f / static_cast<float>(gpu_job_type::size);
 				bool is_better = score > best_family_score + very_small_score_difference;
-				if (best_family_score - score < very_small_score_difference) is_better = is_better || custom_score > best_family_score_custom;
+				if (best_family_score - score < very_small_score_difference) is_better = is_better || custom_score > best_family_score_custom; // use custom_score if scores are same
 
 				if (is_better)
 				{
@@ -88,70 +78,26 @@ namespace CompWolf::Graphics
 		return { best_gpu, best_family_index };
 	}
 
-	auto gpu_manager::find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> std::size_t
+	auto gpu_manager::find_job_thread_in_family(const gpu_job_settings& settings, const gpu_thread_family& family) -> std::size_t
 	{
-		static auto is_occupied_persistent = [](gpu_thread a) { return a.persistent_job_count > 0; };
-		static auto is_occupied_nonpersistent = [](gpu_thread a) { return a.job_count > 0; };
-		auto is_occupied = is_persistent_job ? is_occupied_persistent : is_occupied_nonpersistent;
+		std::size_t best_thread_index = 0;
+		if (family.threads[best_thread_index].job_count == 0) return best_thread_index;
 
-		std::size_t thread_index;
+		for (size_t thread_index = 1; thread_index < family.threads.size(); ++thread_index)
 		{
-			auto high_priority_thread_is_free = !is_occupied(family.threads[0]);
-			auto job_count = is_persistent_job ? family.persistent_job_count : family.job_count;
-			auto normal_priority_persistent_job_count = family.persistent_job_count + (high_priority_thread_is_free ? 0 : -1);
-
-			bool use_high_priority_thread = settings.priority == gpu_job_priority::high;
-			if (job_count == family.threads.size() - 1) use_high_priority_thread = true; // Use high priority if all normal-priority are being used
-			if (is_occupied(family.threads[0])) use_high_priority_thread = false;
-
-			if (use_high_priority_thread) thread_index = 0;
-			else if (job_count >= family.threads.size()) // No free threads
+			auto job_count = family.threads[best_thread_index].job_count;
+			if (job_count < family.threads[best_thread_index].job_count)
 			{
-				std::size_t best_thread_index = -1;
-				float best_thread_score = std::numeric_limits<float>::lowest();
-
-				for (std::size_t i = 0; i < family.threads.size(); ++i)
-				{
-					auto& thread = family.threads[i];
-
-					auto thread_job_count = is_persistent_job ? thread.persistent_job_count : thread.job_count;
-
-					float score = 0;
-					{
-						score -= thread_job_count;
-						if (settings.priority != gpu_job_priority::high && i == 0) score -= 0.1f;
-					}
-
-					if (score > best_thread_score)
-					{
-						best_thread_index = i;
-						best_thread_score = score;
-					}
-				}
-
-				thread_index = best_thread_index;
-			}
-			else
-			{
-				thread_index = 1 + normal_priority_persistent_job_count;
-
-				if (!is_persistent_job)
-				{
-					for (; thread_index < family.threads.size(); ++thread_index)
-					{
-						if (is_occupied(family.threads[thread_index])) continue;
-						break;
-					}
-				}
+				best_thread_index = thread_index;
+				if (job_count == 0) return thread_index;
 			}
 		}
-
-		return thread_index;
+		return best_thread_index;
 	}
 
 	/******************************** constructors ********************************/
 
-	gpu_manager::gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance) : _thread_family_count(0)
+	gpu_manager::gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance vulkan_instance) : _thread_count(0)
 	{
 		auto instance = Private::to_vulkan(vulkan_instance);
 
@@ -175,7 +121,7 @@ namespace CompWolf::Graphics
 			{
 				auto vulkan_physical_device = Private::from_vulkan(physical_device);
 				gpu_connection new_gpu(vulkan_instance, vulkan_physical_device);
-				_thread_family_count += new_gpu.families().size();
+				for (auto& family : new_gpu.families()) _thread_count += family.threads.size();
 				_gpus.push_back(std::move(new_gpu));
 			}
 		}

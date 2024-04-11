@@ -2,7 +2,7 @@
 #include "gpus"
 
 #include "compwolf_vulkan.hpp"
-#include <cstddef>
+#include <utility>
 #include <vector>
 #include <algorithm>
 #include <iterator>
@@ -11,7 +11,7 @@
 #include <string.h>
 #include <set>
 #include <map>
-#include <exception>
+#include <stdexcept>
 
 namespace CompWolf::Graphics
 {
@@ -70,9 +70,8 @@ namespace CompWolf::Graphics
 			enabled_features.samplerAnisotropy = VK_TRUE;
 		}
 
-		const float queue_priority_item = .5f;
+		const float queue_priority_item = .0f;
 		std::vector<float> queue_priority(8, queue_priority_item);
-		queue_priority[0] = 1.f; // Include one high-priority queue
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		{
@@ -89,7 +88,6 @@ namespace CompWolf::Graphics
 
 				gpu_thread_family connection{
 					.job_types = 0,
-					.persistent_job_count = 0,
 					.job_count = 0,
 				};
 

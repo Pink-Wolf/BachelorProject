@@ -1,61 +1,53 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_MANAGER_HEADER
 #define COMPWOLF_GRAPHICS_GPU_MANAGER_HEADER
 
-#include "gpu_connection.hpp"
-#include "gpu_job.hpp"
-#include "../graphics/graphics_environment_settings.hpp"
-#include "vulkan_types"
-#include <vector>
-#include <iterator>
-#include <optional>
 #include <freeable>
+#include "gpu_connection.hpp"
 #include <utility>
+#include "../graphics/graphics_environment_settings.hpp"
 
 namespace CompWolf::Graphics
 {
-	/* Contains a connection to each gpu on the machine that can be used by CompWolf::Graphics. */
+	class gpu_job;
+
+	/* Contains a connection to each gpu on the machine. */
 	class gpu_manager : public basic_freeable
 	{
 	private: // fields
-		using _gpus_type = std::vector<gpu_connection>;
-		/* The gpus contained by the manager. */
-		_gpus_type _gpus;
+		/* The individual connections to each gpu. */
+		std::vector<gpu_connection> _gpus;
 		/* The amount of thread families the various GPUs have together. */
-		std::size_t _thread_family_count;
+		std::size_t _thread_count;
 
-	public: // getters
-		/* Returns the gpu-connections the manager contains. */
-		auto gpus() noexcept -> _gpus_type&
-		{
-			return _gpus;
-		}
-		/* Returns the gpu-connections the manager contains. */
-		auto gpus() const noexcept -> const _gpus_type&
-		{
-			return _gpus;
-		}
+	public: // accessors
+		/* Returns the individual connections to each gpu. */
+		inline auto& gpus() noexcept { return _gpus; }
+		/* Returns the individual connections to each gpu. */
+		inline auto& gpus() const noexcept { return _gpus; }
 
-	public: // other methods
-		/* Creates a new persistent job. */
-		auto new_persistent_job(gpu_job_settings settings) -> gpu_job;
+	public: // modifiers
+		/* Finds a thread on the gpu based on the given settings, and returns a gpu_job with a reference to that thread.
+		 * This method will try to find the best thread possible, prioritising for example threads that no jobs are currently running on.
+		 * @throws std::runtime_error if the machine has no threads at all to perform the given type of work.
+		 */
+		auto new_job(gpu_job_settings) -> gpu_job;
 	private:
-		auto find_job_family(const gpu_job_settings& settings, bool is_persistent_job) -> std::pair<gpu_connection*, std::size_t>;
-		auto find_job_thread_in_family(const gpu_job_settings& settings, bool is_persistent_job, const gpu_thread_family& family) -> std::size_t;
+		auto find_job_family(const gpu_job_settings& settings) -> std::pair<gpu_connection*, std::size_t>;
+		auto find_job_thread_in_family(const gpu_job_settings& settings, const gpu_thread_family& family) -> std::size_t;
 
 	public: // constructor
 		/* Constructs a manager with no gpus. */
 		gpu_manager() = default;
 		gpu_manager(gpu_manager&&) = default;
 		auto operator=(gpu_manager&&) -> gpu_manager& = default;
-		/* Should only be constructed by graphics_environment.
-		 * @param settings How the gpu_manager should behave. The object must stay alive throughout gpu_manager's lifetime.
-		 * @param instance The instance of vulkan to create connections to gpus for.
-		 * @throws std::runtime_error when something went wrong during setup outside of the program. */
-		gpu_manager(const graphics_environment_settings& settings, Private::vulkan_instance instance);
 		inline ~gpu_manager() noexcept
 		{
 			free();
 		}
+
+		/* Sets up connections to each gpu based on the given settings.
+		 * @throws std::runtime_error when something went wrong during setup outside of the program. */
+		gpu_manager(const graphics_environment_settings&, Private::vulkan_instance);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

@@ -61,8 +61,8 @@
           "briefDescription": "Returns the index of a given family.",
           "overloads": [
             {
-              "declaration": "auto index_of_family(gpu_thread_family&) const -> std::size_t",
-              "description": "Returns the index of the given family in the vector returned by families()"
+              "declaration": "auto index_of_family(const gpu_thread_family&) const -> std::size_t",
+              "description": "Returns the index of the given family in the vector returned by families()."
             }
           ],
           "exceptions": [
@@ -78,7 +78,7 @@
           "overloads": [
             {
               "declaration": "auto work_types() const noexcept -> gpu_job_type_set",
-              "description": "Returns the types of work at least 1 thread can perform on the gpu"
+              "description": "Returns the types of work at least 1 thread can perform on the gpu."
             }
           ],
           "related": [

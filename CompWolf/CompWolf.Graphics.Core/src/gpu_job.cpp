@@ -5,19 +5,13 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	gpu_job::gpu_job(gpu_connection& device_in, std::size_t family_index_in, std::size_t thread_index_in, bool is_persistent) :
+	gpu_job::gpu_job(gpu_connection& device_in, std::size_t family_index_in, std::size_t thread_index_in) :
 		_device(&device_in),
 		_family_index(family_index_in),
-		_thread_index(thread_index_in),
-		_is_persistent(is_persistent)
+		_thread_index(thread_index_in)
 	{
 		++family().job_count;
 		++thread().job_count;
-		if (is_persistent)
-		{
-			++family().persistent_job_count;
-			++thread().persistent_job_count;
-		}
 	}
 
 	/******************************** CompWolf::freeable ********************************/
@@ -28,11 +22,6 @@ namespace CompWolf::Graphics
 
 		--family().job_count;
 		--thread().job_count;
-		if (is_persistent())
-		{
-			--family().persistent_job_count;
-			--thread().persistent_job_count;
-		}
 
 		_device = nullptr;
 	}

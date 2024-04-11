@@ -42,12 +42,8 @@
           "briefDescription": "Returns the gpu that fence is on.",
           "overloads": [
             {
-              "declaration": "auto gpu() noexcept -> gpu_connection&",
-              "description": "Returns the gpu that the fence is on."
-            },
-            {
               "declaration": "auto gpu() const noexcept -> const gpu_connection&",
-              "description": "Like (1), but const."
+              "description": "Returns the gpu that the fence is on."
             }
           ],
           "related": [

@@ -156,6 +156,12 @@
     <ClInclude Include="header\gpu_memory_type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\gpus\gpu_thread_family.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpus\gpu_job_type.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -170,7 +176,7 @@
     <ClCompile Include="src\gpu_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gpu.cpp">
+    <ClCompile Include="src\gpu_connection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\glfw_handle.cpp">

@@ -1,58 +1,32 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_THREAD_SETTINGS_HEADER
 #define COMPWOLF_GRAPHICS_GPU_THREAD_SETTINGS_HEADER
 
-#include <enum_bitset>
+#include "gpu_job_type.hpp"
 #include <functional>
 #include <optional>
-#include <utility>
 
 namespace CompWolf::Graphics
 {
 	class gpu_connection;
 	struct gpu_thread_family;
 
-	/* The different type of work a job for a gpu can be. */
-	enum class gpu_job_type : std::size_t
-	{
-		/* Drawing on a window or image. */
-		draw,
-		/* Make a window actually show what has been drawn on it. */
-		present,
-		size
-	};
-	/* A combination of gpu_job_types. */
-	using gpu_job_type_set = enum_bitset<gpu_job_type>;
-
-	/* The different priorities a job for a gpu can have. */
-	enum struct gpu_job_priority
-	{
-		/* The job should only be performed when it will not impact other jobs. */
-		low,
-		/* The priority of most jobs. */
-		medium,
-		/* The job should be performed as quickly as possible, making other jobs wait even if they were started earlier. */
-		high,
-	};
-
-	/* The specifications for a job for a gpu. */
+	/* Aggregate type used by gpu_manager.new_job to specify the job to create. */
 	struct gpu_job_settings
 	{
-		/* The type of work the job should be able to do. */
+		/* The type of work the job should be able to perform. */
 		gpu_job_type_set type;
-		/* The priority of the job. */
-		gpu_job_priority priority;
-		/* How good a given gpu is for this job.
-		 * A higher scoring gpu will be picked over a lower scoring one; one without a score will never be picked.
-		 * This score is combined with family_scorer.
-		 * May be empty to give all gpus the same score.
-		 * @see family_scorer
+		/* Used on each thread's gpu to determine what thread to use.
+		 * This and family_scorer's scores are summed to determine the threads' scores; the thread with the highest score is generally picked.
+		 * gpu_manager.new_job may still pick a lower-scoring thread, for example when the highest scoring thread is already busy with work.
+		 * If this returns std::nullopt, no thread on the given gpu will be picked; this should only be done if the gpu actually cannot perform the work.
+		 * If empty, gpu_manager.new_job will score the gpus 0.
 		 */
 		std::function<std::optional<float>(const gpu_connection&)> gpu_scorer;
-		/* How good a given gpu-thread-family is for this job.
-		 * A higher scoring family will be picked over a lower scoring one; one without a score will never be picked.
-		 * This score is combined with gpu_scorer. Specfifically, a family's score is the sum of its own score and its gpu's score.
-		 * May be empty to give all gpus the same score.
-		 * @see gpu_scorer
+		/* Used on each thread's family to determine what thread to use.
+		 * This and gpu_scorer's scores are summed to determine the threads' scores; the thread with the highest score is generally picked.
+		 * gpu_manager.new_job may still pick a lower-scoring thread, for example when the highest scoring thread is already busy with work.
+		 * If this returns std::nullopt, no thread in the given family will be picked; this should only be done if the family actually cannot perform the work.
+		 * If empty, gpu_manager.new_job will score the families 0.
 		 */
 		std::function<std::optional<float>(const gpu_thread_family&)> family_scorer;
 	};

@@ -172,7 +172,9 @@
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\images" />
     <ClInclude Include="include\private\gpus\gpu_fence.hpp" />
+    <ClInclude Include="include\private\gpus\gpu_job_type.hpp" />
     <ClInclude Include="include\private\gpus\gpu_semaphore.hpp" />
+    <ClInclude Include="include\private\gpus\gpu_thread_family.hpp" />
     <ClInclude Include="include\private\gpu_program\gpu_image.hpp" />
     <ClInclude Include="include\private\gpu_program\gpu_memory.hpp" />
     <ClInclude Include="include\private\graphics\glfw_handle.hpp" />
@@ -219,7 +221,7 @@
     <ClCompile Include="src\draw_pipeline.cpp" />
     <ClCompile Include="src\draw_program.cpp" />
     <ClCompile Include="src\glfw_handle.cpp" />
-    <ClCompile Include="src\gpu.cpp" />
+    <ClCompile Include="src\gpu_connection.cpp" />
     <ClCompile Include="src\gpu_buffer.cpp" />
     <ClCompile Include="src\gpu_fence.cpp" />
     <ClCompile Include="src\gpu_job.cpp" />
