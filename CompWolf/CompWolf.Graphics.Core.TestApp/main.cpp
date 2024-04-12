@@ -107,18 +107,14 @@ int main()
         std::chrono::steady_clock clock;
         auto start_time = clock.now();
         auto time = clock.now();
-        double total_time;
         const std::chrono::duration<double> min_delta_time(1 / 60.);
+
+        double total_time = 0;
+        std::size_t frames_since_last_print = 0;
+        double next_print_time = 0;
+
         while (win.is_open())
         {
-            {
-                auto new_time = clock.now();
-                auto delta_time = std::chrono::duration_cast<std::chrono::seconds>(new_time - time);
-                if (delta_time < min_delta_time) std::this_thread::sleep_for(min_delta_time - delta_time);
-                time = new_time;
-                total_time = std::chrono::duration<double>(time - start_time).count();
-            }
-
             {
                 auto t = trans.single_data();
 
@@ -129,6 +125,23 @@ int main()
             drawer.execute(win);
             win.update_image();
             environment.update();
+
+            {
+                auto new_time = clock.now();
+                auto delta_time = std::chrono::duration_cast<std::chrono::duration<double>>(new_time - time);
+                if (delta_time < min_delta_time) std::this_thread::sleep_for(min_delta_time - delta_time);
+                time = new_time;
+                total_time = std::chrono::duration<double>(time - start_time).count();
+            }
+
+            ++frames_since_last_print;
+            if (total_time >= next_print_time)
+            {
+                auto framerate = frames_since_last_print / (total_time - next_print_time + 1);
+                std::cout << "framerate: " << framerate << "\n";
+                frames_since_last_print = 0;
+                next_print_time = total_time + 1;
+            }
         }
 
         std::cout << "Hello World!\n";
