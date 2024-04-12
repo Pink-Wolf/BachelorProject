@@ -58,28 +58,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "Modifiers",
-      "items": [
-        {
-          "name": "new_job",
-          "briefDescription": "Finds a thread on the gpu to perform a job.",
-          "detailedDescription": "This method will try to find the best thread possible, prioritising for example threads that no jobs are currently running on.",
-          "overloads": [
-            {
-              "declaration": "auto new_job(gpu_job_settings) -> gpu_job",
-              "description": "Finds a thread on the gpu based on the given settings, and returns a gpu_job with a reference to that thread."
-            }
-          ],
-          "exceptions": [
-            "Throws std::runtime_error if the machine has no threads at all to perform the given type of work."
-          ],
-          "related": [
-            "gpu_job"
-          ]
-        }
-      ]
     }
   ],
   "related": [

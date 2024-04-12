@@ -80,9 +80,14 @@ namespace CompWolf::Graphics
 		auto queue = Private::to_vulkan(thread.queue);
 
 		auto oldSemaphore = Private::to_vulkan(job().last_vulkan_semaphore());
-		auto& sync = job().insert_synchronization(gpu_fence(gpu_device), gpu_semaphore(gpu_device));
-		auto fence = Private::to_vulkan(sync.first.vulkan_fence());
-		auto semaphore = Private::to_vulkan(sync.second.vulkan_semaphore());
+		auto& sync = job().push_synchronization(gpu_job_sync
+			{
+				.fence = gpu_fence(gpu_device),
+				.semaphore = gpu_semaphore(gpu_device),
+			}
+		);
+		auto fence = Private::to_vulkan(sync.fence.vulkan_fence());
+		auto semaphore = Private::to_vulkan(sync.semaphore.vulkan_semaphore());
 
 		auto vulkanCommand = Private::to_vulkan(_vulkan_command);
 
@@ -106,7 +111,7 @@ namespace CompWolf::Graphics
 			}
 		}
 
-		return sync.first;
+		return sync.fence;
 	}
 
 	/******************************** CompWolf::freeable ********************************/

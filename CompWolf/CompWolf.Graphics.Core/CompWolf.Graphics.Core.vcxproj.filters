@@ -159,6 +159,9 @@
     <ClInclude Include="include\private\gpus\gpu_job_type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\gpus\gpu_job_sync.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

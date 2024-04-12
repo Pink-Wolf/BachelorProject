@@ -3,8 +3,8 @@
 
   "declaration": "class gpu_job;",
   "namespace": "CompWolf",
-  "briefDescription": "A reference to a gpu-thread that is ready to perform some work.",
-  "detailedDescription": "A reference to a gpu-thread that is ready to perform some work.",
+  "briefDescription": "A space on a gpu ready to perform some work.",
+  "detailedDescription": "A space on a gpu ready to perform some work.",
 
   "baseClasses": [ "basic_freeable" ],
 
@@ -18,7 +18,15 @@
       },
       {
         "declaration": "gpu_job(gpu_connection&, std::size_t family_index, std::size_t thread_index);",
-        "description": "Creates a job referencing a thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
+        "description": "Creates a job on the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
+      },
+      {
+        "declaration": "static auto new_job_for(gpu_connection&, gpu_job_settings) -> gpu_job;",
+        "description": "Finds the best thread on the given gpu to perform some work, based on the given settings, and creates a job on it using (2)."
+      },
+      {
+        "declaration": "static auto new_job_for(gpu_connection&, gpu_job_settings) -> gpu_job;",
+        "description": "Finds the best thread on the given gpus to perform some work, based on the given settings, and creates a job on it using (2)."
       },
       {
         "declaration": "gpu_job(gpu_job&&) noexcept;",
@@ -26,7 +34,8 @@
       }
     ],
     "exceptions": [
-      "Throws std::out_of_range if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index."
+      "Throws std::out_of_range from (2) if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index.",
+      "Throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of work."
     ]
   },
   "methodGroups": [
@@ -110,6 +119,103 @@
           "related": [
             "gpu_thread_family",
             "gpu_thread"
+          ]
+        },
+        {
+          "name": "latest_synchronization",
+          "briefDescription": "Returns the job's latest synchronization-data.",
+          "overloads": [
+            {
+              "declaration": "auto latest_synchronization() noexcept -> gpu_job_sync&",
+              "description": "Returns a pointer to the job's latest synchronization-data.\nReturns nullptr if there are no synchronization data."
+            },
+            {
+              "declaration": "auto latest_synchronization() const noexcept -> const gpu_job_sync&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_job_sync"
+          ]
+        },
+        {
+          "name": "working",
+          "briefDescription": "Returns whether the job has unfinished work.",
+          "overloads": [
+            {
+              "declaration": "inline auto working() const noexcept -> bool",
+              "description": "Returns true if the job has unfinished work, otherwise returns false."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "name": "wait",
+          "briefDescription": "Waits until all of the job's work is done, and then returns.",
+          "overloads": [
+            {
+              "declaration": "inline auto working() const noexcept -> bool",
+              "description": "Returns true if the job has unfinished work, otherwise returns false."
+            }
+          ]
+        },
+        {
+          "name": "push_synchronization",
+          "briefDescription": "Replaces the latest synchronization-data.",
+          "overloads": [
+            {
+              "declaration": "auto push_synchronization(gpu_job_sync&&) noexcept -> gpu_job_sync&",
+              "description": "Replaces the job's latest synchronization-data; the new data should denote when all of the job's work is done."
+            }
+          ],
+          "related": [
+            "gpu_job_sync"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "name": "vulkan_pool",
+          "briefDescription": "Returns the job's vulkan_command_pool, representing a VkCommandPool.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_pool() const noexcept -> Private::vulkan_command_pool",
+              "description": "Returns the job's vulkan_command_pool, representing a VkCommandPool."
+            }
+          ]
+        },
+        {
+          "name": "last_vulkan_fence",
+          "briefDescription": "Returns the latest synchronization-object's vulkan_fence, representing a VkFence.",
+          "overloads": [
+            {
+              "declaration": "auto last_vulkan_fence() const noexcept -> Private::vulkan_fence",
+              "description": "Returns the latest synchronization-object's vulkan_fence, representing a VkFence.\nReturns nullptr if there are no synchronization objects."
+            }
+          ],
+          "related": [
+            "gpu_job_sync"
+          ]
+        },
+        {
+          "name": "last_vulkan_semaphore",
+          "briefDescription": "Returns the latest synchronization-object's vulkan_semaphore, representing a VkSemaphore.",
+          "overloads": [
+            {
+              "declaration": "auto last_vulkan_semaphore() const noexcept -> Private::vulkan_semaphore",
+              "description": "Returns the latest synchronization-object's vulkan_semaphore, representing a VkSemaphore.\nReturns nullptr if there are no synchronization objects."
+            }
+          ],
+          "related": [
+            "gpu_job_sync"
           ]
         }
       ]

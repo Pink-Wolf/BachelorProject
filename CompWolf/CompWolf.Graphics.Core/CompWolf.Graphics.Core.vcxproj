@@ -172,6 +172,7 @@
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\images" />
     <ClInclude Include="include\private\gpus\gpu_fence.hpp" />
+    <ClInclude Include="include\private\gpus\gpu_job_sync.hpp" />
     <ClInclude Include="include\private\gpus\gpu_job_type.hpp" />
     <ClInclude Include="include\private\gpus\gpu_semaphore.hpp" />
     <ClInclude Include="include\private\gpus\gpu_thread_family.hpp" />

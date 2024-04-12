@@ -1,0 +1,37 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct gpu_job_sync;",
+  "briefDescription": "Aggregate type containing data used by gpu_job for synchronization.",
+  "detailedDescription": "Aggregate type containing data used by gpu_job for synchronization between its work.",
+
+  "dataMembers": [
+    {
+      "name": "fence",
+      "declaration": "gpu_fence fence;",
+      "briefDescription": "Fence waiting for all work to be done.",
+      "detailedDescription": "Fence waiting for all work to be done.",
+      "related": [
+        "gpu_fence"
+      ]
+    },
+    {
+      "name": "semaphore",
+      "declaration": "gpu_semaphore semaphore;",
+      "briefDescription": "Semaphore waiting for all work to be done.",
+      "detailedDescription": "Semaphore waiting for all work to be done.",
+      "related": [
+        "gpu_semaphore"
+      ]
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "related": [
+    "gpu_job",
+    "gpu_fence",
+    "gpu_semaphore"
+  ]
+}

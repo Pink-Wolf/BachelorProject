@@ -33,8 +33,7 @@ namespace CompWolf::Graphics
 		_current_frame_index = static_cast<std::size_t>(index);
 
 		fence.wait();
-		vkDeviceWaitIdle(logicDevice); // this is done as above wait seems to not actually wait as it should; the following link reports the same problem: https://forums.developer.nvidia.com/t/problems-with-vk-khr-swapchain/43513
-		current_frame().draw_job.synchronizations().clear();
+		current_frame().draw_job.wait();
 	}
 
 	/******************************** constructors ********************************/
