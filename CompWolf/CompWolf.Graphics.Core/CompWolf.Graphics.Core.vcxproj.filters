@@ -60,7 +60,7 @@
     <ClInclude Include="header\vulkan_debug_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpus\gpu_job_settings.hpp">
+    <ClInclude Include="include\private\gpu_program_pools\gpu_program_pool_settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\gpus\gpu_thread.hpp">
@@ -81,7 +81,7 @@
     <ClInclude Include="include\private\window\window_swapchain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpus\gpu_job.hpp">
+    <ClInclude Include="include\private\gpu_program_pools\gpu_program_pool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\window">
@@ -90,10 +90,10 @@
     <ClInclude Include="include\gpus">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpus\gpu_fence.hpp">
+    <ClInclude Include="include\private\gpu_program_pools\gpu_fence.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpus\gpu_semaphore.hpp">
+    <ClInclude Include="include\private\gpu_program_pools\gpu_semaphore.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\window\window_user.hpp">
@@ -156,10 +156,13 @@
     <ClInclude Include="include\private\gpus\gpu_thread_family.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpus\gpu_job_type.hpp">
+    <ClInclude Include="include\private\gpus\gpu_thread_type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpus\gpu_job_sync.hpp">
+    <ClInclude Include="include\private\gpu_program_pools\gpu_program_sync.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gpu_program_pools">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -200,7 +203,7 @@
     <ClCompile Include="src\window_swapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gpu_job.cpp">
+    <ClCompile Include="src\gpu_program_pool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gpu_fence.cpp">

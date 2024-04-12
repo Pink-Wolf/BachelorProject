@@ -9,8 +9,8 @@
 
 namespace CompWolf::Graphics
 {
-	class gpu_job;
-	struct gpu_job_settings;
+	class gpu_program_pool;
+	struct gpu_program_pool_settings;
 
 	/* A connection to a gpu. */
 	class gpu_connection : public basic_freeable
@@ -25,7 +25,7 @@ namespace CompWolf::Graphics
 		/* The gpu's families of threads. */
 		std::vector<gpu_thread_family> _families;
 		/* The types of work at least 1 thread can perform on the gpu. */
-		gpu_job_type_set _work_types;
+		gpu_thread_type_set _work_types;
 
 	public: // accessors
 		/* Returns the gpu's families of threads. */

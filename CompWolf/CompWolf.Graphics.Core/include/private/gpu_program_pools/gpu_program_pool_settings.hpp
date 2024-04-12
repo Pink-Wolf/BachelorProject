@@ -1,7 +1,7 @@
-#ifndef COMPWOLF_GRAPHICS_GPU_THREAD_SETTINGS_HEADER
-#define COMPWOLF_GRAPHICS_GPU_THREAD_SETTINGS_HEADER
+#ifndef COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_SETTINGS_HEADER
+#define COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_SETTINGS_HEADER
 
-#include "gpu_job_type.hpp"
+#include "gpus"
 #include <functional>
 #include <optional>
 
@@ -11,10 +11,10 @@ namespace CompWolf::Graphics
 	struct gpu_thread_family;
 
 	/* Aggregate type used by gpu_manager.new_job to specify the job to create. */
-	struct gpu_job_settings
+	struct gpu_program_pool_settings
 	{
 		/* The type of work the job should be able to perform. */
-		gpu_job_type_set type;
+		gpu_thread_type_set type;
 		/* Used on each thread's gpu to determine what thread to use.
 		 * This and family_scorer's scores are summed to determine the threads' scores; the thread with the highest score is generally picked.
 		 * gpu_manager.new_job may still pick a lower-scoring thread, for example when the highest scoring thread is already busy with work.
@@ -32,4 +32,4 @@ namespace CompWolf::Graphics
 	};
 }
 
-#endif // ! COMPWOLF_GRAPHICS_GPU_THREAD_SETTINGS_HEADER
+#endif // ! COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_SETTINGS_HEADER

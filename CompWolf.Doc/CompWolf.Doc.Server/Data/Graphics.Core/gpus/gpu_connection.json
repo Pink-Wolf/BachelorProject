@@ -77,12 +77,12 @@
           "briefDescription": "Returns the types of work doable by the gpu.",
           "overloads": [
             {
-              "declaration": "auto work_types() const noexcept -> gpu_job_type_set",
+              "declaration": "auto work_types() const noexcept -> gpu_thread_type_set",
               "description": "Returns the types of work at least 1 thread can perform on the gpu."
             }
           ],
           "related": [
-            "gpu_job_type_set"
+            "gpu_thread_type_set"
           ]
         }
       ]

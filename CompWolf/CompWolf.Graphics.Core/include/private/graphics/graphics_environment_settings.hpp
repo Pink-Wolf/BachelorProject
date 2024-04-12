@@ -2,7 +2,6 @@
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_SETTINGS_HEADER
 
 #include "vulkan_types"
-#include "../gpus/gpu_job_settings.hpp"
 #include <string>
 #include <functional>
 #include <version_number>
@@ -26,9 +25,6 @@ namespace CompWolf::Graphics
 		std::string program_name = "Compwolf Program";
 		/* The version of the program. */
 		version_number program_version = { 0, 0, 0 };
-
-		/* The threads to create on the gpu to often perform some specific type of job. */
-		std::vector<gpu_job_settings> persistent_jobs;
 	};
 }
 

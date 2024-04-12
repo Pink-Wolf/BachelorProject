@@ -8,12 +8,12 @@
 
   "dataMembers": [
     {
-      "name": "job_types",
-      "declaration": "gpu_job_type_set job_types;",
-      "briefDescription": "The type of work that the threads can perform.",
-      "detailedDescription": "The type of work that the threads can perform.",
+      "name": "type",
+      "declaration": "gpu_thread_type_set type;",
+      "briefDescription": "The type of work that the family's threads can perform.",
+      "detailedDescription": "The type of work that the family's threads can perform.",
       "related": [
-        "gpu_job_type_set"
+        "gpu_thread_type_set"
       ]
     },
     {
@@ -26,12 +26,12 @@
       ]
     },
     {
-      "name": "job_count",
-      "declaration": "std::size_t job_count;",
-      "briefDescription": "The amount of jobs currently running on any of the family's threads.",
-      "detailedDescription": "The amount of jobs currently running on any of the family's threads.",
+      "name": "pool_count",
+      "declaration": "std::size_t pool_count;",
+      "briefDescription": "The amount of [[gpu_program_pool]] currently on the family's threads.",
+      "detailedDescription": "The amount of [[gpu_program_pool]] currently on the family's threads.",
       "related": [
-        "gpu_job"
+        "gpu_program_pool"
       ]
     }
   ],

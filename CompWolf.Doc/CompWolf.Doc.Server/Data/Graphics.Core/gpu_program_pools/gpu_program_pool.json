@@ -1,10 +1,10 @@
 ﻿{
   "type": "class",
 
-  "declaration": "class gpu_job;",
+  "declaration": "class gpu_program_pool;",
   "namespace": "CompWolf",
-  "briefDescription": "A space on a gpu ready to perform some work.",
-  "detailedDescription": "A space on a gpu ready to perform some work.",
+  "briefDescription": "A manager for some [[gpu_program]]s.",
+  "detailedDescription": "A manager for some [[gpu_program]]s.\nPrograms should be split into different pools when they can run asynchronous.",
 
   "baseClasses": [ "basic_freeable" ],
 
@@ -13,29 +13,29 @@
   "constructor": {
     "overloads": [
       {
-        "declaration": "gpu_job() noexcept;",
-        "description": "Constructs a freed gpu_job, as in one that does not reference any thread."
+        "declaration": "gpu_program_pool() noexcept;",
+        "description": "Constructs a freed gpu_program_pool, as in one that cannot contain any programs."
       },
       {
-        "declaration": "gpu_job(gpu_connection&, std::size_t family_index, std::size_t thread_index);",
-        "description": "Creates a job on the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
+        "declaration": "gpu_program_pool(gpu_connection&, std::size_t family_index, std::size_t thread_index);",
+        "description": "Creates a pool on the given thread;\nThe given thread is the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
       },
       {
-        "declaration": "static auto new_job_for(gpu_connection&, gpu_job_settings) -> gpu_job;",
-        "description": "Finds the best thread on the given gpu to perform some work, based on the given settings, and creates a job on it using (2)."
+        "declaration": "static auto new_pool_for(gpu_connection&, gpu_program_pool_settings) -> gpu_program_pool;",
+        "description": "Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a pool on it using (2)."
       },
       {
-        "declaration": "static auto new_job_for(gpu_connection&, gpu_job_settings) -> gpu_job;",
-        "description": "Finds the best thread on the given gpus to perform some work, based on the given settings, and creates a job on it using (2)."
+        "declaration": "static auto new_pool_for(gpu_connection&, gpu_program_pool_settings) -> gpu_program_pool;",
+        "description": "Finds the best thread on the given gpus to run some programs, based on the given settings, and creates a pool on it using (2)."
       },
       {
-        "declaration": "gpu_job(gpu_job&&) noexcept;",
-        "description": "gpu_job is movable."
+        "declaration": "gpu_program_pool(gpu_program_pool&&) noexcept;",
+        "description": "gpu_program_pool is movable."
       }
     ],
     "exceptions": [
       "Throws std::out_of_range from (2) if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index.",
-      "Throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of work."
+      "Throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of programs."
     ]
   },
   "methodGroups": [
@@ -44,11 +44,11 @@
       "items": [
         {
           "name": "gpu",
-          "briefDescription": "Returns the gpu that the job is on.",
+          "briefDescription": "Returns the gpu that the pool is on.",
           "overloads": [
             {
               "declaration": "auto gpu() noexcept -> gpu_connection&",
-              "description": "Returns the gpu that the job is on."
+              "description": "Returns the gpu that the pool is on."
             },
             {
               "declaration": "auto gpu() const noexcept -> const gpu_connection&",
@@ -61,11 +61,11 @@
         },
         {
           "name": "family",
-          "briefDescription": "Returns the family of threads that the job is on.",
+          "briefDescription": "Returns the family of threads that the pool is on.",
           "overloads": [
             {
               "declaration": "auto family() noexcept -> gpu_thread_family&",
-              "description": "Returns the family of threads that the job is on."
+              "description": "Returns the family of threads that the pool is on."
             },
             {
               "declaration": "auto family() const noexcept -> const gpu_thread_family&",
@@ -78,11 +78,11 @@
         },
         {
           "name": "thread",
-          "briefDescription": "Returns the thread that the job is on.",
+          "briefDescription": "Returns the thread that the pool is on.",
           "overloads": [
             {
               "declaration": "auto thread() noexcept -> gpu_thread&",
-              "description": "Returns the family of threads that the job is on."
+              "description": "Returns the family of threads that the pool is on."
             },
             {
               "declaration": "auto thread() const noexcept -> const gpu_thread&",
@@ -123,28 +123,28 @@
         },
         {
           "name": "latest_synchronization",
-          "briefDescription": "Returns the job's latest synchronization-data.",
+          "briefDescription": "Returns the pool's latest synchronization-data.",
           "overloads": [
             {
-              "declaration": "auto latest_synchronization() noexcept -> gpu_job_sync&",
-              "description": "Returns a pointer to the job's latest synchronization-data.\nReturns nullptr if there are no synchronization data."
+              "declaration": "auto latest_synchronization() noexcept -> gpu_program_sync&",
+              "description": "Returns a pointer to the pool's latest synchronization-data.\nWaiting on the data's fence waits for all of the pool's programs to finish.\nReturns nullptr if there are no synchronization data."
             },
             {
-              "declaration": "auto latest_synchronization() const noexcept -> const gpu_job_sync&",
+              "declaration": "auto latest_synchronization() const noexcept -> const gpu_program_sync&",
               "description": "Like (1), but const."
             }
           ],
           "related": [
-            "gpu_job_sync"
+            "gpu_program_sync"
           ]
         },
         {
           "name": "working",
-          "briefDescription": "Returns whether the job has unfinished work.",
+          "briefDescription": "Returns whether any of the pool's programs are still running.",
           "overloads": [
             {
               "declaration": "inline auto working() const noexcept -> bool",
-              "description": "Returns true if the job has unfinished work, otherwise returns false."
+              "description": "Returns whether any of the pool's programs are still running."
             }
           ]
         }
@@ -155,11 +155,11 @@
       "items": [
         {
           "name": "wait",
-          "briefDescription": "Waits until all of the job's work is done, and then returns.",
+          "briefDescription": "Waits until all of the pool's programs are done, and then returns.",
           "overloads": [
             {
               "declaration": "inline auto working() const noexcept -> bool",
-              "description": "Returns true if the job has unfinished work, otherwise returns false."
+              "description": "Waits until all of the pool's programs are done, and then returns."
             }
           ]
         },
@@ -168,12 +168,12 @@
           "briefDescription": "Replaces the latest synchronization-data.",
           "overloads": [
             {
-              "declaration": "auto push_synchronization(gpu_job_sync&&) noexcept -> gpu_job_sync&",
-              "description": "Replaces the job's latest synchronization-data; the new data should denote when all of the job's work is done."
+              "declaration": "auto push_synchronization(gpu_program_sync&&) noexcept -> gpu_program_sync&",
+              "description": "Replaces the pool's latest synchronization-data; the new data should denote when all of the pool's programs are done."
             }
           ],
           "related": [
-            "gpu_job_sync"
+            "gpu_program_sync"
           ]
         }
       ]
@@ -184,11 +184,11 @@
       "items": [
         {
           "name": "vulkan_pool",
-          "briefDescription": "Returns the job's vulkan_command_pool, representing a VkCommandPool.",
+          "briefDescription": "Returns the pool's vulkan_command_pool, representing a VkCommandPool.",
           "overloads": [
             {
               "declaration": "auto vulkan_pool() const noexcept -> Private::vulkan_command_pool",
-              "description": "Returns the job's vulkan_command_pool, representing a VkCommandPool."
+              "description": "Returns the pool's vulkan_command_pool, representing a VkCommandPool."
             }
           ]
         },
@@ -202,7 +202,7 @@
             }
           ],
           "related": [
-            "gpu_job_sync"
+            "gpu_program_sync"
           ]
         },
         {
@@ -215,7 +215,7 @@
             }
           ],
           "related": [
-            "gpu_job_sync"
+            "gpu_program_sync"
           ]
         }
       ]

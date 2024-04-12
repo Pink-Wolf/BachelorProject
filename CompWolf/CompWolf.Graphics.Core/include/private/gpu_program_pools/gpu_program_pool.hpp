@@ -1,12 +1,12 @@
-#ifndef COMPWOLF_GRAPHICS_GPU_JOB_HEADER
-#define COMPWOLF_GRAPHICS_GPU_JOB_HEADER
+#ifndef COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER
+#define COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER
 
 #include "vulkan_types"
 #include <freeable>
 #include <owned>
-#include "gpu_connection.hpp"
-#include "gpu_job_settings.hpp"
-#include "gpu_job_sync.hpp"
+#include "gpus"
+#include "gpu_program_pool_settings.hpp"
+#include "gpu_program_sync.hpp"
 #include "utility"
 #include <vector>
 #include <optional>
@@ -16,7 +16,7 @@ namespace CompWolf::Graphics
 	class gpu_manager;
 
 	/* A reference to a gpu-thread that is ready to perform some work. */
-	class gpu_job : public basic_freeable
+	class gpu_program_pool : public basic_freeable
 	{
 	private: // fields
 		/* The gpu that the job is on. */
@@ -29,7 +29,7 @@ namespace CompWolf::Graphics
 		/* The job's vulkan_command_pool, representing a VkCommandPool. */
 		Private::vulkan_command_pool _vulkan_pool;
 		/* The job's synchronization-data. */
-		std::vector<gpu_job_sync> _syncs;
+		std::vector<gpu_program_sync> _syncs;
 
 	public: // accessors
 		/* Returns the gpu that the job is on. */
@@ -68,10 +68,10 @@ namespace CompWolf::Graphics
 		}
 
 	private:
-		static auto find_thread_for_job(const gpu_thread_family&) noexcept -> std::size_t;
-		static auto find_family_for_job(gpu_job_settings&, const gpu_connection&, float& out_score, float& out_custom_score) noexcept
+		static auto find_thread(const gpu_thread_family&) noexcept -> std::size_t;
+		static auto find_family(gpu_program_pool_settings&, const gpu_connection&, float& out_score, float& out_custom_score) noexcept
 			-> std::optional<std::size_t>;
-		static auto find_family_for_job(gpu_job_settings&, const gpu_manager&) noexcept
+		static auto find_family(gpu_program_pool_settings&, const gpu_manager&) noexcept
 			-> std::optional<std::pair<size_t, std::size_t>>;
 
 	public: // modifiers
@@ -88,7 +88,7 @@ namespace CompWolf::Graphics
 		}
 
 		/* Replaces the job's latest synchronization-data; the new data should denote when all of the job's work is done. */
-		inline auto& push_synchronization(gpu_job_sync&& s) noexcept
+		inline auto& push_synchronization(gpu_program_sync&& s) noexcept
 		{
 			return _syncs.emplace_back(std::move(s));
 		}
@@ -116,24 +116,25 @@ namespace CompWolf::Graphics
 		}
 
 	public: // constructors
-		/* Constructs a freed gpu_job, as in one that does not reference any thread. */
-		gpu_job() = default;
-		gpu_job(gpu_job&&) = default;
-		auto operator=(gpu_job&&) -> gpu_job& = default;
+		/* Constructs a freed gpu_program_pool, as in one that cannot contain any programs. */
+		gpu_program_pool() = default;
+		gpu_program_pool(gpu_program_pool&&) = default;
+		auto operator=(gpu_program_pool&&) -> gpu_program_pool& = default;
 
-		/* Creates a job referencing a thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector.
+		/* Creates a pool on the given thread;
+		 * The given thread is the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector.
 		 * @throws std::out_of_range if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index.
 		 */
-		gpu_job(gpu_connection& device, std::size_t family_index, std::size_t thread_index);
+		gpu_program_pool(gpu_connection& device, std::size_t family_index, std::size_t thread_index);
 
-		/* Finds the best thread on the given gpu to perform some work, based on the given settings, and creates a job on it using gpu_job(gpu_connection&, std::size_t, std::size_t).
-		 * @throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of work.
+		/* Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a pool on it using gpu_program_pool(gpu_connection&, std::size_t, std::size_t).
+		 * @throws std::runtime_error if the given gpus have no threads at all to perform the given type of programs.
 		 */
-		static auto new_job_for(gpu_connection&, gpu_job_settings) -> gpu_job;
-		/* Finds the best thread on the given gpus to perform some work, based on the given settings, and creates a job on it using gpu_job(gpu_connection&, std::size_t, std::size_t).
-		 * @throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of work.
+		static auto new_pool_for(gpu_connection&, gpu_program_pool_settings) -> gpu_program_pool;
+		/* Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a pool on it using gpu_program_pool(gpu_connection&, std::size_t, std::size_t).
+		 * @throws std::runtime_error if the given gpus have no threads at all to perform the given type of programs.
 		 */
-		static auto new_job_for(gpu_manager&, gpu_job_settings) -> gpu_job;
+		static auto new_pool_for(gpu_manager&, gpu_program_pool_settings) -> gpu_program_pool;
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
@@ -144,4 +145,4 @@ namespace CompWolf::Graphics
 	};
 }
 
-#endif // ! COMPWOLF_GRAPHICS_GPU_JOB_HEADER
+#endif // ! COMPWOLF_GRAPHICS_GPU_PROGRAM_POOL_HEADER

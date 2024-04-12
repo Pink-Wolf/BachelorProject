@@ -3,13 +3,14 @@
 
 #include "compwolf_vulkan.hpp"
 #include <compwolf_utility>
+#include "gpu_program_pools"
 
 namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
 	gpu_program::gpu_program(gpu_connection& target_device
-		, gpu_job& job
+		, gpu_program_pool& job
 		, gpu_program_code code
 	) : _device(&target_device)
 		, _job(&job)
@@ -80,7 +81,7 @@ namespace CompWolf::Graphics
 		auto queue = Private::to_vulkan(thread.queue);
 
 		auto oldSemaphore = Private::to_vulkan(job().last_vulkan_semaphore());
-		auto& sync = job().push_synchronization(gpu_job_sync
+		auto& sync = job().push_synchronization(gpu_program_sync
 			{
 				.fence = gpu_fence(gpu_device),
 				.semaphore = gpu_semaphore(gpu_device),

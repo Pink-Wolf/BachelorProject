@@ -3,6 +3,7 @@
 
 #include "graphics"
 #include "gpus"
+#include "gpu_program_pools"
 #include "gpu_program"
 #include "vulkan_types"
 #include "window_settings.hpp"
@@ -19,7 +20,7 @@ namespace CompWolf::Graphics
 		Private::vulkan_image_view image;
 		Private::vulkan_frame_buffer frame_buffer;
 
-		gpu_job draw_job;
+		gpu_program_pool draw_job;
 	};
 
 	/* The actual images of the window' that's surface. */

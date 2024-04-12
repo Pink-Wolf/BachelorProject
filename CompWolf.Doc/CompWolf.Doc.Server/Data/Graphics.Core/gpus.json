@@ -1,4 +1,4 @@
 ﻿{
-  "briefDescription": "Contains general logic for gpus and jobs running on a gpu.",
-  "detailedDescription": "Contains general logic for gpus and jobs running on a gpu."
+  "briefDescription": "Contains general logic for gpus and their threads.",
+  "detailedDescription": "Contains general logic for gpus and their threads."
 }

@@ -87,16 +87,16 @@ namespace CompWolf::Graphics
 				auto& queueFamily = queueFamilies[queue_index];
 
 				gpu_thread_family connection{
-					.job_types = 0,
-					.job_count = 0,
+					.type = 0,
+					.pool_count = 0,
 				};
 
 				bool draw_queue = queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT;
-				if (draw_queue) connection.job_types[gpu_job_type::draw] = true;
+				if (draw_queue) connection.type[gpu_thread_type::draw] = true;
 
 				bool present_queue = is_present_device
 					&& glfwGetPhysicalDevicePresentationSupport(instance, physicalDevice, static_cast<uint32_t>(queue_index));
-				if (present_queue) connection.job_types[gpu_job_type::present] = true;
+				if (present_queue) connection.type[gpu_thread_type::present] = true;
 
 				auto queue_count = queueFamily.queueCount;
 				connection.threads.resize(queue_count);
@@ -109,7 +109,7 @@ namespace CompWolf::Graphics
 					.pQueuePriorities = queue_priority.data(),
 				};
 
-				_work_types |= connection.job_types;
+				_work_types |= connection.type;
 				queueCreateInfos.push_back(std::move(queueCreateInfo));
 				_families.push_back(std::move(connection));
 			}

@@ -2,9 +2,9 @@
   "type": "class",
 
   "namespace": "CompWolf",
-  "declaration": "struct gpu_job_sync;",
-  "briefDescription": "Aggregate type containing data used by gpu_job for synchronization.",
-  "detailedDescription": "Aggregate type containing data used by gpu_job for synchronization between its work.",
+  "declaration": "struct gpu_program_sync;",
+  "briefDescription": "Aggregate type containing data used by gpu_program_pool for synchronization.",
+  "detailedDescription": "Aggregate type containing data used by gpu_program_pool for synchronization between its programs' work.",
 
   "dataMembers": [
     {
@@ -30,7 +30,7 @@
   "copyable": true,
   "movable": true,
   "related": [
-    "gpu_job",
+    "gpu_program_pool",
     "gpu_fence",
     "gpu_semaphore"
   ]

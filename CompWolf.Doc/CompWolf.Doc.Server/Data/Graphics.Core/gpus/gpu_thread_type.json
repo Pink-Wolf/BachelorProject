@@ -2,7 +2,7 @@
   "type": "enum",
 
   "namespace": "CompWolf",
-  "declaration": "enum class gpu_job_type : std::size_t;",
+  "declaration": "enum class gpu_thread_type : std::size_t;",
   "briefDescription": "A type of work that a thread on a gpu may be able to do.",
   "detailedDescription": "A type of work that a thread on a gpu may be able to do.",
   "values": [
@@ -24,7 +24,7 @@
   ],
 
   "related": [
-    "gpu_job_type_set",
-    "gpu_job"
+    "gpu_thread_type_set",
+    "gpu_program_pool"
   ]
 }
