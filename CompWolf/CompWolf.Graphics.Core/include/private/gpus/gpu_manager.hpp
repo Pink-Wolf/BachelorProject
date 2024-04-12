@@ -26,16 +26,6 @@ namespace CompWolf::Graphics
 		/* Returns the individual connections to each gpu. */
 		inline auto& gpus() const noexcept { return _gpus; }
 
-	public: // modifiers
-		/* Finds a thread on the gpu based on the given settings, and returns a gpu_job with a reference to that thread.
-		 * This method will try to find the best thread possible, prioritising for example threads that no jobs are currently running on.
-		 * @throws std::runtime_error if the machine has no threads at all to perform the given type of work.
-		 */
-		auto new_job(gpu_job_settings) -> gpu_job;
-	private:
-		auto find_job_family(const gpu_job_settings& settings) -> std::pair<gpu_connection*, std::size_t>;
-		auto find_job_thread_in_family(const gpu_job_settings& settings, const gpu_thread_family& family) -> std::size_t;
-
 	public: // constructor
 		/* Constructs a manager with no gpus. */
 		gpu_manager() = default;

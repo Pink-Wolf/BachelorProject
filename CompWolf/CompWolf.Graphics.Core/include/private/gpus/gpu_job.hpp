@@ -6,11 +6,15 @@
 #include "gpu_fence.hpp"
 #include "gpu_semaphore.hpp"
 #include "gpu_connection.hpp"
+#include "gpu_job_settings.hpp"
 #include "utility"
 #include <vector>
+#include <optional>
 
 namespace CompWolf::Graphics
 {
+	class gpu_manager;
+
 	/* A reference to a gpu-thread that is ready to perform some work. */
 	class gpu_job : public basic_freeable
 	{
@@ -52,6 +56,13 @@ namespace CompWolf::Graphics
 		inline auto synchronizations() noexcept -> synchronizations_type& { return _synchronizations; }
 		inline auto synchronizations() const noexcept -> const synchronizations_type& { return _synchronizations; }
 
+	private:
+		static auto find_thread_for_job(const gpu_thread_family&) noexcept -> std::size_t;
+		static auto find_family_for_job(gpu_job_settings&, const gpu_connection&, float& out_score, float& out_custom_score) noexcept
+			-> std::optional<std::size_t>;
+		static auto find_family_for_job(gpu_job_settings&, const gpu_manager&) noexcept
+			-> std::optional<std::pair<size_t, std::size_t>>;
+
 	public: // modifiers
 		inline auto& insert_synchronization(gpu_fence&& fence, gpu_semaphore&& semaphore) noexcept
 		{
@@ -83,6 +94,9 @@ namespace CompWolf::Graphics
 		 * @throws std::out_of_range if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index.
 		 */
 		gpu_job(gpu_connection& device, std::size_t family_index, std::size_t thread_index);
+
+		static auto new_job_for(gpu_connection&, gpu_job_settings) -> gpu_job;
+		static auto new_job_for(gpu_manager&, gpu_job_settings) -> gpu_job;
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

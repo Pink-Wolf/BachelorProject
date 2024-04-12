@@ -193,7 +193,7 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					frame.draw_job = device().new_job(gpu_job_settings
+					frame.draw_job = gpu_job::new_job_for(device(), gpu_job_settings
 						{
 							.type = { gpu_job_type::draw, gpu_job_type::present },
 						}

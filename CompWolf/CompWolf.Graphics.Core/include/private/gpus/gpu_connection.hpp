@@ -10,6 +10,7 @@
 namespace CompWolf::Graphics
 {
 	class gpu_job;
+	struct gpu_job_settings;
 
 	/* A connection to a gpu. */
 	class gpu_connection : public basic_freeable
@@ -39,12 +40,6 @@ namespace CompWolf::Graphics
 
 		/* Returns the types of work at least 1 thread can perform on the gpu. */
 		inline auto work_types() const noexcept { return _work_types; }
-
-	public: // modifiers
-		auto new_job(gpu_job_settings) -> gpu_job;
-	private:
-		auto find_job_family(const gpu_job_settings& settings) -> std::size_t;
-		auto find_job_thread_in_family(const gpu_job_settings& settings, const gpu_thread_family& family) -> std::size_t;
 
 	public: // vulkan-related
 		/* Returns the gpu's vulkan_instance, representing a VkInstance. */
