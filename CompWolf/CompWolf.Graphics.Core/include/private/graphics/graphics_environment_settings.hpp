@@ -1,30 +1,28 @@
 #ifndef COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_SETTINGS_HEADER
 #define COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_SETTINGS_HEADER
 
-#include "vulkan_types"
-#include <string>
 #include <functional>
+#include <string>
 #include <version_number>
-#include <vector>
 
 namespace CompWolf::Graphics
 {
-	/* @see graphics_environment */
+	/* Aggregate type used by graphics_environment's constructor to specify program-wide behaviour. */
 	struct graphics_environment_settings
 	{
-		/* The type of function that internal_debug_callback is.
-		 * As in, when internal_debug_callback is some type std::function<T>, then this is the T.
+		/* What the graphics_environment and related objects should report as the name of the program.
+		 * This does NOT need to match the name specified in other places, like the name of the .exe.
 		 */
-		using internal_debug_callback_function_type = void(std::string);
-		/* If non-empty, sets up extra internal debugging-logic for CompWOlf::Graphics and passes messages to this function.
-		 * The message ends with a newline character.
-		 */
-		std::function<internal_debug_callback_function_type> internal_debug_callback;
-
-		/* The name of the program. */
 		std::string program_name = "Compwolf Program";
-		/* The version of the program. */
+		/* What the graphics_environment and related objects should report as the version of the program.
+		 * This does NOT need to match the version specified in other places.
+		 */
 		version_number program_version = { 0, 0, 0 };
+
+		/* Should almost always be left empty.
+		 * If non-empty, sets up internal debugging-logic used to debug CompWolf.Graphics.Core itself; Debug-messages are then passed to this function. Debug-messages ends with a newline character (and finally \0).
+		 */
+		std::function<void(std::string)> internal_debug_callback;
 	};
 }
 

@@ -65,7 +65,7 @@ namespace CompWolf::Graphics
 		if (!best_family) return std::nullopt;
 		return best_family_index;
 	}
-	auto gpu_program_pool::find_family(gpu_program_pool_settings& settings, const gpu_manager& manager) noexcept
+	auto gpu_program_pool::find_family(gpu_program_pool_settings& settings, const std::vector<gpu_connection>& gpus) noexcept
 		-> std::optional<std::pair<size_t, std::size_t>>
 	{
 		gpu_connection* best_gpu = nullptr;
@@ -74,7 +74,7 @@ namespace CompWolf::Graphics
 		float best_score = std::numeric_limits<float>::lowest();
 		float best_custom_score;
 
-		for (auto& gpu : manager.gpus())
+		for (auto& gpu : gpus)
 		{
 			auto additional_work_types_for_gpu = gpu.work_types() ^ settings.type;
 			if ((additional_work_types_for_gpu & settings.type).any()) continue;
@@ -156,13 +156,13 @@ namespace CompWolf::Graphics
 		auto thread_index = find_thread(gpu.families()[family_index]);
 		return gpu_program_pool(gpu, family_index, thread_index);
 	}
-	auto gpu_program_pool::new_pool_for(gpu_manager& manager, gpu_program_pool_settings settings) -> gpu_program_pool
+	auto gpu_program_pool::new_pool_for(std::vector<gpu_connection>& gpus, gpu_program_pool_settings settings) -> gpu_program_pool
 	{
-		auto i = gpu_program_pool::find_family(settings, manager);
+		auto i = gpu_program_pool::find_family(settings, gpus);
 		if (!i) throw std::runtime_error("The machine's GPUs could not perform a job because of the type of work it requires.");
 
 		auto [gpu_index, family_index] = i.value();
-		auto& gpu = manager.gpus()[gpu_index];
+		auto& gpu = gpus[gpu_index];
 		auto thread_index = find_thread(gpu.families()[family_index]);
 		return gpu_program_pool(gpu, family_index, thread_index);
 	}

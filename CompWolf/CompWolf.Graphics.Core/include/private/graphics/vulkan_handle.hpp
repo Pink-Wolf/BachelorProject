@@ -14,17 +14,12 @@ namespace CompWolf::Graphics
 	private: // fields
 		owned_ptr<Private::vulkan_instance> _vulkan_instance;
 
-	public: // getters
-		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
-		 * Returns the vulkan instance, which handles vulkan-specific logic.
-		 */
-		inline Private::vulkan_instance vulkan_instance() const noexcept
-		{
-			return _vulkan_instance;
-		}
+	public: // accessors
+		/* Returns the handle's vulkan_instance, representing a VkInstance. */
+		inline auto vulkan_instance() const noexcept { return _vulkan_instance; }
 
 	public: // constructors
-		/* Constructs a vulkan_handle without setting up any logic. */
+		/* Constructs an empty vulkan_handle, as in one that does not set up any logic. */
 		vulkan_handle() = default;
 		vulkan_handle(vulkan_handle&&) = default;
 		auto operator=(vulkan_handle&&) -> vulkan_handle& = default;
@@ -33,10 +28,10 @@ namespace CompWolf::Graphics
 			free();
 		}
 
-		/* Should only be constructed by graphics_environment.
-		 * @param settings How the vulkan_handle should behave. The object must stay alive throughout vulkan_handle's lifetime.
+		/* vulkan_handle should be constructed by graphics_environment.
+		 * If not run on the main graphics thread, then this will have undefined behaviour.
 		 * @throws std::logic_error when an instance of vulkan_handle already exists.
-		 * @throws std::runtime_error when something went wrong during setup outside of the program.
+		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
 		 */
 		vulkan_handle(const graphics_environment_settings& settings);
 

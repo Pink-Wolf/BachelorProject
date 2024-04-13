@@ -25,7 +25,7 @@
         "description": "Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a pool on it using (2)."
       },
       {
-        "declaration": "static auto new_pool_for(gpu_connection&, gpu_program_pool_settings) -> gpu_program_pool;",
+        "declaration": "static auto new_pool_for(std::vector<gpu_connection>&, gpu_program_pool_settings) -> gpu_program_pool;",
         "description": "Finds the best thread on the given gpus to run some programs, based on the given settings, and creates a pool on it using (2)."
       },
       {

@@ -43,8 +43,4 @@ namespace CompWolf::Graphics
 	{
 		_constructed = false;
 	}
-
-	template graphics_environment::graphics_environment(graphics_environment_settings);
-	template graphics_environment::graphics_environment(const graphics_environment_settings&);
-	template graphics_environment::graphics_environment(graphics_environment_settings&&);
 }

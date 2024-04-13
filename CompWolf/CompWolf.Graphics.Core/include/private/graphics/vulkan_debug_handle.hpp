@@ -15,17 +15,12 @@ namespace CompWolf::Graphics
 		owned_ptr<Private::vulkan_debug_messenger> _messenger;
 		std::function<void(Private::vulkan_debug_messenger)> _teardowner;
 
-	public: // getters
-		/* Returns the vulkan debug handler.
-		 * Warning: This exposes Vulkan-logic, which is an abstraction layer lower than CompWolf::Graphics.
-		 */
-		inline auto vulkan_debug_messenger() const noexcept -> Private::vulkan_debug_messenger
-		{
-			return _messenger;
-		}
+	public: // accessors
+		/* Returns the handle's vulkan_debug_messenger, representing a VkDebugUtilsMessengerEXT. */
+		inline auto vulkan_debug_messenger() const noexcept { return _messenger; }
 
 	public: // constructors
-		/* Constructs an uninitialized vulkan_debug_handle. */
+		/* Constructs an empty vulkan_handle, as in one that does not set up any debugging logic. */
 		vulkan_debug_handle() = default;
 		vulkan_debug_handle(vulkan_debug_handle&&) = default;
 		auto operator=(vulkan_debug_handle&&) -> vulkan_debug_handle& = default;
@@ -34,11 +29,10 @@ namespace CompWolf::Graphics
 			free();
 		}
 
-		/* Should only be constructed by graphics_environment.
-		 * @param settings How the vulkan_debug_handle should behave. The object must stay alive throughout vulkan_debug_handle's lifetime.
-		 * @param instance The instance of vulkan to debug.
+		/* vulkan_debug_handle should be constructed by graphics_environment.
+		 * If not run on the main graphics thread, then this will have undefined behaviour.
 		 * @throws std::logic_error when an instance of vulkan_debug_handle already exists.
-		 * @throws std::runtime_error when something went wrong during setup outside of the program.
+		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
 		 */
 		vulkan_debug_handle(const graphics_environment_settings& settings, Private::vulkan_instance instance);
 

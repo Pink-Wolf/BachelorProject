@@ -6,7 +6,7 @@
   "briefDescription": "Sets up program-wide logic used for connecting to gpus.",
   "detailedDescription": "Sets up and manages program-wide logic used for connecting to the gpus.\nThe environment's update-method should normally be called continually.\nThe thread that constructed the graphics_environment is considered the \"main graphics thread\".",
   "warnings": [
-    "It is undefined behaviour to construct a [[graphics_environment]] on a thread other than the one that started the program."
+    "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
   ],
 
   "dataMembers": [
@@ -23,7 +23,7 @@
       "name": "updated",
       "declaration": "event<graphics_environment_update_parameter> updated;",
       "briefDescription": "Event invoked after all other logic in the environment's update-method.",
-      "detailedDescription": "Event invoked before any other logic in the environment's update-method.",
+      "detailedDescription": "Event invoked after all other logic in the environment's update-method.",
       "related": [
         "event"
       ]
@@ -34,7 +34,7 @@
   "movable": false,
   "constructor": {
     "warnings": [
-      "It is undefined behaviour to construct a [[graphics_environment]] on a thread other than the one that started the program."
+      "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
     ],
 
     "overloads": [
@@ -62,19 +62,19 @@
       "items": [
         {
           "name": "gpus",
-          "briefDescription": "Returns the environment's gpu_manager.",
+          "briefDescription": "Returns the individual connections to each gpu.",
           "overloads": [
             {
-              "declaration": "auto gpus() noexcept -> gpu_manager&;",
-              "description": "Returns the environment's gpu_manager."
+              "declaration": "auto gpus() noexcept -> std:vector<gpu_connection>&;",
+              "description": "Returns the individual connections to each gpu."
             },
             {
-              "declaration": "auto gpus() const noexcept -> const gpu_manager&;",
+              "declaration": "auto gpus() const noexcept -> const std:vector<gpu_connection>&;",
               "description": "Like (1), but const."
             }
           ],
           "related": [
-            "gpu_manager"
+            "gpu_connection"
           ]
         },
         {
@@ -136,7 +136,6 @@
   ],
 
   "related": [
-    "graphics_environment_settings",
     "gpu_manager"
   ],
 

@@ -71,7 +71,7 @@ namespace CompWolf::Graphics
 		static auto find_thread(const gpu_thread_family&) noexcept -> std::size_t;
 		static auto find_family(gpu_program_pool_settings&, const gpu_connection&, float& out_score, float& out_custom_score) noexcept
 			-> std::optional<std::size_t>;
-		static auto find_family(gpu_program_pool_settings&, const gpu_manager&) noexcept
+		static auto find_family(gpu_program_pool_settings&, const std::vector<gpu_connection>&) noexcept
 			-> std::optional<std::pair<size_t, std::size_t>>;
 
 	public: // modifiers
@@ -131,10 +131,10 @@ namespace CompWolf::Graphics
 		 * @throws std::runtime_error if the given gpus have no threads at all to perform the given type of programs.
 		 */
 		static auto new_pool_for(gpu_connection&, gpu_program_pool_settings) -> gpu_program_pool;
-		/* Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a pool on it using gpu_program_pool(gpu_connection&, std::size_t, std::size_t).
+		/* Finds the best thread on the given gpus to run some programs, based on the given settings, and creates a pool on it using gpu_program_pool(gpu_connection&, std::size_t, std::size_t).
 		 * @throws std::runtime_error if the given gpus have no threads at all to perform the given type of programs.
 		 */
-		static auto new_pool_for(gpu_manager&, gpu_program_pool_settings) -> gpu_program_pool;
+		static auto new_pool_for(std::vector<gpu_connection>&, gpu_program_pool_settings) -> gpu_program_pool;
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

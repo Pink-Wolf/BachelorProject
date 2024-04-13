@@ -20,9 +20,9 @@ namespace CompWolf::Graphics
 
 	};
 
-	/* Manages program-wide logic used to handle graphics and windows.
-	 * Only a single instance of graphics_environment may exist at once in a program.
-	 * This class is thread safe, except its constructor and destructor which must run on the main graphics thread.
+	/* Sets up and manages program-wide logic used for connecting to the gpus.
+	 * The environment's update-method should normally be called continually.
+	 * The thread that constructed the graphics_environment is considered the "main graphics thread".
 	 */
 	class graphics_environment
 	{
@@ -36,7 +36,6 @@ namespace CompWolf::Graphics
 		 */
 		std::thread::id _main_graphics_thread;
 
-		/* --------------------------------------- The order of the below items is important, so they are destructed in the right order! --------------------------------------- */
 		// The order of the following data members is important for their destructors to be called in the right order.
 		/* Contains program-wide logic for GLFW. */
 		glfw_handle _glfw_handle;
@@ -47,7 +46,11 @@ namespace CompWolf::Graphics
 		/* Connections to the various gpus on the machine. */
 		gpu_manager _gpus;
 
-	public: // getters
+	public: // accessors
+		/* Returns the individual connections to each gpu. */
+		inline auto& gpus() noexcept { return _gpus.gpus(); }
+		/* Returns the individual connections to each gpu. */
+		inline auto& gpus() const noexcept { return _gpus.gpus(); }
 
 		/* Returns whether the thread with the given id is the main graphics thread. */
 		inline auto is_main_thread(std::thread::id id) noexcept -> bool
@@ -58,17 +61,6 @@ namespace CompWolf::Graphics
 		inline auto is_this_main_thread() noexcept -> bool
 		{
 			return is_main_thread(std::this_thread::get_id());
-		}
-
-		/* Returns the manager for the connections to the machine's gpus. */
-		inline auto gpus() noexcept -> gpu_manager&
-		{
-			return _gpus;
-		}
-		/* Returns the manager for the connections to the machine's gpus. */
-		inline auto gpus() const noexcept -> const gpu_manager&
-		{
-			return _gpus;
 		}
 
 		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
@@ -84,13 +76,9 @@ namespace CompWolf::Graphics
 		 * @throws std::logic_error if not run by the main graphics thread.
 		 */
 		void update();
-		/* Invoked right before the environment handles events received from outside the program.
-		 * @see update()
-		 */
+		/* Event invoked before any other logic in the environment's update-method. */
 		event<graphics_environment_update_parameter> updating;
-		/* Invoked right after the environment handles events received from outside the program.
-		 * @see update()
-		 */
+		/* Event invoked after all other logic in the environment's update-method. */
 		event<graphics_environment_update_parameter> updated;
 
 	private: // constructor
@@ -101,21 +89,15 @@ namespace CompWolf::Graphics
 		graphics_environment(graphics_environment&&) = delete;
 		auto operator=(graphics_environment&&) -> graphics_environment& = delete;
 
-		/* If not yet set up, sets up program-wide logic.
-		 * If not run on the thread running the main function, then this will have undefined behaviour.
-		 * @param settings A graphics_environment_settings specifying how the environment should behave.
-		 * @typeparam SettingsInputType The type of graphics_environment_settings to pass onto the environment.
-		 * @throws std::logic_error when an instance of graphics_environment already exists.
-		 * @throws std::runtime_error when something went wrong during setup outside of the program.
+		/* Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus, based on the given settings.
+		 * @throws std::logic_error if an environment already exists.
+		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
 		 */
-		template <typename SettingsInputType>
-			requires std::constructible_from<graphics_environment_settings, SettingsInputType>
-		graphics_environment(SettingsInputType settings) : _settings(settings)
+		graphics_environment(graphics_environment_settings settings) : _settings(std::move(settings))
 			{ setup(); }
-		/* If not yet set up, sets up program-wide logic.
-		 * Must be called from the thread the main function was called by.
-		 * @throws std::logic_error when an instance of graphics_environment already exists.
-		 * @throws std::runtime_error when something went wrong during setup outside of the program.
+		/* Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus.
+		 * @throws std::logic_error if an environment already exists.
+		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
 		 */
 		graphics_environment() : graphics_environment(graphics_environment_settings()) {}
 		/* Must be called from the main graphics thread, or else is undefined behaviour.
@@ -124,10 +106,6 @@ namespace CompWolf::Graphics
 		~graphics_environment();
 
 	};
-
-	extern template graphics_environment::graphics_environment(graphics_environment_settings);
-	extern template graphics_environment::graphics_environment(const graphics_environment_settings&);
-	extern template graphics_environment::graphics_environment(graphics_environment_settings&&);
 }
 
 #endif // ! COMPWOLF_GRAPHICS_GRAPHICS_ENVIRONMENT_HEADER

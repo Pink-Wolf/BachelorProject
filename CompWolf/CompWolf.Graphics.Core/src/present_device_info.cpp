@@ -18,7 +18,7 @@ namespace CompWolf::Graphics::Private
 
 		gpu_connection* best_gpu = nullptr;
 		float best_gpu_score = -1;
-		for (auto& gpu : settings.environment->gpus().gpus())
+		for (auto& gpu : settings.environment->gpus())
 		{
 			auto info_container = get_present_device_info(gpu, vkSurface);
 			if (!info_container.has_value()) continue;

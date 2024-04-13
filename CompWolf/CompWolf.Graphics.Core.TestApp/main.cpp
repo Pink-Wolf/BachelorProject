@@ -57,9 +57,9 @@ int main()
     try
     {
         graphics_environment environment(graphics_environment_settings{
-            .internal_debug_callback = [](std::string m) { std::cerr << m; },
             .program_name = "Test CompWolf Program",
             .program_version = {1, 2, 3},
+            .internal_debug_callback = [](std::string m) { std::cerr << m; },
             });
         window win(environment, window_settings{
             .name = "Test Window",
