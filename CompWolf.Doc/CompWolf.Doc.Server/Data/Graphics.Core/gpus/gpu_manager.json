@@ -4,16 +4,13 @@
   "declaration": "class gpu_manager;",
   "namespace": "CompWolf",
   "briefDescription": "Contains a connection to each gpu on the machine.",
-  "detailedDescription": "Contains a connection to each gpu on the machine.",
+  "detailedDescription": "Contains a connection to each gpu on the machine.\nThis should be constructed by the [[graphics_environment]].",
 
   "baseClasses": [ "basic_freeable" ],
 
   "copyable": false,
   "movable": true,
   "constructor": {
-    "warnings": [
-      "A gpu_manager should not be constructed directly; it should be constructed by the graphics_environment."
-    ],
     "overloads": [
       {
         "declaration": "gpu_manager() noexcept;",

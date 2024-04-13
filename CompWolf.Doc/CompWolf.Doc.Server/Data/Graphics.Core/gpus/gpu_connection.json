@@ -4,16 +4,13 @@
   "declaration": "class gpu_connection;",
   "namespace": "CompWolf",
   "briefDescription": "A connection to a gpu.",
-  "detailedDescription": "A connection to a gpu.",
+  "detailedDescription": "A connection to a gpu.\nThis should be constructed by the [[gpu_manager]].",
 
   "baseClasses": [ "basic_freeable" ],
 
   "copyable": false,
   "movable": true,
   "constructor": {
-    "warnings": [
-      "A gpu_connection should not be constructed directly; it should be constructed by the [[gpu_manager]]."
-    ],
     "overloads": [
       {
         "declaration": "gpu_connection() noexcept;",
