@@ -139,8 +139,5 @@
     "gpu_manager"
   ],
 
-  "example": {
-    "description": "The following code creates an environment, uses it to create a window, and then keeps them alive until the window is closed.",
-    "code": "#include <graphics>\n#include <windows>\nusing namespace CompWolf;\n\nint main()\n{\n\tgraphics_environment environment(graphics_environment_settings{\n\t\t.program_name = \"Test Program\",\n\t});\n\n\twindow win(environment, window_settings{\n\t\t.name = \"Test Window\",\n\t});\n\n\twhile (win.is_open())\n\t{\n\t\tenvironment.update();\n\t}\n}"
-  }
+  "example": "simple_window"
 }

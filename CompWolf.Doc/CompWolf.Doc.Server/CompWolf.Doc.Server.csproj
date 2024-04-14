@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Core\dimensions\" />
-    <Folder Include="Data\Core\events\" />
+    <Folder Include="Data\api\Core\dimensions\" />
+    <Folder Include="Data\api\Core\events\" />
   </ItemGroup>
 
 </Project>

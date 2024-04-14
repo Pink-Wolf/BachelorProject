@@ -1,4 +1,4 @@
-const DATABASE_URL = "http://localhost:5042/api/"
+const DATABASE_URL = "http://localhost:5042/"
 
 async function getJson(path) {
     const response = await fetch(path, {
@@ -11,9 +11,25 @@ async function getJson(path) {
     if (!response.ok) return null
     return await response.json()
 }
+async function getText(path) {
+    const response = await fetch(path, {
+        method: 'GET',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+    })
+    if (!response.ok) return null
+    return await response.text()
+}
+
+export async function getExample(name) {
+    const example = await getJson(`${DATABASE_URL}examples/${name}`)
+    return example
+}
 
 export async function getProject(project) {
-    const entity = await getJson(`${DATABASE_URL}${project}`)
+    const entity = await getJson(`${DATABASE_URL}api/${project}`)
     if (entity == null) return null
     return {
         ...entity,
@@ -21,7 +37,7 @@ export async function getProject(project) {
     }
 }
 export async function getHeader(project, header) {
-    const entity = await getJson(`${DATABASE_URL}${project}/${header}`)
+    const entity = await getJson(`${DATABASE_URL}api/${project}/${header}`)
     if (entity == null) return null
     return {
         ...entity,
@@ -30,13 +46,14 @@ export async function getHeader(project, header) {
     }
 }
 export async function getEntity(project, header, name) {
-    const entity = await getJson(`${DATABASE_URL}${project}/${header}/${name}`)
+    const entity = await getJson(`${DATABASE_URL}api/${project}/${header}/${name}`)
     if (entity == null) return null
     const returnVal = {
         ...entity,
         project: project,
         header: header,
         name: name,
+        example: (entity.example === undefined) ? undefined : await getExample(entity.example)
     }
     switch (entity.type) {
         case `class`:
@@ -67,7 +84,7 @@ export async function getEntity(project, header, name) {
 }
 
 export async function getOverview() {
-    return await getJson(`${DATABASE_URL}overview`)
+    return await getJson(`${DATABASE_URL}api/overview`)
 }
 export async function getPathTo(name) {
     const overview = await getOverview()
