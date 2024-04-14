@@ -1,0 +1,182 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "class window;",
+  "briefDescription": "A window, as in a rectangle that can display a dynamic image.",
+  "detailedDescription": "A window, as in a rectangle that can display a dynamic image, and that listens for various inputs from outside the program (like a key being pressed)",
+
+  "dataMembers": [
+    {
+      "name": "rebuilding_surface",
+      "declaration": "event<window_rebuild_surface_parameter> rebuilding_surface;",
+      "briefDescription": "Event invoked before the window's surface is rebuild.",
+      "detailedDescription": "Event invoked before the window's surface is rebuild, for example because the size of the window changed.",
+      "related": [
+        "event"
+      ]
+    },
+    {
+      "name": "rebuild_surface",
+      "declaration": "event<window_rebuild_surface_parameter> rebuild_surface;",
+      "briefDescription": "Event invoked after the window's surface is rebuild.",
+      "detailedDescription": "Event invoked after the window's surface is rebuild, for example because the size of the window changed.",
+      "related": [
+        "event"
+      ]
+    }
+  ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "window();",
+        "description": "Constructs a freed window, as in one that is already closed."
+      },
+      {
+        "declaration": "window(graphics_environment&, window_settings);",
+        "description": "Constructs a window with the given settings."
+      },
+      {
+        "declaration": "window(gpu_connection&, window_settings);",
+        "description": "Constructs a window on the given gpu, with the given settings."
+      },
+      {
+        "declaration": "window(window&&);",
+        "description": "The window is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during setup due to causes outside of the program."
+    ],
+
+    "related": [
+      "window_settings"
+    ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "environment",
+          "briefDescription": "Returns the environment.",
+          "overloads": [
+            {
+              "declaration": "auto environment() noexcept -> graphics_environment&",
+              "description": "Returns the environment."
+            },
+            {
+              "declaration": "auto environment() const noexcept -> const graphics_environment&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "graphics_environment"
+          ]
+        },
+        {
+          "name": "gpu",
+          "briefDescription": "Returns the gpu that the window is on.",
+          "overloads": [
+            {
+              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "description": "Returns the gpu that the window is on."
+            },
+            {
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_connection"
+          ]
+        },
+        {
+          "name": "pixel_size",
+          "briefDescription": "Returns the size of the window, in pixels.",
+          "overloads": [
+            {
+              "declaration": "auto pixel_size() const noexcept -> const_value_event_wrapper<std::pair<int, int>>&",
+              "description": "Returns the size of the window, in pixels.\nIf the window has a border that cannot be drawn on, does not include it."
+            }
+          ],
+          "related": [
+            "const_value_event_wrapper"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "name": "set_pixel_size",
+          "briefDescription": "Sets the size of the window, in pixels.",
+          "overloads": [
+            {
+              "declaration": "void set_pixel_size(int width, int height);",
+              "description": "Sets the size of the window, in pixels.\nIf the window has a border that cannot be drawn on, does not include it."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error during setup due to causes outside of the program.",
+            "Throws std::domain_error if given a non-positive width and/or height."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "name": "surface",
+          "briefDescription": "Returns the surface of the window.",
+          "overloads": [
+            {
+              "declaration": "auto surface() noexcept -> window_surface&",
+              "description": "Returns the surface of the window, as in the actual area that can display images."
+            },
+            {
+              "declaration": "auto surface() const noexcept -> const window_surface&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "window_surface"
+          ]
+        },
+        {
+          "name": "swapchain",
+          "briefDescription": "Returns the swapchain of the window.",
+          "overloads": [
+            {
+              "declaration": "auto swapchain() noexcept -> window_swapchain&",
+              "description": "Returns the swapchain of the window, as in the actual images that are being drawn before being displaying on the window."
+            },
+            {
+              "declaration": "auto swapchain() const noexcept -> const window_swapchain&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "window_swapchain"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "related": [
+    "window_surface",
+    "window_swapchain"
+  ],
+
+  "example": {
+    "description": "The following code creates an environment, uses it to create a window, and then keeps them alive until the window is closed.",
+    "code": "#include <graphics>\n#include <windows>\nusing namespace CompWolf;\n\nint main()\n{\n\tgraphics_environment environment(graphics_environment_settings{\n\t\t.program_name = \"Test Program\",\n\t});\n\n\twindow win(environment, window_settings{\n\t\t.name = \"Test Window\",\n\t});\n\n\twhile (win.is_open())\n\t{\n\t\tenvironment.update();\n\t}\n}"
+  }
+}
