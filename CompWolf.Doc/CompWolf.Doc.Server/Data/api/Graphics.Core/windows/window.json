@@ -49,7 +49,8 @@
       }
     ],
     "exceptions": [
-      "Throws std::runtime_error if there was an error during setup due to causes outside of the program."
+      "Throws std::runtime_error if there was an error during setup due to causes outside of the program.",
+      "Throws std::invalid_argument from (2) and (3) if the given settings have invalid settings."
     ],
 
     "related": [
@@ -100,7 +101,7 @@
           "overloads": [
             {
               "declaration": "auto pixel_size() const noexcept -> const_value_event_wrapper<std::pair<int, int>>&",
-              "description": "Returns the size of the window, in pixels.\nIf the window has a border that cannot be drawn on, does not include it."
+              "description": "Returns the width and height of the window, in pixels.\nThis size does not include any border around the window."
             }
           ],
           "related": [
@@ -118,11 +119,11 @@
           "overloads": [
             {
               "declaration": "void set_pixel_size(int width, int height);",
-              "description": "Sets the size of the window, in pixels.\nIf the window has a border that cannot be drawn on, does not include it."
+              "description": "Sets the size of the window, in pixels.\nThis size does not include any border around the window."
             }
           ],
           "exceptions": [
-            "Throws std::runtime_error if there was an error during setup due to causes outside of the program.",
+            "Throws std::runtime_error if there was an error while changing the size due to causes outside of the program.",
             "Throws std::domain_error if given a non-positive width and/or height."
           ]
         }
