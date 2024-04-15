@@ -1,0 +1,31 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct window_rebuild_surface_parameters;",
+  "briefDescription": "Parameter for [[window]]'s rebuild_surface-events.",
+  "detailedDescription": "Aggregate type used by [[window]]'s rebuild_surface-events.",
+
+  "dataMembers": [
+    {
+      "name": "surface",
+      "declaration": "window_surface* surface;",
+      "briefDescription": "For the event rebuilding_surface, the old surface;\nFor the event rebuild_surface, the new surface.",
+      "detailedDescription": "For the event rebuilding_surface, the old surface;\nFor the event rebuild_surface, the new surface."
+    },
+    {
+      "name": "swapchain",
+      "declaration": "window_swapchain* swapchain;",
+      "briefDescription": "For the event rebuilding_swapchain, the old swapchain;\nFor the event rebuild_swapchain, the new swapchain.",
+      "detailedDescription": "For the event rebuilding_swapchain, the old swapchain;\nFor the event rebuild_swapchain, the new swapchain."
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "related": [
+    "window",
+    "window_surface",
+    "window_swapchain"
+  ]
+}
