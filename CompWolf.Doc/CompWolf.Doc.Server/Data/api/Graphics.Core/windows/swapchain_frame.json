@@ -1,0 +1,35 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct swapchain_frame;",
+  "briefDescription": "An actual image that is being drawn before being displayed on a window.",
+  "detailedDescription": "Aggregate type containing data about an actual image that is being drawn before being displayed on a window.",
+
+  "dataMembers": [
+    {
+      "name": "draw_job",
+      "declaration": "gpu_program_pool draw_job;",
+      "briefDescription": "The pool used to draw onto the image.",
+      "detailedDescription": "Programs drawing to the image should normally be using this pool to keep them synchronized between each other."
+    },
+    {
+      "name": "image",
+      "declaration": "Private::vulkan_image_view image;",
+      "briefDescription": "A vulkan_image_view, representing a VkImageView pointing towards the actual image.",
+      "detailedDescription": "A vulkan_image_view, representing a VkImageView pointing towards the actual image."
+    },
+    {
+      "name": "frame_buffer",
+      "declaration": "Private::vulkan_frame_buffer frame_buffer;",
+      "briefDescription": "The image's vulkan_frame_buffer, representing a VkFramebuffer.",
+      "detailedDescription": "The image's vulkan_frame_buffer, representing a VkFramebuffer."
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "related": [
+    "window_swapchain"
+  ]
+}
