@@ -1,0 +1,96 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "class window_user;",
+  "briefDescription": "Abstract type containing a reference to a window.",
+  "detailedDescription": "Abstract type containing a reference to a window.\nIf the window is freed, then this is freed first.\nAlso contains virtual methods for events related to the window, like when its surface is rebuild.",
+
+  "baseClasses": [ "public basic_freeable" ],
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "window_user() noexcept;",
+        "description": "Constructs a window_user that does not point to any window."
+      },
+      {
+        "declaration": "window_user(window&);",
+        "description": "Constructs a window_user with a reference to the given window."
+      },
+      {
+        "declaration": "window_user(const window_user&) noexcept;",
+        "description": "window_user is copyable."
+      },
+      {
+        "declaration": "window_user(window_user&&) noexcept;",
+        "description": "window_user is movable."
+      }
+    ],
+    "related": [
+      "window"
+    ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "target_window",
+          "briefDescription": "The window that the object targets.",
+          "overloads": [
+            {
+              "declaration": "auto target_window() noexcept -> window&",
+              "description": "The window that the object targets."
+            },
+            {
+              "declaration": "auto target_window() const noexcept -> const window&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "window"
+          ]
+        },
+        {
+          "name": "has_window",
+          "briefDescription": "Protected member access. Whether the object is currently pointing at a window.",
+          "overloads": [
+            {
+              "declaration": "protected: auto has_window() const noexcept -> bool",
+              "description": "Whether the object is currently pointing at a window."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Virtual",
+      "items": [
+        {
+          "name": "on_swapchain_rebuild",
+          "briefDescription": "Invoked after the target window's surface is rebuild.",
+          "overloads": [
+            {
+              "declaration": "virtual void on_swapchain_rebuild(const event<window_rebuild_surface_parameters>, window_rebuild_surface_parameters);",
+              "description": "Invoked after the target window's surface is rebuild."
+            },
+            {
+              "declaration": "auto target_window() const noexcept -> const window&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "window_rebuild_surface_parameters"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "related": [
+    "window"
+  ]
+}
