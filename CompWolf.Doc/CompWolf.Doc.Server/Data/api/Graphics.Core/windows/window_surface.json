@@ -1,0 +1,89 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "class window_surface;",
+  "briefDescription": "The surface of a window.",
+  "detailedDescription": "The surface of a window, as in the actual area that can display a dynamic image.",
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "window_surface() noexcept;",
+        "description": "Constructs a freed surface."
+      },
+      {
+        "declaration": "window_surface(window_surface&&) noexcept;",
+        "description": "window_surface is movable."
+      }
+    ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "gpu",
+          "briefDescription": "Returns the gpu that the window is on.",
+          "overloads": [
+            {
+              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "description": "Returns the gpu that the window is on."
+            },
+            {
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "name": "vulkan_surface",
+          "briefDescription": "Returns the surface's vulkan_surface, representing a VkSurfaceKHR.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_surface() const noexcept -> Private::vulkan_surface",
+              "description": "Returns the surface's vulkan_surface, representing a VkSurfaceKHR."
+            }
+          ]
+        },
+        {
+          "name": "vulkan_format",
+          "briefDescription": "Returns the surface's surface_format_handle, representing a surface_format_info*.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_format() const noexcept -> Private::surface_format_handle",
+              "description": "Returns the surface's surface_format_handle, representing a surface_format_info*"
+            }
+          ]
+        },
+        {
+          "name": "vulkan_render_pass",
+          "briefDescription": "Returns the surface's vulkan_render_pass, representing a VkRenderPass.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass",
+              "description": "Returns the surface's vulkan_render_pass, representing a VkRenderPass"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "related": [
+    "window"
+  ]
+}

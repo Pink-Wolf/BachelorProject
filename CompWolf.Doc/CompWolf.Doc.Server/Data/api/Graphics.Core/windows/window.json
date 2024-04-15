@@ -6,6 +6,8 @@
   "briefDescription": "A window, as in a rectangle that can display a dynamic image.",
   "detailedDescription": "A window, as in a rectangle that can display a dynamic image, and that listens for various inputs from outside the program (like a key being pressed)",
 
+  "baseClasses": [ "basic_freeable" ],
+
   "dataMembers": [
     {
       "name": "rebuilding_surface",
@@ -32,7 +34,7 @@
   "constructor": {
     "overloads": [
       {
-        "declaration": "window();",
+        "declaration": "window() noexcept;",
         "description": "Constructs a freed window, as in one that is already closed."
       },
       {
@@ -44,8 +46,8 @@
         "description": "Constructs a window on the given gpu, with the given settings."
       },
       {
-        "declaration": "window(window&&);",
-        "description": "The window is movable."
+        "declaration": "window(window&&) noexcept;",
+        "description": "window is movable."
       }
     ],
     "exceptions": [
@@ -139,7 +141,7 @@
           "overloads": [
             {
               "declaration": "auto surface() noexcept -> window_surface&",
-              "description": "Returns the surface of the window, as in the actual area that can display images."
+              "description": "Returns the surface of the window, as in the actual area that can display a dynamic image."
             },
             {
               "declaration": "auto surface() const noexcept -> const window_surface&;",

@@ -1,0 +1,118 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "class window_swapchain;",
+  "briefDescription": "The swapchain of a window.",
+  "detailedDescription": "The swapchain of a window, as in the actual images that are being drawn before being displaying on the window.",
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "window_swapchain() noexcept;",
+        "description": "Constructs a freed swapchain."
+      },
+      {
+        "declaration": "window_swapchain(window_swapchain&&) noexcept;",
+        "description": "window_swapchain is movable."
+      }
+    ]
+  },
+  "methodGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "name": "gpu",
+          "briefDescription": "Returns the gpu that the window is on.",
+          "overloads": [
+            {
+              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "description": "Returns the gpu that the window is on."
+            },
+            {
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_connection"
+          ]
+        },
+        {
+          "name": "frames",
+          "briefDescription": "Returns the individual images of the swapchain.",
+          "overloads": [
+            {
+              "declaration": "auto frames() noexcept -> std::vector<swapchain_frame>&",
+              "description": "Returns information about the individual images of the swapchain."
+            },
+            {
+              "declaration": "auto frames() const noexcept -> const std::vector<swapchain_frame>&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "swapchain_frame"
+          ]
+        },
+        {
+          "name": "current_frame",
+          "briefDescription": "Returns the image on the swapchain that is currently being drawn.",
+          "overloads": [
+            {
+              "declaration": "auto current_frame() noexcept -> swapchain_frame&",
+              "description": "Returns information about the image on the swapchain that is currently being drawn."
+            },
+            {
+              "declaration": "auto current_frame() const noexcept -> const swapchain_frame&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "swapchain_frame"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "name": "to_next_frame",
+          "briefDescription": "Makes the window display the current frame, and makes a new frame the current one.",
+          "overloads": [
+            {
+              "declaration": "void to_next_frame()",
+              "description": "Makes the window display the current frame, and makes a new frame the current one."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "name": "vulkan_swapchain",
+          "briefDescription": "Returns the swapchain's vulkan_swapchain, representing a VkSwapchainKHR.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_swapchain() const noexcept -> Private::vulkan_swapchain",
+              "description": "Returns the swapchain's vulkan_swapchain, representing a VkSwapchainKHR."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "related": [
+    "window"
+  ]
+}
