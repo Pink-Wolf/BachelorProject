@@ -66,8 +66,8 @@ int main()
             }
         );
 
-        auto vert_shader = vertex_shader<vertex, type_list<transform>>(environment, load_shader("vertex.spv"));
-        auto frag_shader = shader<type_list<shader_image>>(environment, load_shader("frag.spv"));
+        auto vert_shader = vertex_shader<vertex, type_list<type_value_pair<transform, 9>>>(environment, load_shader("vertex.spv"));
+        auto frag_shader = shader<type_list<type_value_pair<shader_image, 4>>>(environment, load_shader("frag.spv"));
         auto pipeline = new_draw_pipeline(vert_shader, frag_shader);
 
         gpu_vertex_buffer<vertex> vertices(win.device(), {

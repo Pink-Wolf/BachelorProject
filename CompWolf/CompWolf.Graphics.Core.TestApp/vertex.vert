@@ -3,7 +3,7 @@
 layout(location = 0) in vec2 inPosition;
 layout(location = 1) in vec2 inUV;
 
-layout(binding = 0) uniform Transform {
+layout(binding = 9) uniform Transform {
     vec2 position;
 } transform;
 

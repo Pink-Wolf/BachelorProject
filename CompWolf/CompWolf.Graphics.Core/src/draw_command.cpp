@@ -45,11 +45,12 @@ namespace CompWolf::Graphics
 		for (size_t i = 0; i < _data->uniform_vertex_data.size(); ++i)
 		{
 			auto& memory = *_data->uniform_vertex_data[i];
+			auto index = (*_data->uniform_vertex_indices)[i];
 
 			Private::gpu_memory_bind_data bind_data{
 				.commandBuffer = command,
 				.descriptorSet = Private::to_vulkan(window_pipeline().vulkan_descriptor_sets()[args.frame_index]),
-				.bindingIndex = static_cast<uint32_t>(i),
+				.bindingIndex = static_cast<uint32_t>(index),
 			};
 
 			memory.bind_to_shader(Private::from_private(&bind_data));
@@ -73,11 +74,12 @@ namespace CompWolf::Graphics
 		for (size_t i = 0; i < _data->uniform_fragment_data.size(); ++i)
 		{
 			auto& memory = *_data->uniform_fragment_data[i];
+			auto index = (*_data->uniform_fragment_indices)[i];
 
 			Private::gpu_memory_bind_data bind_data{
 				.commandBuffer = command,
 				.descriptorSet = Private::to_vulkan(window_pipeline().vulkan_descriptor_sets()[args.frame_index]),
-				.bindingIndex = static_cast<uint32_t>(i + _data->uniform_vertex_data.size()),
+				.bindingIndex = static_cast<uint32_t>(index),
 			};
 
 			memory.bind_to_shader(Private::from_private(&bind_data));

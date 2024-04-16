@@ -202,6 +202,7 @@
     <ClInclude Include="include\private\shaders\shader_field\primitive_shader_field.hpp" />
     <ClInclude Include="include\private\shaders\shader_field\shader_field_info.hpp" />
     <ClInclude Include="include\private\shaders\shader_field\shader_field_info_extractor.hpp" />
+    <ClInclude Include="include\private\shaders\uniform_shader_field.hpp" />
     <ClInclude Include="include\private\shaders\vertex_shader.hpp" />
     <ClInclude Include="include\private\window\swapchain_frame.hpp" />
     <ClInclude Include="include\private\window\window_rebuild_surface_parameters.hpp" />

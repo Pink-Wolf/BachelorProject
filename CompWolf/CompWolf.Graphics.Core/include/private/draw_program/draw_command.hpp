@@ -21,7 +21,9 @@ namespace CompWolf::Graphics
 			gpu_index_buffer* indices;
 			base_gpu_buffer* vertices;
 			std::vector<gpu_memory*> uniform_vertex_data;
+			const std::vector<std::size_t>* uniform_vertex_indices;
 			std::vector<gpu_memory*> uniform_fragment_data;
+			const std::vector<std::size_t>* uniform_fragment_indices;
 		};
 
 		class window_draw_command
@@ -53,12 +55,19 @@ namespace CompWolf::Graphics
 		static_assert(std::same_as<PipelineType, PipelineType>, "draw_command was not given a proper pipeline");
 	};
 
-	template <typename VertexType, typename... UniformVertexTypes, typename... FragmentVertexTypes>
-	class draw_command<draw_pipeline<vertex_shader<VertexType, type_list<UniformVertexTypes...>>, shader<type_list<FragmentVertexTypes...>>>>
+	template
+		< typename VertexType
+		, typename... UniformVertexTypes, std::size_t... UniformVertexIndices
+		, typename... FragmentVertexTypes, std::size_t... UniformIndexIndices
+		>
+	class draw_command<draw_pipeline
+		< vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>
+		, shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>
+		>>
 	{
 	private: // fields
-		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformVertexTypes...>>;
-		using fragment_shader_type = shader<type_list<FragmentVertexTypes...>>;
+		using vertex_shader_type = vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>;
+		using fragment_shader_type = shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>;
 		using pipeline_type = draw_pipeline<vertex_shader_type, fragment_shader_type>;
 		pipeline_type* _pipeline;
 		Private::draw_data _data;
@@ -98,12 +107,14 @@ namespace CompWolf::Graphics
 				, gpu_image_buffer
 				, gpu_uniform_buffer<FragmentVertexTypes>
 				>&... uniform_fragment_data
-		) : _pipeline(&pipeline), _data{
-			.indices = &indices,
-			.vertices = &vertices,
-			.uniform_vertex_data = std::vector<gpu_memory*>({&uniform_vertex_data.memory()...}),
-			.uniform_fragment_data = std::vector<gpu_memory*>({&uniform_fragment_data.memory()...})
-		}
+		) : _pipeline(&pipeline), _data
+			{ .indices = &indices
+			, .vertices = &vertices
+			, .uniform_vertex_data = std::vector<gpu_memory*>({&uniform_vertex_data.memory()...})
+			, .uniform_vertex_indices = &vertex_shader_type::uniform_data_indices
+			, .uniform_fragment_data = std::vector<gpu_memory*>({&uniform_fragment_data.memory()...})
+			, .uniform_fragment_indices = &fragment_shader_type::uniform_data_indices
+			}
 		{}
 	};
 

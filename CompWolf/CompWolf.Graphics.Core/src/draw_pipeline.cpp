@@ -42,16 +42,18 @@ namespace CompWolf::Graphics
 			uniformVertexBindings.reserve(data.vertex_uniform_types.size() + data.fragment_uniform_types.size());
 			for (std::size_t i = 0; i < data.vertex_uniform_types.size(); ++i)
 			{
+				auto uniformBinding = static_cast<uint32_t>((*data.vertex_uniform_indices)[i]);
+
 				switch (data.vertex_uniform_types[i])
 				{
 				case draw_pipeline_data::uniform_data_type::buffer: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = static_cast<uint32_t>(i),
+					.binding = uniformBinding,
 					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 					.descriptorCount = 1,
 					.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
 					}); break;
 				case draw_pipeline_data::uniform_data_type::image: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = static_cast<uint32_t>(i),
+					.binding = uniformBinding,
 					.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 					.descriptorCount = 1,
 					.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
@@ -60,16 +62,18 @@ namespace CompWolf::Graphics
 			}
 			for (std::size_t i = 0; i < data.fragment_uniform_types.size(); ++i)
 			{
+				auto uniformBinding = static_cast<uint32_t>((*data.fragment_uniform_indices)[i]);
+
 				switch (data.fragment_uniform_types[i])
 				{
 				case draw_pipeline_data::uniform_data_type::buffer: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = static_cast<uint32_t>(i + data.vertex_uniform_types.size()),
+					.binding = uniformBinding,
 					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 					.descriptorCount = 1,
 					.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
 					}); break;
 				case draw_pipeline_data::uniform_data_type::image: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = static_cast<uint32_t>(i + data.vertex_uniform_types.size()),
+					.binding = uniformBinding,
 					.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 					.descriptorCount = 1,
 					.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,

@@ -28,7 +28,9 @@ namespace CompWolf::Graphics
 				image,
 			};
 			std::vector<uniform_data_type> vertex_uniform_types;
+			const std::vector<std::size_t>* vertex_uniform_indices;
 			std::vector<uniform_data_type> fragment_uniform_types;
+			const std::vector<std::size_t>* fragment_uniform_indices;
 
 			base_shader* vertex_shader;
 			base_shader* fragment_shader;
@@ -175,13 +177,20 @@ namespace CompWolf::Graphics
 		static_assert(std::same_as<VertexShaderType, VertexShaderType>, "draw_pipeline was not given a proper vertex and fragment shader");
 	};
 
-	template <typename VertexType, typename... UniformVertexTypes, typename... FragmentVertexTypes>
-	class draw_pipeline<vertex_shader<VertexType, type_list<UniformVertexTypes...>>, shader<type_list<FragmentVertexTypes...>>>
+	template
+		< typename VertexType
+		, typename... UniformVertexTypes, std::size_t... UniformVertexIndices
+		, typename... FragmentVertexTypes, std::size_t... UniformIndexIndices
+		>
+	class draw_pipeline
+		< vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>
+		, shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>
+		>
 		: public Private::base_draw_pipeline
 	{
 	public: // fields
-		using vertex_shader_type = vertex_shader<VertexType, type_list<UniformVertexTypes...>>;
-		using fragment_shader_type = shader<type_list<FragmentVertexTypes...>>;
+		using vertex_shader_type = vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>;
+		using fragment_shader_type = shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>;
 
 	public: // constructors
 		draw_pipeline() = default;
@@ -204,12 +213,14 @@ namespace CompWolf::Graphics
 						? Private::draw_pipeline_data::uniform_data_type::image
 						: Private::draw_pipeline_data::uniform_data_type::buffer
 					...}),
+				.vertex_uniform_indices = &vertex_shader_type::uniform_data_indices,
 				.fragment_uniform_types = std::vector<Private::draw_pipeline_data::uniform_data_type>
 					({
 						std::same_as<FragmentVertexTypes, shader_image>
 						? Private::draw_pipeline_data::uniform_data_type::image
 						: Private::draw_pipeline_data::uniform_data_type::buffer
 					...}),
+				.fragment_uniform_indices = &fragment_shader_type::uniform_data_indices,
 				.vertex_shader = static_cast<Private::base_shader*>(&vertex_shader),
 				.fragment_shader = static_cast<Private::base_shader*>(&fragment_shader),
 			}

@@ -10,6 +10,7 @@
 #include <utility>
 #include <owned>
 #include <freeable>
+#include <compwolf_type_traits>
 
 namespace CompWolf::Graphics
 {
@@ -42,7 +43,7 @@ namespace CompWolf::Graphics
 		public: // constructors
 			base_shader() = default;
 			base_shader(base_shader&&) = default;
-			auto operator =(base_shader&&) -> base_shader& = default;
+			auto operator=(base_shader&&) -> base_shader& = default;
 			inline ~base_shader() noexcept
 			{
 				free();
@@ -69,13 +70,16 @@ namespace CompWolf::Graphics
 	class shader : public Private::base_shader
 	{
 		static_assert(std::same_as<UniformDataTypeList, UniformDataTypeList>,
-			"shader was not given type_lists of uniform data types"
+			"shader was not given type_lists of type_value_pairs determining data type and binding index."
 			);
 	};
-	template <typename... UniformDataTypes>
-	class shader<type_list<UniformDataTypes...>> : public Private::base_shader
+	template <typename... UniformDataTypes, std::size_t... UniformDataIndices>
+	class shader<type_list<type_value_pair<UniformDataTypes, UniformDataIndices>...>> : public Private::base_shader
 	{
 		using Private::base_shader::base_shader;
+
+	public: // fields
+		static inline std::vector<std::size_t> uniform_data_indices = std::vector<std::size_t>({ UniformDataIndices ... });
 	};
 }
 
