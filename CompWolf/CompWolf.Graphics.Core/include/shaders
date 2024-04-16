@@ -1,0 +1,3 @@
+#include "private/shaders/shader_field.hpp"
+#include "private/shaders/shader.hpp"
+#include "private/shaders/vertex_shader.hpp"

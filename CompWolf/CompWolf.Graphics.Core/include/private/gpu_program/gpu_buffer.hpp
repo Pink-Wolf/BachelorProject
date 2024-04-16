@@ -2,8 +2,8 @@
 #define COMPWOLF_GRAPHICS_GPU_BUFFER_HEADER
 
 #include "vulkan_types"
+#include "shaders"
 #include "gpu_memory.hpp"
-#include "shader_field.hpp"
 #include <utility>
 
 namespace CompWolf::Graphics
