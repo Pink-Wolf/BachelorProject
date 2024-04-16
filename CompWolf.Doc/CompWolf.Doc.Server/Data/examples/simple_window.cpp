@@ -12,7 +12,7 @@ int main()
 		.name = "Test Window",
 		});
 
-	while (win.is_open())
+	while (win.running())
 	{
 		environment.update();
 	}

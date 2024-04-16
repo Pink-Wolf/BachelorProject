@@ -113,7 +113,7 @@ int main()
         std::size_t frames_since_last_print = 0;
         double next_print_time = 0;
 
-        while (win.is_open())
+        while (win.running())
         {
             {
                 auto t = trans.single_data();

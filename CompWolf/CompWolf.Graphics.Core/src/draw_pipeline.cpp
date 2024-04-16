@@ -12,9 +12,9 @@ namespace CompWolf::Graphics
 {
 	/******************************** event handlers ********************************/
 
-	void window_specific_pipeline::on_swapchain_rebuild(
-		const event<window_rebuild_swapchain_parameter>&,
-		window_rebuild_swapchain_parameter& args
+	void window_specific_pipeline::on_rebuild_surface(
+		const event<window_rebuild_surface_parameters>&,
+		window_rebuild_surface_parameters& args
 	) {
 		auto pipeline_data = _pipeline_data;
 		auto gpu_data = _gpu_data;
@@ -24,9 +24,7 @@ namespace CompWolf::Graphics
 
 		_pipeline_data = pipeline_data;
 		_gpu_data = gpu_data;
-		set_target_window(target);
-
-
+		set_window(&target);
 		setup();
 	}
 
@@ -128,8 +126,8 @@ namespace CompWolf::Graphics
 
 		auto& gpu_device = target_window().device();
 		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
-		auto& surface_format = *Private::to_private(target_window().surface().format());
-		auto renderpass = Private::to_vulkan(target_window().surface().render_pass());
+		auto& surface_format = *Private::to_private(target_window().surface().vulkan_format());
+		auto renderpass = Private::to_vulkan(target_window().surface().vulkan_render_pass());
 		auto& frames = target_window().swapchain().frames();
 
 		auto vkPipelineLayout = Private::to_vulkan(_gpu_data->layout());
@@ -424,6 +422,6 @@ namespace CompWolf::Graphics
 
 		if (_descriptor_pool) vkDestroyDescriptorPool(logicDevice, Private::to_vulkan(_descriptor_pool), nullptr);
 
-		set_target_window(nullptr);
+		set_window(nullptr);
 	}
 }

@@ -47,8 +47,8 @@ namespace CompWolf::Graphics
 		auto instance = Private::to_vulkan(device().vulkan_instance());
 		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
-		auto surface = Private::to_vulkan(window_surface.surface());
-		auto& surface_format = *Private::to_private(window_surface.format());
+		auto surface = Private::to_vulkan(window_surface.vulkan_surface());
+		auto& surface_format = *Private::to_private(window_surface.vulkan_format());
 
 		uint32_t width, height;
 		{
@@ -170,7 +170,7 @@ namespace CompWolf::Graphics
 
 					VkFramebufferCreateInfo create_info{
 						.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-						.renderPass = Private::to_vulkan(window_surface.render_pass()),
+						.renderPass = Private::to_vulkan(window_surface.vulkan_render_pass()),
 						.attachmentCount = 1,
 						.pAttachments = &swapchainImage,
 						.width = width,

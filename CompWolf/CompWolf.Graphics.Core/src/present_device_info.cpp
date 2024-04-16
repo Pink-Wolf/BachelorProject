@@ -7,18 +7,13 @@
 
 namespace CompWolf::Graphics::Private
 {
-	gpu_connection* find_gpu_for_present(Private::vulkan_surface vulkan_surface, window_surface_settings& settings, surface_format_info* out_info) noexcept
+	gpu_connection* find_gpu_for_present(Private::vulkan_surface vulkan_surface, graphics_environment& environment, surface_format_info* out_info) noexcept
 	{
 		auto vkSurface = Private::to_vulkan(vulkan_surface);
-		if (settings.gpu)
-		{
-			*out_info = std::move(get_present_device_info(*settings.gpu, vkSurface).value());
-			return settings.gpu;
-		}
 
 		gpu_connection* best_gpu = nullptr;
 		float best_gpu_score = -1;
-		for (auto& gpu : settings.environment->gpus())
+		for (auto& gpu : environment.gpus())
 		{
 			auto info_container = get_present_device_info(gpu, vkSurface);
 			if (!info_container.has_value()) continue;
@@ -59,7 +54,7 @@ namespace CompWolf::Graphics::Private
 	{
 		auto physicalDevice = Private::to_vulkan(device.vulkan_physical_device());
 
-		surface_format_info return_value;
+		surface_format_info return_value{};
 
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &return_value.capabilities);
 

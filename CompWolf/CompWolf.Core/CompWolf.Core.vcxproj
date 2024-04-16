@@ -157,7 +157,6 @@
     <ClInclude Include="include\event" />
     <ClInclude Include="include\compwolf_functional" />
     <ClInclude Include="include\freeable" />
-    <ClInclude Include="include\free_on_dependent_freed" />
     <ClInclude Include="include\owned" />
     <ClInclude Include="include\private\other\dimensions.hpp" />
     <ClInclude Include="include\private\other\empty_pointer.hpp" />
@@ -165,7 +164,6 @@
     <ClInclude Include="include\private\functional\index_function.hpp" />
     <ClInclude Include="include\private\other\enum_bitset.hpp" />
     <ClInclude Include="include\private\other\freeable.hpp" />
-    <ClInclude Include="include\private\other\free_on_dependent_freed.hpp" />
     <ClInclude Include="include\private\other\owned.hpp" />
     <ClInclude Include="include\private\type_traits\dereferenceable_to.hpp" />
     <ClInclude Include="include\private\type_traits\explicitly_convertible_to.hpp" />

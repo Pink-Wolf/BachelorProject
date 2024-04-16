@@ -4,19 +4,30 @@
 
 namespace CompWolf::Graphics
 {
-	/******************************** setters ********************************/
+	/******************************** modifiers ********************************/
 
-	void window_user::set_target_window(window* w) noexcept
+	void window_user::set_window(window* new_window) noexcept
 	{
 		if (has_window())
-			target_window().swapchain_rebuilded.unsubscribe(_swapchain_rebuilded_key);
+		{
+			target_window().freeing.unsubscribe(_freeing_event_key);
+			target_window().rebuild_surface.unsubscribe(_rebuilding_event_key);
+		}
 
-		set_dependent(w);
+		_target_window = new_window;
 
 		if (has_window())
-			_swapchain_rebuilded_key = target_window().swapchain_rebuilded.subscribe
-			(
-				std::bind_front(&window_user::on_swapchain_rebuild, this)
+		{
+			_freeing_event_key = target_window().freeing.subscribe([this](const event<void>&)
+				{
+					free();
+					set_window(nullptr);
+				}
 			);
+			_rebuilding_event_key = target_window().rebuild_surface.subscribe
+			(
+				std::bind_front(&window_user::on_rebuild_surface, this)
+			);
+		}
 	}
 }

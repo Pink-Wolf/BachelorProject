@@ -45,6 +45,9 @@ namespace CompWolf
 			return static_cast<TOut>(value);
 		}
 
+		inline auto& to_unowned_value() noexcept { return value; }
+		inline auto& to_unowned_value() const noexcept { return value; }
+
 	public: // constructors
 		owned()
 			noexcept(is_nothrow_new_default && std::is_nothrow_constructible_v<T, T&&>)

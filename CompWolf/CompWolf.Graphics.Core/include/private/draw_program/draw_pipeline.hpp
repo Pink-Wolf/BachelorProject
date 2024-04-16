@@ -11,7 +11,6 @@
 #include <owned>
 #include <freeable>
 #include <map>
-#include <free_on_dependent_freed>
 
 namespace CompWolf::Graphics
 {
@@ -79,9 +78,9 @@ namespace CompWolf::Graphics
 		std::vector<Private::vulkan_frame_buffer> _frame_buffers;
 
 	protected: // event handlers
-		void on_swapchain_rebuild(
-			const event<window_rebuild_swapchain_parameter>&,
-			window_rebuild_swapchain_parameter&
+		void on_rebuild_surface(
+			const event<window_rebuild_surface_parameters>&,
+			window_rebuild_surface_parameters&
 		) final;
 
 	public: // getters

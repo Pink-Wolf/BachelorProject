@@ -203,6 +203,8 @@
     <ClInclude Include="include\private\gpu_program\shader_field\shader_field_info.hpp" />
     <ClInclude Include="include\private\gpu_program\shader_field\shader_field_info_extractor.hpp" />
     <ClInclude Include="include\private\gpu_program\vertex_shader.hpp" />
+    <ClInclude Include="include\private\window\swapchain_frame.hpp" />
+    <ClInclude Include="include\private\window\window_rebuild_surface_parameters.hpp" />
     <ClInclude Include="include\private\window\window_settings.hpp" />
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
     <ClInclude Include="include\private\window\window_surface.hpp" />

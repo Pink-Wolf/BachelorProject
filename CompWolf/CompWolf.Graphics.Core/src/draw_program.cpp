@@ -32,7 +32,7 @@ namespace CompWolf::Graphics
 
 		VkRenderPassBeginInfo renderpassInfo{
 			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			.renderPass = Private::to_vulkan(target_window().surface().render_pass()),
+			.renderPass = Private::to_vulkan(target_window().surface().vulkan_render_pass()),
 			.framebuffer = Private::to_vulkan(frame.frame_buffer),
 			.renderArea = {
 				.offset = {0, 0},

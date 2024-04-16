@@ -43,7 +43,7 @@ namespace CompWolf::Graphics
 
 	public: // vulkan-related
 		/* Returns the gpu's vulkan_instance, representing a VkInstance. */
-		inline auto vulkan_instance() const noexcept { return _vulkan_instance; }
+		inline auto vulkan_instance() const noexcept { return _vulkan_instance.to_unowned_value(); }
 		/* Returns the gpu's vulkan_physical_device, representing a VkPhysicalDevice. */
 		inline auto vulkan_physical_device() const noexcept { return _vulkan_physical_device; }
 		/* Returns the gpu's vulkan_device, representing a VkDevice. */

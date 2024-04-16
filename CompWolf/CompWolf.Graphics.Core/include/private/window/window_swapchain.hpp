@@ -1,29 +1,18 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_SWAPCHAIN_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_SWAPCHAIN_HEADER
 
-#include "graphics"
-#include "gpus"
-#include "gpu_program_pools"
-#include "gpu_program"
 #include "vulkan_types"
-#include "window_settings.hpp"
-#include "window_surface.hpp"
-#include <vector>
+#include "swapchain_frame.hpp"
 #include <freeable>
 #include <owned>
 #include <utility>
 
 namespace CompWolf::Graphics
 {
-	struct swapchain_frame
-	{
-		Private::vulkan_image_view image;
-		Private::vulkan_frame_buffer frame_buffer;
+	class gpu_connection;
+	class window;
 
-		gpu_program_pool draw_job;
-	};
-
-	/* The actual images of the window' that's surface. */
+	/* The swapchain of a window, as in the actual images that are being drawn before being displaying on the window. */
 	class window_swapchain : basic_freeable
 	{
 	private: // fields
@@ -32,51 +21,43 @@ namespace CompWolf::Graphics
 		std::vector<swapchain_frame> _frames;
 		std::size_t _current_frame_index;
 
-	public: // getters
-		inline auto device() noexcept -> gpu_connection&
-		{
-			return *_target_gpu;
-		}
-		inline auto device() const noexcept -> const gpu_connection&
-		{
-			return *_target_gpu;
-		}
+	public: // accessors
+		/* Returns the gpu that the window is on. */
+		inline auto& device() noexcept { return *_target_gpu; }
+		/* Returns the gpu that the window is on. */
+		inline auto& device() const noexcept { return *_target_gpu; }
 
-		inline auto vulkan_swapchain() const noexcept
-		{
-			return _vulkan_swapchain;
-		}
+		/* Returns information about the individual images of the swapchain. */
+		inline auto& frames() noexcept { return _frames; }
+		/* Returns information about the individual images of the swapchain. */
+		inline auto& frames() const noexcept { return _frames; }
 
-		inline auto frames() noexcept -> std::vector<swapchain_frame>&
-		{
-			return _frames;
-		}
-		inline auto frames() const noexcept -> const std::vector<swapchain_frame>&
-		{
-			return _frames;
-		}
-
-		inline auto current_frame() noexcept -> swapchain_frame&
-		{
-			return frames()[_current_frame_index];
-		}
-		inline auto current_frame() const noexcept -> const swapchain_frame&
-		{
-			return frames()[_current_frame_index];
-		}
+		/* Returns the index in frames() that current_frame() is at. */
 		inline auto current_frame_index() const noexcept { return _current_frame_index; }
 
-	public: // other methods
+		/* Returns information about the image on the swapchain that is currently being drawn. */
+		inline auto& current_frame() noexcept { return frames()[current_frame_index()]; }
+		/* Returns information about the image on the swapchain that is currently being drawn. */
+		inline auto& current_frame() const noexcept { return frames()[current_frame_index()]; }
+
+	private: // modifiers
+		/* Makes the window display the current frame, and makes a new frame the current one. */
 		void to_next_frame();
 
+	public: // vulkan-related
+		/* Returns the swapchain's vulkan_swapchain, representing a VkSwapchainKHR. */
+		inline auto vulkan_swapchain() const noexcept { return _vulkan_swapchain; }
+
+
 	public: // constructors
-		/* Constructs a swapchain that is already destroyed. */
+		/* Constructs a freed swapchain. */
 		window_swapchain() = default;
 		window_swapchain(window_swapchain&&) = default;
 		auto operator=(window_swapchain&&) -> window_swapchain& = default;
 
-		/* @throws std::runtime_error when something went wrong during window swapchain creation outside of the program. */
+	private:
 		window_swapchain(window_settings& args, Private::glfw_window window, window_surface& surface);
+		friend window;
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

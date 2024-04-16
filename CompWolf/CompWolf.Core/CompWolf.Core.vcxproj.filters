@@ -84,13 +84,7 @@
     <ClInclude Include="include\private\other\freeable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\other\free_on_dependent_freed.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\freeable">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\free_on_dependent_freed">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\owned">

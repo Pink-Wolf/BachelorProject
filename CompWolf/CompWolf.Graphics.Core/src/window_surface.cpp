@@ -11,10 +11,16 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	window_surface::window_surface(window_settings&, Private::glfw_window& window, window_surface_settings settings)
+	window_surface::window_surface(window_settings& settings
+		, Private::glfw_window& window
+		, graphics_environment* optional_environment
+		, gpu_connection* optional_gpu)
 		: _vulkan_surface(nullptr), _format(nullptr), _render_pass(nullptr)
 	{
-		auto instance = Private::to_vulkan(settings.environment->vulkan_instance());
+		auto vulkan_instance = optional_environment
+			? optional_environment->vulkan_instance()
+			: optional_gpu->vulkan_instance();
+		auto instance = Private::to_vulkan(vulkan_instance);
 		auto glfwWindow = Private::to_glfw(window);
 
 		try
@@ -34,7 +40,18 @@ namespace CompWolf::Graphics
 
 			auto& surface_format = *new Private::surface_format_info();
 			_format = Private::from_private(&surface_format);
-			_target_gpu = Private::find_gpu_for_present(_vulkan_surface, settings, &surface_format);
+			if (optional_gpu)
+			{
+				_target_gpu = optional_gpu;
+				auto optional_surface = Private::get_present_device_info(*optional_gpu, surface);
+				if (!optional_surface.has_value()) throw std::runtime_error("Could not create a window; its specified gpu cannot draw on the window.");
+				surface_format = optional_surface.value();
+			}
+			else
+			{
+				_target_gpu = Private::find_gpu_for_present(_vulkan_surface, *optional_environment, &surface_format);
+				if (!_target_gpu) throw std::runtime_error("Could not create a window; no suitable gpu.");
+			}
 			auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
 			VkRenderPass renderPass;

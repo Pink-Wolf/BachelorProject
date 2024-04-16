@@ -56,11 +56,26 @@
         },
         {
           "name": "has_window",
-          "briefDescription": "Protected member access. Whether the object is currently pointing at a window.",
+          "briefDescription": "Protected member access. Whether the object is actually referencing a window.",
           "overloads": [
             {
               "declaration": "protected: auto has_window() const noexcept -> bool",
-              "description": "Whether the object is currently pointing at a window."
+              "description": "Whether the object is actually referencing a window."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "name": "set_window",
+          "briefDescription": "Protected member access. Sets what window the object is referencing.",
+          "overloads": [
+            {
+              "declaration": "protected: auto set_window(window*) const noexcept",
+              "description": "Sets what window the object is referencing."
             }
           ]
         }
@@ -70,16 +85,12 @@
       "name": "Virtual",
       "items": [
         {
-          "name": "on_swapchain_rebuild",
+          "name": "on_rebuild_surface",
           "briefDescription": "Invoked after the target window's surface is rebuild.",
           "overloads": [
             {
-              "declaration": "virtual void on_swapchain_rebuild(const event<window_rebuild_surface_parameters>, window_rebuild_surface_parameters);",
+              "declaration": "virtual void on_rebuild_surface(const event<window_rebuild_surface_parameters>&, window_rebuild_surface_parameters&);",
               "description": "Invoked after the target window's surface is rebuild."
-            },
-            {
-              "declaration": "auto target_window() const noexcept -> const window&;",
-              "description": "Like (1), but const."
             }
           ],
           "related": [

@@ -65,7 +65,7 @@
           "overloads": [
             {
               "declaration": "auto vulkan_format() const noexcept -> Private::surface_format_handle",
-              "description": "Returns the surface's surface_format_handle, representing a surface_format_info*"
+              "description": "Returns the surface's surface_format_handle, representing a surface_format_info*."
             }
           ]
         },
@@ -75,7 +75,7 @@
           "overloads": [
             {
               "declaration": "auto vulkan_render_pass() const noexcept -> Private::vulkan_render_pass",
-              "description": "Returns the surface's vulkan_render_pass, representing a VkRenderPass"
+              "description": "Returns the surface's vulkan_render_pass, representing a VkRenderPass."
             }
           ]
         }

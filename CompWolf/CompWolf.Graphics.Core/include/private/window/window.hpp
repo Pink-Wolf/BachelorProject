@@ -1,35 +1,19 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_HEADER
 
-#include "gpus"
-#include "graphics"
-#include "vulkan_types"
-#include "window_settings.hpp"
 #include "window_surface.hpp"
 #include "window_swapchain.hpp"
-#include <event>
-#include <value_mutex>
-#include <utility>
+#include "window_rebuild_surface_parameters.hpp"
+#include "window_settings.hpp"
 #include <freeable>
 #include <owned>
-#include <string_view>
-#include <concepts>
+#include "event"
+#include "utility"
 
 namespace CompWolf::Graphics
 {
-	struct window_close_parameter
-	{
-
-	};
-
-	struct window_rebuild_swapchain_parameter
-	{
-		window_surface* old_surface;
-		window_surface* new_surface;
-
-		window_swapchain* old_swapchain;
-		window_swapchain* new_swapchain;
-	};
+	class graphics_environment;
+	class gpu_connection;
 
 	/* A window, as in a rectangle that can be drawn onto, and that listens for various events from outside the program (relating to the window).
 	 * This class is thread safe.
@@ -37,12 +21,9 @@ namespace CompWolf::Graphics
 	class window : public basic_freeable
 	{
 	private: // fields
-		graphics_environment* _environment;
 		window_settings _settings;
 
-		using glfw_window_type = owned_ptr<Private::glfw_window>;
-		glfw_window_type _glfw_window;
-
+		owned_ptr<Private::glfw_window> _glfw_window;
 		window_surface _surface;
 		window_swapchain _swapchain;
 
@@ -55,100 +36,70 @@ namespace CompWolf::Graphics
 		std::unordered_map<draw_event_type, std::function<void(window&)>> _draw_events;
 
 	public:
-		event<window_rebuild_swapchain_parameter> swapchain_rebuilding;
-		event<window_rebuild_swapchain_parameter> swapchain_rebuilded;
+		/* Event invoked before the window's surface is rebuild, for example because the size of the window changed. */
+		event<window_rebuild_surface_parameters> rebuilding_surface;
+		/* Event invoked after the window's surface is rebuild, for example because the size of the window changed. */
+		event<window_rebuild_surface_parameters> rebuild_surface;
 
-	public: // getters
+	public: // accessors
+		/* Returns the gpu that the window is on. */
+		inline auto& device() noexcept { return _surface.device(); }
+		/* Returns the gpu that the window is on. */
+		inline auto& device() const noexcept { return _surface.device(); }
 
-		/* Whether the window is currently open. */
-		inline auto is_open() const noexcept -> bool
-		{
-			return !empty();
-		}
+		/* Returns the width and height of the window, in pixels.
+		 * This size does not include any border around the window.
+		 */
+		inline auto& pixel_size() const noexcept { return _pixel_size.const_wrapper(); }
 
-		auto environment() noexcept -> graphics_environment&
-		{
-			return *_environment;
-		}
-		auto environment() const noexcept -> const graphics_environment&
-		{
-			return *_environment;
-		}
+		/* Returns whether the window is not freed. */
+		inline auto running() const noexcept { return !empty(); }
 
-		auto device() noexcept -> gpu_connection&
-		{
-			return _surface.device();
-		}
-		auto device() const noexcept -> const gpu_connection&
-		{
-			return _surface.device();
-		}
-
-		inline auto surface() noexcept -> window_surface&
-		{
-			return _surface;
-		}
-		inline auto surface() const noexcept -> const window_surface&
-		{
-			return _surface;
-		}
-
-		inline auto swapchain() noexcept -> window_swapchain&
-		{
-			return _swapchain;
-		}
-		inline auto swapchain() const noexcept -> const window_swapchain&
-		{
-			return _swapchain;
-		}
-
-		inline auto pixel_size() const -> const_value_event_wrapper<std::pair<int, int>>&
-		{
-			return _pixel_size.const_wrapper();
-		}
-
-	private: // setters
+	public: // modifiers
+		/* Makes the window display what has been drawn onto it (since the last call to update_image). */
+		void update_image();
+		/* Sets the size of the window, in pixels.
+		 * This size does not include any border around the window.
+		 * Throws std::runtime_error if there was an error while changing the size due to causes outside of the program.
+		 * Throws std::domain_error if given a non-positive width and/or height.
+		 */
 		void set_pixel_size(int width, int height);
 
-	public: // other methods
-		void update_image();
+		/* Frees the window. */
+		inline void close() noexcept { free(); }
 
-		/* Closes the window. */
-		inline void close() noexcept
-		{
-			free();
-		}
-		/* Invoked right before the window closes.
-		 * @see close()
-		 */
-		event<window_close_parameter> closing;
-		using closing_parameter_type = window_close_parameter;
-		/* Invoked right after the window closes.
-		 * @see close()
-		 */
-		event<window_close_parameter> closed;
-		using closed_parameter_type = window_close_parameter;
+	public: // vulkan-related
+		/* Returns the surface of the window, as in the actual area that can display a dynamic image. */
+		inline auto& surface() noexcept { return _surface; }
+		/* Returns the surface of the window, as in the actual area that can display a dynamic image. */
+		inline auto& surface() const noexcept { return _surface; }
 
-	private: // constructors
-		void setup();
-	public:
-		/* Constructs a window that is already closed. */
+		/* Returns the swapchain of the window, as in the actual images that are being drawn before being displaying on the window. */
+		inline auto& swapchain() noexcept { return _swapchain; }
+		/* Returns the swapchain of the window, as in the actual images that are being drawn before being displaying on the window. */
+		inline auto& swapchain() const noexcept { return _swapchain; }
+
+	public: // constructors
+		/* Constructs a freed window, as in one that is already closed. */
 		window() = default;
 		window(window&&) = default;
 		auto operator=(window&&) -> window& = default;
-		inline ~window() noexcept
-		{
-			free();
-		}
+		inline ~window() noexcept { free(); }
 
-		/* @throws std::runtime_error when something went wrong during window creation outside of the program. */
-		template <typename SettingsInputType>
-			requires std::constructible_from<window_settings, SettingsInputType>
-		window(graphics_environment& environment, SettingsInputType settings)
-			: _environment(&environment), _settings(settings)
-		{
-			setup();
-		}
+	private:
+		window(graphics_environment*, gpu_connection*, window_settings);
+	public:
+
+		/* Constructs a window with the given settings.
+		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
+		 * @throws std::invalid_argument from (2) and (3) if the given settings have invalid settings.
+		 */
+		inline window(graphics_environment& environment, window_settings settings) : window(&environment, nullptr, settings) {}
+		/* Constructs a window on the given gpu, with the given settings.
+		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
+		 * @throws std::invalid_argument from (2) and (3) if the given settings have invalid settings.
+		 */
+		inline window(gpu_connection& gpu, window_settings settings) : window(nullptr, &gpu, settings) {}
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

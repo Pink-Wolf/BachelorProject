@@ -76,19 +76,14 @@
           "related": [
             "swapchain_frame"
           ]
-        }
-      ]
-    },
-    {
-      "name": "Modifiers",
-      "items": [
+        },
         {
-          "name": "to_next_frame",
-          "briefDescription": "Makes the window display the current frame, and makes a new frame the current one.",
+          "name": "current_frame_index",
+          "briefDescription": "Returns the index in frames() that current_frame() is at.",
           "overloads": [
             {
-              "declaration": "void to_next_frame()",
-              "description": "Makes the window display the current frame, and makes a new frame the current one."
+              "declaration": "auto current_frame_index() const noexcept -> std::size_t",
+              "description": "Returns the index in frames() that current_frame() is at."
             }
           ]
         }

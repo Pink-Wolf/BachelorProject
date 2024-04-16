@@ -2,11 +2,8 @@
 #include "window"
 
 #include "compwolf_vulkan.hpp"
-#include "present_device_info.hpp"
-#include <mutex>
-#include <algorithm>
-#include <optional>
-#include <utility>
+#include <stdexcept>
+#include "graphics"
 #include <compwolf_utility>
 
 namespace CompWolf::Graphics
@@ -15,34 +12,26 @@ namespace CompWolf::Graphics
 
 	void window::set_pixel_size(int width, int height)
 	{
-		window_rebuild_swapchain_parameter event_args{
-			.old_surface = &_surface,
-			.new_surface = nullptr,
-			.old_swapchain = &_swapchain,
-			.new_swapchain = nullptr,
+		window_rebuild_surface_parameters event_args{
+			.surface = &_surface,
+			.swapchain = &_swapchain,
 		};
-		swapchain_rebuilding(event_args);
-		auto& old_device = device();
+		rebuilding_surface(event_args);
+		auto& old_gpu = device();
 
 		_swapchain.free();
 		_surface.free();
 
-		_pixel_size.set(std::make_pair(width, height));
+		_settings.pixel_size = std::make_pair(width, height);
 
-		_surface = window_surface(_settings, _glfw_window, window_surface_settings{
-				.environment = _environment,
-				.gpu = &old_device,
-			}
-		);
+		_surface = window_surface(_settings, _glfw_window, nullptr, &old_gpu);
 		_swapchain = window_swapchain(_settings, _glfw_window, _surface);
 
-		event_args = window_rebuild_swapchain_parameter{
-			.old_surface = nullptr,
-			.new_surface = &_surface,
-			.old_swapchain = nullptr,
-			.new_swapchain = &_swapchain,
-		};
-		swapchain_rebuilded(event_args);
+		event_args.surface = &_surface;
+		event_args.swapchain = &_swapchain;
+		rebuild_surface(event_args);
+
+		_pixel_size.set(std::make_pair(width, height));
 	}
 
 	/******************************** other methods ********************************/
@@ -79,10 +68,8 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	void window::setup()
+	window::window(graphics_environment* environment, gpu_connection* gpu, window_settings settings) : _settings(settings)
 	{
-		auto instance = Private::to_vulkan(_environment->vulkan_instance());
-
 		if (_settings.pixel_size.first <= 0 || _settings.pixel_size.second <= 0)
 			_settings.pixel_size = std::make_pair(640, 480);
 
@@ -121,10 +108,7 @@ namespace CompWolf::Graphics
 					});
 			}
 
-			_surface = window_surface(_settings, _glfw_window, window_surface_settings{
-				.environment = _environment,
-				}
-			);
+			_surface = window_surface(_settings, _glfw_window, environment, gpu);
 			_swapchain = window_swapchain(_settings, _glfw_window, _surface);
 		}
 		catch (...)
@@ -142,9 +126,6 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		window_close_parameter close_args;
-
-		closing(close_args);
 		freeing();
 
 		_swapchain.free();
@@ -154,7 +135,6 @@ namespace CompWolf::Graphics
 		glfwDestroyWindow(glfwWindow);
 		_glfw_window = nullptr;
 
-		closed(close_args);
 		freed();
 	}
 }

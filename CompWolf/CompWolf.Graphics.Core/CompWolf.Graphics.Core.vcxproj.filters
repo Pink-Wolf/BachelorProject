@@ -165,6 +165,12 @@
     <ClInclude Include="include\gpu_program_pools">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\window\window_rebuild_surface_parameters.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\window\swapchain_frame.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
