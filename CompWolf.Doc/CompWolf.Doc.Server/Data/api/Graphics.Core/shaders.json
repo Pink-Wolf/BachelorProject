@@ -1,0 +1,4 @@
+﻿{
+  "briefDescription": "Contains general logic for gpu-code.",
+  "detailedDescription": "Contains general logic for shaders, that is code to be run on a gpu."
+}

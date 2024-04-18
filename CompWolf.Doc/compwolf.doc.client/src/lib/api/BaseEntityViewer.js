@@ -32,7 +32,9 @@ export default function BaseEntityViewer({ data, top, children }) {
 
 			<section hidden={!data.example} id="Example">
 				<h2>Example</h2>
-				<p>{data.example?.description}</p>
+				<p>
+					<FormattedText>{data.example?.description}</FormattedText>
+				</p>
 				<CodeViewer>
 					{data.example?.code}
 				</CodeViewer>
