@@ -1,4 +1,5 @@
-import { Declaration, FormattedText } from "./CodeComponents";
+import { Declaration } from "../CodeComponents";
+import FormattedText from "../FormattedText";
 import BaseEntityViewer from "./BaseEntityViewer";
 import { Fragment } from "react";
 

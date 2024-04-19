@@ -1,6 +1,7 @@
 import Style from "@/styles/EntityViewer.css";
 
-import { CodeViewer, FormattedText, Reference, SimpleReference } from "./CodeComponents";
+import { CodeViewer, Reference, SimpleReference } from "../CodeComponents";
+import FormattedText from "../FormattedText";
 
 export default function BaseEntityViewer({ data, top, children }) {
 	if (data == undefined) return <p>{`404: Could not get the entity's data.`}</p>

@@ -1,5 +1,6 @@
 import { Fragment } from "react";
-import { Declaration, FormattedText, Reference, SimpleReference } from "./CodeComponents";
+import { Declaration, Reference, SimpleReference } from "../CodeComponents";
+import FormattedText from "../FormattedText";
 import BaseEntityViewer from "./BaseEntityViewer";
 
 export default function ClassViewer({ data }) {

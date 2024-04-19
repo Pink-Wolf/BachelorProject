@@ -1,4 +1,5 @@
-import { Declaration, FormattedText, Reference } from "./CodeComponents";
+import { Declaration, Reference } from "../CodeComponents";
+import FormattedText from "../FormattedText";
 
 export default function HeaderViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }

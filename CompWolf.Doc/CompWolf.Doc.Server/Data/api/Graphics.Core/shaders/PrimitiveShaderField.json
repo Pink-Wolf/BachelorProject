@@ -1,0 +1,29 @@
+﻿{
+  "type": "concept",
+
+  "namespace": "CompWolf",
+  "declaration": "template <typename FieldType> concept PrimitiveShaderField;",
+  "briefDescription": "Whether the given type is a primitive shader type.",
+  "detailedDescription": "Whether the given type is a primitive shader type, that is a [[ShaderField]] not made out of other types. Specifically whether [[shader_field_info]] has been properly specialized to denote this type as a primitive shader type.\nFulfilling this concept requires handling a lower level of abstraction, and so should rarely be done.",
+
+  "dataMembers": [
+    {
+      "name": "primitives",
+      "declaration": "{ shader_field_info<FieldType>::primitives } -> std::same_as<std::type_list<FieldType>>",
+      "briefDescription": "FieldType must be made of only itself.",
+      "detailedDescription": "FieldType must have a [[type_list]] of itself, denoting that it is only made out of itself."
+    },
+    {
+      "name": "primitive_offsets",
+      "declaration": "{ shader_field_info<FieldType>::primitive_offsets } -> std::same_as<const std::array<std::size_t, 1>&>;",
+      "briefDescription": "FieldType must contain an array containing a 0.",
+      "detailedDescription": "FieldType must contain an array with a single element, denoting the byte-position of the primitive relative to the start of the FieldType; as FieldType is the primitive, this distance is naturally 0."
+    },
+    {
+      "name": "type_info",
+      "declaration": "{ shader_field_info<FieldType>::type_info } -> std::same_as<Private::shader_field_info_handle>;",
+      "briefDescription": "FieldType must contain a shader_field_info_handle, representing a shader_field_info*.",
+      "detailedDescription": "FieldType must contain a shader_field_info_handle, representing a shader_field_info*.\n\nThis reveals a lower level of abstractions, and so PrimitiveShaderField should rarely be fulfilled."
+    }
+  ]
+}

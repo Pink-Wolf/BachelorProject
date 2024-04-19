@@ -7,6 +7,7 @@ import VariableViewer from "./VariableViewer";
 
 export default function EntityViewer({ data }) {
 	switch (data?.type) {
+		case 'concept':
 		case `class`: return <ClassViewer data={data} />
 		case `function`: return <FunctionViewer data={data} />
 		case `variable`: return <VariableViewer data={data} />

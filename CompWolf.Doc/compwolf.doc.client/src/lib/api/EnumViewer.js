@@ -1,5 +1,6 @@
 import { Fragment } from "react";
-import { Declaration, FormattedText } from "./CodeComponents";
+import { Declaration } from "../CodeComponents";
+import FormattedText from "../FormattedText";
 import BaseEntityViewer from "./BaseEntityViewer";
 
 export default function EnumViewer({ data }) {

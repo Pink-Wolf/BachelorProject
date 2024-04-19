@@ -11,7 +11,7 @@
       "name": "primitives",
       "declaration": "using primitives = type_list<[primitive types]>;",
       "briefDescription": "The primitive types making up the class/struct.",
-      "detailedDescription": "A list of types that [[primitive_shader_field]] is specialized for, which makes up the class/struct."
+      "detailedDescription": "A list of primitive shader types which makes up the class/struct."
     },
     {
       "name": "primitive_offsets",
