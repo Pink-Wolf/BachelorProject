@@ -1,0 +1,19 @@
+﻿{
+  "type": "function",
+
+  "namespace": "CompWolf",
+  "briefDescription": "Gets the shader_field_info_handles of the primitive shader types making up a given type, each representing a shader_field_info*.",
+
+  "overloads": [
+    {
+      "declaration": "template <ShaderField Type, typename Container> static auto shader_field_info_handles() -> const Container&;",
+      "description": "Returns the shader_field_info_handles of the primitive shader types making up the given type. Each handle represents a shader_field_info*.\nThis function specifically returns a reference to a statically constructed object of the given \"Container\" type; the object is constructed with a begin- and end-iterator."
+    }
+  ],
+  "detailedDescription": "This reveals a lower level of abstractions, and so should rarely be used.",
+
+  "related": [
+    "shader_field_info",
+    "ShaderField"
+  ]
+}
