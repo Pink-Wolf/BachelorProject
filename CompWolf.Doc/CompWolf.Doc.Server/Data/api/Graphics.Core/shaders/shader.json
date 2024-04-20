@@ -6,7 +6,7 @@
   "briefDescription": "Some code that can be run on a gpu.",
   "detailedDescription": "Some code that can be run on a gpu.\nA shader receives some inputs, and for each input runs its code and outputs some values.\n\nFieldTypes specifies the type of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).",
   "warnings": [
-    "It is undefined behaviour to have FieldTypes not match the actual shader-code's uniform buffers."
+    "It is undefined behaviour to have FieldTypes not match what is specified in the actual shader-code."
   ],
 
   "baseClasses": [ "basic_freeable" ],
@@ -22,6 +22,10 @@
       {
         "declaration": "shader(graphics_environment&, std::vector<char32_t>&& spirV_code);",
         "description": "Constructs a shader with the given SPIR-V code."
+      },
+      {
+        "declaration": "shader(shader&&) noexcept;",
+        "description": "shader is movable."
       }
     ],
     "exceptions": [

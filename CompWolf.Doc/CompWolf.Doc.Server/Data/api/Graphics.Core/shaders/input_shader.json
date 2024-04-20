@@ -1,0 +1,35 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "template <typename InputType, typename... FieldTypes> class input_shader;",
+  "briefDescription": "A shader that can take a custom type of input.",
+  "detailedDescription": "A shader that can take a custom type of input.\nA program using this shader takes the given InputType as its input.\n\nThis is, in terms of the graphics pipeline, a \"vertex\" shader.",
+  "warnings": [
+    "It is undefined behaviour to have InputType or FieldTypes not match what is specified in the actual shader-code."
+  ],
+
+  "baseClasses": [ "shader" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "input_shader() noexcept;",
+        "description": "Constructs a freed shader, that is one that cannot be run."
+      },
+      {
+        "declaration": "input_shader(graphics_environment&, std::vector<char32_t>&& spirV_code);",
+        "description": "Constructs a shader with the given SPIR-V code."
+      },
+      {
+        "declaration": "input_shader(input_shader&&) noexcept;",
+        "description": "input_shader is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during setup due to causes outside of the program."
+    ]
+  }
+}
