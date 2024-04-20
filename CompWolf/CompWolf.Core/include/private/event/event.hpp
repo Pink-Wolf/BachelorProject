@@ -56,7 +56,7 @@ namespace CompWolf
 		/* Invokes all subscribed objects, passing the given parameters to each. */
 		void invoke(parameter_reference parameter) const
 		{
-			for (auto& observer : internal_container(_observers))
+			for (auto& observer : internal_container(_observers)) // copy vector so it cannot be modified during loop
 			{
 				if (observer == nullptr) continue;
 				observer(*this, parameter);
@@ -112,7 +112,7 @@ namespace CompWolf
 		/* Invokes all subscribed objects, passing the given parameters to each. */
 		void invoke() const
 		{
-			for (auto& observer : internal_container(_observers))
+			for (auto& observer : internal_container(_observers)) // copy vector so it cannot be modified during loop
 			{
 				if (observer == nullptr) continue;
 				observer(*this);
