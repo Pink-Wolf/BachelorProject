@@ -88,7 +88,7 @@ export default function ClassViewer({ data }) {
 							return (
 								<Fragment key={i}>
 									<tr>
-										<td colSpan="2">
+										<td colSpan="2" hidden={x.name === undefined && x.description === undefined}>
 											<h3>{x.name}</h3>
 											<p>
 												<FormattedText>{x.description}</FormattedText>
