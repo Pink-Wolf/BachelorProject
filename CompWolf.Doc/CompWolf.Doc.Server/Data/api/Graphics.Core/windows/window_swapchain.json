@@ -22,11 +22,12 @@
       }
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "gpu",
           "briefDescription": "Returns the gpu that the window is on.",
           "overloads": [
@@ -44,6 +45,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "frames",
           "briefDescription": "Returns the individual images of the swapchain.",
           "overloads": [
@@ -61,6 +63,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "current_frame",
           "briefDescription": "Returns the image on the swapchain that is currently being drawn.",
           "overloads": [
@@ -78,6 +81,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "current_frame_index",
           "briefDescription": "Returns the index in frames() that current_frame() is at.",
           "overloads": [
@@ -94,6 +98,7 @@
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
         {
+          "type": "function",
           "name": "vulkan_swapchain",
           "briefDescription": "Returns the swapchain's vulkan_swapchain, representing a VkSwapchainKHR.",
           "overloads": [

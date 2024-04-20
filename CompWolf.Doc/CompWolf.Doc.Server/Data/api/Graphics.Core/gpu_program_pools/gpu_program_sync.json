@@ -6,23 +6,29 @@
   "briefDescription": "Aggregate type containing data used by gpu_program_pool for synchronization.",
   "detailedDescription": "Aggregate type containing data used by gpu_program_pool for synchronization between its programs' work.",
 
-  "dataMembers": [
+  "memberGroups": [
     {
-      "name": "fence",
-      "declaration": "gpu_fence fence;",
-      "briefDescription": "Fence waiting for all work to be done.",
-      "detailedDescription": "Fence waiting for all work to be done.",
-      "related": [
-        "gpu_fence"
-      ]
-    },
-    {
-      "name": "semaphore",
-      "declaration": "gpu_semaphore semaphore;",
-      "briefDescription": "Semaphore waiting for all work to be done.",
-      "detailedDescription": "Semaphore waiting for all work to be done.",
-      "related": [
-        "gpu_semaphore"
+      "items": [
+        {
+          "type": "variable",
+          "name": "fence",
+          "declaration": "gpu_fence fence;",
+          "briefDescription": "Fence waiting for all work to be done.",
+          "detailedDescription": "Fence waiting for all work to be done.",
+          "related": [
+            "gpu_fence"
+          ]
+        },
+        {
+          "type": "variable",
+          "name": "semaphore",
+          "declaration": "gpu_semaphore semaphore;",
+          "briefDescription": "Semaphore waiting for all work to be done.",
+          "detailedDescription": "Semaphore waiting for all work to be done.",
+          "related": [
+            "gpu_semaphore"
+          ]
+        }
       ]
     }
   ],

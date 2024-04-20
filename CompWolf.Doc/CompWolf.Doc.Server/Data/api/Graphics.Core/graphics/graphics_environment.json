@@ -9,27 +9,6 @@
     "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
   ],
 
-  "dataMembers": [
-    {
-      "name": "updating",
-      "declaration": "event<graphics_environment_update_parameter> updating;",
-      "briefDescription": "Event invoked before any other logic in the environment's update-method.",
-      "detailedDescription": "Event invoked before any other logic in the environment's update-method.",
-      "related": [
-        "event"
-      ]
-    },
-    {
-      "name": "updated",
-      "declaration": "event<graphics_environment_update_parameter> updated;",
-      "briefDescription": "Event invoked after all other logic in the environment's update-method.",
-      "detailedDescription": "Event invoked after all other logic in the environment's update-method.",
-      "related": [
-        "event"
-      ]
-    }
-  ],
-
   "copyable": false,
   "movable": false,
   "constructor": {
@@ -56,11 +35,12 @@
       "graphics_environment_settings"
     ]
   },
-  "methodGroups": [
+  "memberGroup": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "gpus",
           "briefDescription": "Returns the individual connections to each gpu.",
           "overloads": [
@@ -78,6 +58,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "is_main_thread",
           "briefDescription": "Whether the given thread is the main graphics thread.",
           "overloads": [
@@ -88,6 +69,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "is_this_main_thread",
           "briefDescription": "Whether the thread calling this is the main graphics thread.",
           "overloads": [
@@ -103,6 +85,7 @@
       "name": "Modifiers",
       "items": [
         {
+          "type": "function",
           "name": "update",
           "briefDescription": "Handles any accumilated jobs, like keyboard inputs.",
           "overloads": [
@@ -114,6 +97,26 @@
           "exceptions": [
             "Throws any exception thrown by code handling the jobs."
           ]
+        },
+        {
+          "type": "variable",
+          "name": "updating",
+          "declaration": "event<graphics_environment_update_parameter> updating;",
+          "briefDescription": "Event invoked before any other logic in the environment's update-method.",
+          "detailedDescription": "Event invoked before any other logic in the environment's update-method.",
+          "related": [
+            "event"
+          ]
+        },
+        {
+          "type": "variable",
+          "name": "updated",
+          "declaration": "event<graphics_environment_update_parameter> updated;",
+          "briefDescription": "Event invoked after all other logic in the environment's update-method.",
+          "detailedDescription": "Event invoked after all other logic in the environment's update-method.",
+          "related": [
+            "event"
+          ]
         }
       ]
     },
@@ -122,6 +125,7 @@
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
         {
+          "type": "function",
           "name": "vulkan_instance",
           "briefDescription": "Returns the environment's vulkan_instance, representing a VkInstance.",
           "overloads": [

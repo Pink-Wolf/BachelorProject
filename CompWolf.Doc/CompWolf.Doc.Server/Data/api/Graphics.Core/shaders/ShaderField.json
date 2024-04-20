@@ -6,18 +6,24 @@
   "briefDescription": "Whether the given type can be passed to a shader.",
   "detailedDescription": "Whether the given type can be passed to a shader. Specifically whether [[shader_field_info]] has been properly specialized for the type.",
 
-  "dataMembers": [
+  "memberGroups": [
     {
-      "name": "primitives",
-      "declaration": "typename shader_field_info<FieldType>::primitives;",
-      "briefDescription": "FieldType must denote the primitive types that it is made out of.",
-      "detailedDescription": "FieldType must have a [[type_list]] of primitive shader types, denoting the types that it is made out of."
-    },
-    {
-      "name": "primitive_offsets",
-      "declaration": "{ shader_field_info<FieldType>::primitive_offsets } -> std::same_as<const std::array<std::size_t, shader_field_info<FieldType>::primitives::size>&>;",
-      "briefDescription": "FieldType must denote the byte-position of the primitives in the FieldType.",
-      "detailedDescription": "FieldType must contain an array that, for each of the primitives making up the FieldType, denotes their byte-position relative to the beginning of the FieldType."
+      "items": [
+        {
+          "type": "variable",
+          "name": "primitives",
+          "declaration": "typename shader_field_info<FieldType>::primitives;",
+          "briefDescription": "FieldType must denote the primitive types that it is made out of.",
+          "detailedDescription": "FieldType must have a [[type_list]] of primitive shader types, denoting the types that it is made out of."
+        },
+        {
+          "type": "variable",
+          "name": "primitive_offsets",
+          "declaration": "{ shader_field_info<FieldType>::primitive_offsets } -> std::same_as<const std::array<std::size_t, shader_field_info<FieldType>::primitives::size>&>;",
+          "briefDescription": "FieldType must denote the byte-position of the primitives in the FieldType.",
+          "detailedDescription": "FieldType must contain an array that, for each of the primitives making up the FieldType, denotes their byte-position relative to the beginning of the FieldType."
+        }
+      ]
     }
   ]
 }

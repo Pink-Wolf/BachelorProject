@@ -6,18 +6,24 @@
   "briefDescription": "Used to easily define how the gpu should handle custom types.",
   "detailedDescription": "Implements everything a specialization of [[shader_field_info]] needs, which means specializations can just inherit from this instead of manually implementing the fields.\n\nTypesAndOffsets must be some [[type_value_pair]]s, specifying the target type's various fields; the pairs should specifically specify type and offset (offset can be calculated with offsetof).\nOnly fields that need to be visible by the shader needs to be specified.\nAll specified types must be [[ShaderField]]s.",
 
-  "dataMembers": [
+  "memberGroups": [
     {
-      "name": "primitives",
-      "declaration": "using primitives = type_list<[primitive types]>;",
-      "briefDescription": "The primitive types making up the class/struct.",
-      "detailedDescription": "A list of primitive shader types which makes up the class/struct."
-    },
-    {
-      "name": "primitive_offsets",
-      "declaration": "static constexpr std::array<std::size_t, [size of primitives]> primitive_offsets;",
-      "briefDescription": "The byte-position of the primitives in the class/struct.",
-      "detailedDescription": "For each of the primitives making up the class/struct, their byte-position relative to the beginning of the class/struct."
+      "items": [
+        {
+          "type": "variable",
+          "name": "primitives",
+          "declaration": "using primitives = type_list<[primitive types]>;",
+          "briefDescription": "The primitive types making up the class/struct.",
+          "detailedDescription": "A list of primitive shader types which makes up the class/struct."
+        },
+        {
+          "type": "variable",
+          "name": "primitive_offsets",
+          "declaration": "static constexpr std::array<std::size_t, [size of primitives]> primitive_offsets;",
+          "briefDescription": "The byte-position of the primitives in the class/struct.",
+          "detailedDescription": "For each of the primitives making up the class/struct, their byte-position relative to the beginning of the class/struct."
+        }
+      ]
     }
   ],
 

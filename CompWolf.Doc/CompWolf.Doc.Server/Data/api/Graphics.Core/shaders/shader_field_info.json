@@ -6,18 +6,24 @@
   "briefDescription": "Used to define how a gpu should handle types.",
   "detailedDescription": "A type trait class for types passed to shaders; That is, to be able to pass your class or struct to a shader, then you must specialize this template with your type.\n\nYou can use [[combine_shader_field]] to easily define your specialization.",
 
-  "dataMembers": [
+  "memberGroups": [
     {
-      "name": "primitives",
-      "declaration": "using primitives = type_list<[primitive types]>;",
-      "briefDescription": "The primitive types making up the class/struct.",
-      "detailedDescription": "A list of primitive shader types which makes up the class/struct."
-    },
-    {
-      "name": "primitive_offsets",
-      "declaration": "static constexpr std::array<std::size_t, [size of primitives]> primitive_offsets;",
-      "briefDescription": "The byte-position of the primitives in the class/struct.",
-      "detailedDescription": "For each of the primitives making up the class/struct, their byte-position relative to the beginning of the class/struct."
+      "items": [
+        {
+          "type": "variable",
+          "name": "primitives",
+          "declaration": "using primitives = type_list<[primitive types]>;",
+          "briefDescription": "The primitive types making up the class/struct.",
+          "detailedDescription": "A list of primitive shader types which makes up the class/struct."
+        },
+        {
+          "type": "variable",
+          "name": "primitive_offsets",
+          "declaration": "static constexpr std::array<std::size_t, [size of primitives]> primitive_offsets;",
+          "briefDescription": "The byte-position of the primitives in the class/struct.",
+          "detailedDescription": "For each of the primitives making up the class/struct, their byte-position relative to the beginning of the class/struct."
+        }
+      ]
     }
   ],
 

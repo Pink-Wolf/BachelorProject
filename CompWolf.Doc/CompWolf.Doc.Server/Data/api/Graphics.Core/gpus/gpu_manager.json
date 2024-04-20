@@ -33,11 +33,12 @@
       "graphics_environment_settings"
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "gpus",
           "briefDescription": "Returns the individual connections to each gpu.",
           "overloads": [

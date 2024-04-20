@@ -6,18 +6,24 @@
   "briefDescription": "Parameter for [[window]]'s constructor.",
   "detailedDescription": "Aggregate type used by [[window]]'s constructor to specify its behaviour.",
 
-  "dataMembers": [
+  "memberGroups": [
     {
-      "name": "name",
-      "declaration": "std::string name;",
-      "briefDescription": "The name of the window.",
-      "detailedDescription": "The name of the window.\nIf the window has a border, then this may for example be displayed on the border."
-    },
-    {
-      "name": "pixel_size",
-      "declaration": "std::pair<int, int> pixel_size;",
-      "briefDescription": "The initial size of the window, in pixels.",
-      "detailedDescription": "The initial width and height of the window, in pixels.\nThis size does not include any border around the window."
+      "items": [
+        {
+          "type": "variable",
+          "name": "name",
+          "declaration": "std::string name;",
+          "briefDescription": "The name of the window.",
+          "detailedDescription": "The name of the window.\nIf the window has a border, then this may for example be displayed on the border."
+        },
+        {
+          "type": "variable",
+          "name": "pixel_size",
+          "declaration": "std::pair<int, int> pixel_size;",
+          "briefDescription": "The initial size of the window, in pixels.",
+          "detailedDescription": "The initial width and height of the window, in pixels.\nThis size does not include any border around the window."
+        }
+      ]
     }
   ],
 

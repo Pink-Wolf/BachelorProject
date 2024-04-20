@@ -8,45 +8,6 @@
 
   "baseClasses": [ "basic_freeable" ],
 
-  "dataMembers": [
-    {
-      "name": "rebuilding_surface",
-      "declaration": "event<window_rebuild_surface_parameters> rebuilding_surface;",
-      "briefDescription": "Event invoked before the window's surface is rebuild.",
-      "detailedDescription": "Event invoked before the window's surface is rebuild, for example because the size of the window changed.",
-      "related": [
-        "event"
-      ]
-    },
-    {
-      "name": "rebuild_surface",
-      "declaration": "event<window_rebuild_surface_parameters> rebuild_surface;",
-      "briefDescription": "Event invoked after the window's surface is rebuild.",
-      "detailedDescription": "Event invoked after the window's surface is rebuild, for example because the size of the window changed.",
-      "related": [
-        "event"
-      ]
-    },
-    {
-      "name": "freeing",
-      "declaration": "event<void> freeing;",
-      "briefDescription": "Event invoked before the window is freed.",
-      "detailedDescription": "Event invoked before the window is freed.",
-      "related": [
-        "event"
-      ]
-    },
-    {
-      "name": "freed",
-      "declaration": "event<void> freed;",
-      "briefDescription": "Event invoked after the window is freed.",
-      "detailedDescription": "Event invoked after the window is freed.",
-      "related": [
-        "event"
-      ]
-    }
-  ],
-
   "copyable": false,
   "movable": true,
   "constructor": {
@@ -77,11 +38,12 @@
       "window_settings"
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "gpu",
           "briefDescription": "Returns the gpu that the window is on.",
           "overloads": [
@@ -99,6 +61,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "pixel_size",
           "briefDescription": "Returns the size of the window, in pixels.",
           "overloads": [
@@ -112,6 +75,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "running",
           "briefDescription": "Returns whether the window is not freed.",
           "overloads": [
@@ -127,6 +91,7 @@
       "name": "Modifiers",
       "items": [
         {
+          "type": "function",
           "name": "update_image",
           "briefDescription": "Makes the window display what has been drawn onto it.",
           "overloads": [
@@ -137,6 +102,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "set_pixel_size",
           "briefDescription": "Sets the size of the window, in pixels.",
           "overloads": [
@@ -151,6 +117,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "close",
           "briefDescription": "Frees the window.",
           "overloads": [
@@ -163,10 +130,37 @@
       ]
     },
     {
+      "name": "freeable",
+      "description": "While not inherited from [[freeable]], these members are related to how the window is inheriting from [[freeable]].",
+      "items": [
+        {
+          "type": "variable",
+          "name": "freeing",
+          "declaration": "event<void> freeing;",
+          "briefDescription": "Event invoked before the window is freed.",
+          "detailedDescription": "Event invoked before the window is freed.",
+          "related": [
+            "event"
+          ]
+        },
+        {
+          "type": "variable",
+          "name": "freed",
+          "declaration": "event<void> freed;",
+          "briefDescription": "Event invoked after the window is freed.",
+          "detailedDescription": "Event invoked after the window is freed.",
+          "related": [
+            "event"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Vulkan-related",
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
         {
+          "type": "function",
           "name": "surface",
           "briefDescription": "Returns the surface of the window.",
           "overloads": [
@@ -184,6 +178,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "swapchain",
           "briefDescription": "Returns the swapchain of the window.",
           "overloads": [
@@ -198,6 +193,26 @@
           ],
           "related": [
             "window_swapchain"
+          ]
+        },
+        {
+          "type": "variable",
+          "name": "rebuilding_surface",
+          "declaration": "event<window_rebuild_surface_parameters> rebuilding_surface;",
+          "briefDescription": "Event invoked before the window's surface is rebuild.",
+          "detailedDescription": "Event invoked before the window's surface is rebuild, for example because the size of the window changed.",
+          "related": [
+            "event"
+          ]
+        },
+        {
+          "type": "variable",
+          "name": "rebuild_surface",
+          "declaration": "event<window_rebuild_surface_parameters> rebuild_surface;",
+          "briefDescription": "Event invoked after the window's surface is rebuild.",
+          "detailedDescription": "Event invoked after the window's surface is rebuild, for example because the size of the window changed.",
+          "related": [
+            "event"
           ]
         }
       ]

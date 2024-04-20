@@ -32,11 +32,12 @@
       "gpu_manager"
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "families",
           "briefDescription": "Returns the groups of threads on the gpu.",
           "overloads": [
@@ -54,6 +55,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "index_of_family",
           "briefDescription": "Returns the index of a given family.",
           "overloads": [
@@ -70,6 +72,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "work_types",
           "briefDescription": "Returns the types of work doable by the gpu.",
           "overloads": [
@@ -89,6 +92,7 @@
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
         {
+          "type": "function",
           "name": "vulkan_device",
           "briefDescription": "Returns the gpu's vulkan_device, representing a VkDevice.",
           "overloads": [
@@ -99,6 +103,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "vulkan_physical_device",
           "briefDescription": "Returns the gpu's vulkan_physical_device, representing a VkPhysicalDevice.",
           "overloads": [
@@ -109,6 +114,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "vulkan_instance",
           "briefDescription": "Returns the gpu's vulkan_instance, representing a VkInstance.",
           "overloads": [

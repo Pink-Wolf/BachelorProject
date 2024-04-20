@@ -38,34 +38,8 @@ export default function ClassViewer({ data }) {
 				</p>
 			</Fragment>
 		}>
-			<section hidden={is_empty(data.dataMembers)} id="DataMembers">
-				<h2>Data Members</h2>
-				<table className="memberTable">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Description</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data.dataMembers?.map((x, i) => {
-							return (
-								<tr key={i}>
-									<td>
-										<MemberReference name={x.name} />
-									</td>
-									<td>
-										<FormattedText>{x.briefDescription}</FormattedText>
-									</td>
-								</tr>
-							)
-						})}
-					</tbody>
-				</table>
-			</section>
-
-			<section hidden={is_empty(data.methodGroups) && !data.hasOwnProperty("constructor")} id="MemberFunctions">
-				<h2>Member Functions</h2>
+			<section hidden={is_empty(data.memberGroups) && !data.hasOwnProperty("constructor")} id="MemberFunctions">
+				<h2>Members</h2>
 				<table className="memberTable">
 					<thead>
 						<tr>
@@ -84,7 +58,7 @@ export default function ClassViewer({ data }) {
 								{data.constructor?.briefDescription}
 							</td>
 						</tr>
-						{data.methodGroups?.map((x, i) => {
+						{data.memberGroups?.map((x, i) => {
 							return (
 								<Fragment key={i}>
 									<tr>

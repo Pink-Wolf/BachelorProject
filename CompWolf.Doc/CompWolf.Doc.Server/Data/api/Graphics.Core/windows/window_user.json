@@ -33,11 +33,12 @@
       "window"
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "target_window",
           "briefDescription": "The window that the object targets.",
           "overloads": [
@@ -55,6 +56,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "has_window",
           "briefDescription": "Protected member access. Whether the object is actually referencing a window.",
           "overloads": [
@@ -70,6 +72,7 @@
       "name": "Modifiers",
       "items": [
         {
+          "type": "function",
           "name": "set_window",
           "briefDescription": "Protected member access. Sets what window the object is referencing.",
           "overloads": [
@@ -85,6 +88,7 @@
       "name": "Virtual",
       "items": [
         {
+          "type": "function",
           "name": "on_rebuild_surface",
           "briefDescription": "Invoked after the target window's surface is rebuild.",
           "overloads": [

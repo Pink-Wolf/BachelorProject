@@ -38,11 +38,12 @@
       "Throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of programs."
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "gpu",
           "briefDescription": "Returns the gpu that the pool is on.",
           "overloads": [
@@ -60,6 +61,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "family",
           "briefDescription": "Returns the family of threads that the pool is on.",
           "overloads": [
@@ -77,6 +79,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "thread",
           "briefDescription": "Returns the thread that the pool is on.",
           "overloads": [
@@ -94,6 +97,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "family_index",
           "briefDescription": "Returns the index of family() in gpu().families().",
           "overloads": [
@@ -108,6 +112,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "thread_index",
           "briefDescription": "Returns the index of thread() in family().threads.",
           "overloads": [
@@ -122,6 +127,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "latest_synchronization",
           "briefDescription": "Returns the pool's latest synchronization-data.",
           "overloads": [
@@ -139,6 +145,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "working",
           "briefDescription": "Returns whether any of the pool's programs are still running.",
           "overloads": [
@@ -154,6 +161,7 @@
       "name": "Modifiers",
       "items": [
         {
+          "type": "function",
           "name": "wait",
           "briefDescription": "Waits until all of the pool's programs are done, and then returns.",
           "overloads": [
@@ -164,6 +172,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "push_synchronization",
           "briefDescription": "Replaces the latest synchronization-data.",
           "overloads": [
@@ -183,6 +192,7 @@
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
         {
+          "type": "function",
           "name": "vulkan_pool",
           "briefDescription": "Returns the pool's vulkan_command_pool, representing a VkCommandPool.",
           "overloads": [
@@ -193,6 +203,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "last_vulkan_fence",
           "briefDescription": "Returns the latest synchronization-object's vulkan_fence, representing a VkFence.",
           "overloads": [
@@ -206,6 +217,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "last_vulkan_semaphore",
           "briefDescription": "Returns the latest synchronization-object's vulkan_semaphore, representing a VkSemaphore.",
           "overloads": [

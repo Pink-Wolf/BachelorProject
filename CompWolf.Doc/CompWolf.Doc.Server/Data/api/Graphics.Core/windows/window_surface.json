@@ -22,11 +22,12 @@
       }
     ]
   },
-  "methodGroups": [
+  "memberGroups": [
     {
       "name": "Accessors",
       "items": [
         {
+          "type": "function",
           "name": "gpu",
           "briefDescription": "Returns the gpu that the window is on.",
           "overloads": [
@@ -50,6 +51,7 @@
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
         {
+          "type": "function",
           "name": "vulkan_surface",
           "briefDescription": "Returns the surface's vulkan_surface, representing a VkSurfaceKHR.",
           "overloads": [
@@ -60,6 +62,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "vulkan_format",
           "briefDescription": "Returns the surface's surface_format_handle, representing a surface_format_info*.",
           "overloads": [
@@ -70,6 +73,7 @@
           ]
         },
         {
+          "type": "function",
           "name": "vulkan_render_pass",
           "briefDescription": "Returns the surface's vulkan_render_pass, representing a VkRenderPass.",
           "overloads": [
