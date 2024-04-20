@@ -16,7 +16,7 @@ function BaseFormatter({ children, regexBegin, regexEnd, Formatter, RestFormatte
 }
 function ListFormatter({ children, NextFormatting, level = 0 }) {
 	let organizedChildren = children
-		.split(/\r?\n/)
+		.split(/(\r?\n)/)
 		.reduce((output, line) => {
 			var level = 0;
 			for (level = 0; level < line.length && line[level] === `-`; ++level);
