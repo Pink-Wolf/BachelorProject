@@ -4,7 +4,14 @@
   "namespace": "CompWolf",
   "declaration": "template <typename... TypesAndOffsets> struct new_shader_field;",
   "briefDescription": "Used to easily define how the gpu should handle custom types.",
-  "detailedDescription": "Implements everything a specialization of [[shader_field_info]] needs, which means specializations can just inherit from this instead of manually implementing the fields.\n\nTypesAndOffsets must be some [[type_value_pair]]s, specifying the target type's various fields; the pairs should specifically specify type and offset (offset can be calculated with offsetof).\nOnly fields that need to be visible by the shader needs to be specified.\nAll specified types must be [[ShaderField]]s.",
+  "detailedDescription": "Implements everything a specialization of [[shader_field_info]] needs, which means specializations can just inherit from this instead of manually implementing the fields.",
+
+  "templateParameters": [
+    {
+      "name": "TypesAndOffsets",
+      "description": "Must be some [[type_value_pair]]s, specifying the target type's various data members. The pairs should specifically specify their type and offset (offset can be calculated with offsetof).\nOnly fields that need to be visible by the shader needs to be specified.\nAll specified types must be [[ShaderField]]s themself.\nIf any of this is not fulfilled, then a compile-time error is issued."
+    }
+  ],
 
   "memberGroups": [
     {

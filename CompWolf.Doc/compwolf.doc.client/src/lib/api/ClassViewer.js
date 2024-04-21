@@ -38,6 +38,30 @@ export default function ClassViewer({ data }) {
 				</p>
 			</Fragment>
 		}>
+			<section hidden={is_empty(data.templateParameters)}>
+				<h2>Template Parameters</h2>
+				<table className="memberTable">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						{data.templateParameters?.map((x, i) => {
+							return (
+								<tr key={i}>
+									<td> {x.name} </td>
+									<td>
+										<FormattedText>{x.description}</FormattedText>
+									</td>
+								</tr>
+							)
+						})}
+					</tbody>
+				</table>
+			</section>
+			
 			<section hidden={is_empty(data.memberGroups) && !data.hasOwnProperty("constructor")} id="MemberFunctions">
 				<h2>Members</h2>
 				<table className="memberTable">
