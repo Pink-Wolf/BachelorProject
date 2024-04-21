@@ -165,6 +165,7 @@
     <ClInclude Include="include\private\other\enum_bitset.hpp" />
     <ClInclude Include="include\private\other\freeable.hpp" />
     <ClInclude Include="include\private\other\owned.hpp" />
+    <ClInclude Include="include\private\type_traits\dependent_bool.hpp" />
     <ClInclude Include="include\private\type_traits\dereferenceable_to.hpp" />
     <ClInclude Include="include\private\type_traits\explicitly_convertible_to.hpp" />
     <ClInclude Include="include\private\type_traits\is_assignable.hpp" />

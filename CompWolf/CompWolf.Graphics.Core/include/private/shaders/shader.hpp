@@ -69,7 +69,7 @@ namespace CompWolf::Graphics
 	template <typename UniformDataTypeList>
 	class shader : public Private::base_shader
 	{
-		static_assert(std::same_as<UniformDataTypeList, UniformDataTypeList>,
+		static_assert(dependent_false<UniformDataTypeList>,
 			"shader was not given type_lists of type_value_pairs determining data type and binding index."
 			);
 	};

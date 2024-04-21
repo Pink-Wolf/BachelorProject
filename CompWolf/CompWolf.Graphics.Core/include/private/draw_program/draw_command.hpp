@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <concepts>
+#include <compwolf_type_traits>
 
 namespace CompWolf::Graphics
 {
@@ -52,7 +53,7 @@ namespace CompWolf::Graphics
 	template <typename PipelineType>
 	class draw_command
 	{
-		static_assert(std::same_as<PipelineType, PipelineType>, "draw_command was not given a proper pipeline");
+		static_assert(dependent_false<PipelineType>, "draw_command was not given a proper pipeline");
 	};
 
 	template

@@ -174,7 +174,7 @@ namespace CompWolf::Graphics
 	template <typename VertexShaderType, typename FragmentShaderType>
 	class draw_pipeline
 	{
-		static_assert(std::same_as<VertexShaderType, VertexShaderType>, "draw_pipeline was not given a proper vertex and fragment shader");
+		static_assert(dependent_false<VertexShaderType>, "draw_pipeline was not given a proper vertex and fragment shader");
 	};
 
 	template
