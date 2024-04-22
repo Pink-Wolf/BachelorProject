@@ -62,13 +62,13 @@ namespace CompWolf::Graphics
 		, typename... FragmentVertexTypes, std::size_t... UniformIndexIndices
 		>
 	class draw_command<draw_pipeline
-		< vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>
-		, shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>
+		< input_shader<VertexType, type_value_pair<UniformVertexTypes, UniformVertexIndices>...>
+		, shader<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>
 		>>
 	{
 	private: // fields
-		using vertex_shader_type = vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>;
-		using fragment_shader_type = shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>;
+		using vertex_shader_type = input_shader<VertexType, type_value_pair<UniformVertexTypes, UniformVertexIndices>...>;
+		using fragment_shader_type = shader<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>;
 		using pipeline_type = draw_pipeline<vertex_shader_type, fragment_shader_type>;
 		pipeline_type* _pipeline;
 		Private::draw_data _data;
@@ -112,9 +112,9 @@ namespace CompWolf::Graphics
 			{ .indices = &indices
 			, .vertices = &vertices
 			, .uniform_vertex_data = std::vector<gpu_memory*>({&uniform_vertex_data.memory()...})
-			, .uniform_vertex_indices = &vertex_shader_type::uniform_data_indices
+			, .uniform_vertex_indices = &vertex_shader_type::field_indices
 			, .uniform_fragment_data = std::vector<gpu_memory*>({&uniform_fragment_data.memory()...})
-			, .uniform_fragment_indices = &fragment_shader_type::uniform_data_indices
+			, .uniform_fragment_indices = &fragment_shader_type::field_indices
 			}
 		{}
 	};

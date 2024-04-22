@@ -6,6 +6,7 @@
 #include "window"
 #include "gpu_program"
 
+#include <compwolf_type_traits>
 #include <utility>
 #include <vector>
 #include <owned>
@@ -32,7 +33,7 @@ namespace CompWolf::Graphics
 			std::vector<uniform_data_type> fragment_uniform_types;
 			const std::vector<std::size_t>* fragment_uniform_indices;
 
-			base_shader* vertex_shader;
+			base_shader* input_shader;
 			base_shader* fragment_shader;
 		};
 
@@ -183,14 +184,14 @@ namespace CompWolf::Graphics
 		, typename... FragmentVertexTypes, std::size_t... UniformIndexIndices
 		>
 	class draw_pipeline
-		< vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>
-		, shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>
+		< input_shader<VertexType, type_value_pair<UniformVertexTypes, UniformVertexIndices>...>
+		, shader<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>
 		>
 		: public Private::base_draw_pipeline
 	{
 	public: // fields
-		using vertex_shader_type = vertex_shader<VertexType, type_list<type_value_pair<UniformVertexTypes, UniformVertexIndices>...>>;
-		using fragment_shader_type = shader<type_list<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>>;
+		using vertex_shader_type = input_shader<VertexType, type_value_pair<UniformVertexTypes, UniformVertexIndices>...>;
+		using fragment_shader_type = shader<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>;
 
 	public: // constructors
 		draw_pipeline() = default;
@@ -201,7 +202,7 @@ namespace CompWolf::Graphics
 			free();
 		}
 
-		draw_pipeline(vertex_shader_type& vertex_shader, fragment_shader_type& fragment_shader)
+		draw_pipeline(vertex_shader_type& input_shader, fragment_shader_type& fragment_shader)
 			: base_draw_pipeline(Private::draw_pipeline_data
 			{
 				.input_types = &shader_field_info_handles<VertexType, std::vector<Private::shader_field_info_handle>>(),
@@ -213,15 +214,15 @@ namespace CompWolf::Graphics
 						? Private::draw_pipeline_data::uniform_data_type::image
 						: Private::draw_pipeline_data::uniform_data_type::buffer
 					...}),
-				.vertex_uniform_indices = &vertex_shader_type::uniform_data_indices,
+				.vertex_uniform_indices = &vertex_shader_type::field_indices,
 				.fragment_uniform_types = std::vector<Private::draw_pipeline_data::uniform_data_type>
 					({
 						std::same_as<FragmentVertexTypes, shader_image>
 						? Private::draw_pipeline_data::uniform_data_type::image
 						: Private::draw_pipeline_data::uniform_data_type::buffer
 					...}),
-				.fragment_uniform_indices = &fragment_shader_type::uniform_data_indices,
-				.vertex_shader = static_cast<Private::base_shader*>(&vertex_shader),
+				.fragment_uniform_indices = &fragment_shader_type::field_indices,
+				.input_shader = static_cast<Private::base_shader*>(&input_shader),
 				.fragment_shader = static_cast<Private::base_shader*>(&fragment_shader),
 			}
 		)
@@ -229,9 +230,9 @@ namespace CompWolf::Graphics
 	};
 
 	template <typename VertexShaderType, typename FragmentShaderType>
-	auto new_draw_pipeline(VertexShaderType& vertex_shader, FragmentShaderType& fragment_shader)
+	auto new_draw_pipeline(VertexShaderType& input_shader, FragmentShaderType& fragment_shader)
 	{
-		return draw_pipeline<VertexShaderType, FragmentShaderType>(vertex_shader, fragment_shader);
+		return draw_pipeline<VertexShaderType, FragmentShaderType>(input_shader, fragment_shader);
 	}
 }
 

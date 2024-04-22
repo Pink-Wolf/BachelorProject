@@ -143,14 +143,14 @@ namespace CompWolf::Graphics
 				VkPipelineShaderStageCreateInfo vertexCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_VERTEX_BIT,
-					.module = Private::to_vulkan(_pipeline_data->vertex_shader->shader_module(gpu_device)),
+					.module = Private::to_vulkan(_pipeline_data->input_shader->vulkan_shader(gpu_device)),
 					.pName = "main",
 				};
 
 				VkPipelineShaderStageCreateInfo fragCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-					.module = Private::to_vulkan(_pipeline_data->fragment_shader->shader_module(gpu_device)),
+					.module = Private::to_vulkan(_pipeline_data->fragment_shader->vulkan_shader(gpu_device)),
 					.pName = "main",
 				};
 

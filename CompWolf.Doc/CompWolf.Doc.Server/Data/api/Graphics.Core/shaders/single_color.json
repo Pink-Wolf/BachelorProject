@@ -1,0 +1,203 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct single_color;",
+  "briefDescription": "An amount of a primary color.",
+  "detailedDescription": "An amount of a primary color, which can be between no color and the max amount visible on a screen.\nThis is used by [[opaque_color]] and [[transparent_color]].",
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "constexpr single_color() noexcept;",
+        "description": "Constructs a single_color with no color."
+      },
+      {
+        "declaration": "explicit constexpr single_color(long double) noexcept;",
+        "description": "Constructs a single_color with the given value, where 0 is no color and 1 is the max amount of color.\nValues below 0 or above 1 are clamped to 0/1 respectively."
+      },
+      {
+        "declaration": "explicit constexpr single_color(double) noexcept;",
+        "description": "Like (2)."
+      },
+      {
+        "declaration": "explicit constexpr single_color(float) noexcept;",
+        "description": "Like (2)."
+      },
+      {
+        "declaration": "constexpr auto operator\"\"_scolor(long double) -> single_color",
+        "description": "Like (2), but a user defined literal. For example, the max amount of color would be 1._scolor."
+      },
+      {
+        "declaration": "explicit constexpr single_color(uint8_t) noexcept;",
+        "description": "Constructs a single_color with the given value, where 0 is no color and 255 is the max amount of color."
+      },
+      {
+        "declaration": "constexpr single_color(const single_color&) noexcept;",
+        "description": "single_color is copyable."
+      },
+      {
+        "declaration": "constexpr single_color(single_color&&) noexcept;",
+        "description": "single_color is movable."
+      }
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "type": "function",
+          "name": "set",
+          "briefDescription": "Sets the color to the given value.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto set(long double) const noexcept -> single_color&;",
+              "description": "Sets the color to the given value, where 0 is no color and 1 is the max amount of color.\nValues below 0 or above 1 are clamped to 0/1 respectively."
+            },
+            {
+              "declaration": "constexpr auto set(double) const noexcept -> single_color&;",
+              "description": "Like (1)."
+            },
+            {
+              "declaration": "constexpr auto set(float) const noexcept -> single_color&;",
+              "description": "Like (1)."
+            },
+            {
+              "declaration": "constexpr auto set(uint8_t) const noexcept -> single_color&;",
+              "description": "Sets the color to the given value, where 0 is no color and 255 is the max amount of color."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Operators",
+      "items": [
+        {
+          "type": "function",
+          "name": "long double",
+          "briefDescription": "[[single_color]] can be explicitly converted to a long double.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit operator long double() const;",
+              "description": "[[single_color]] can be explicit converted to a long double, where no color is 0 and the max amount of color is 1."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "double",
+          "briefDescription": "[[single_color]] can be explicitly converted to a double.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit operator double() const;",
+              "description": "[[single_color]] can be explicit converted to a double, where no color is 0 and the max amount of color is 1."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "float",
+          "briefDescription": "[[single_color]] can be explicitly converted to a float.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit operator float() const;",
+              "description": "[[single_color]] can be explicit converted to a float, where no color is 0 and the max amount of color is 1."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "uint8_t",
+          "briefDescription": "[[single_color]] can be explicitly converted to a uint8_t.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit operator uint8_t() const;",
+              "description": "[[single_color]] can be explicit converted to a uint8_t, where no color is 0 and the max amount of color is 255."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator+",
+          "briefDescription": "2 [[single_color]]s can be added together.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator+(single_color, single_color) -> single_color;",
+              "description": "2 [[single_color]]s can be added together."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator-",
+          "briefDescription": "A [[single_color]] can be subtracted from another.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator-(single_color, single_color) -> single_color;",
+              "description": "A [[single_color]] can be subtracted from another."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator*",
+          "briefDescription": "2 [[single_color]]s can be multiplied together.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator*(single_color, single_color) -> single_color;",
+              "description": "2 [[single_color]]s can be multiplied together."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator/",
+          "briefDescription": "A [[single_color]] can be divided by another.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator/(single_color, single_color) -> single_color;",
+              "description": "A [[single_color]] can be divided by another."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator<=>",
+          "briefDescription": "2 [[single_color]]s can be compared.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator<=>(single_color, single_color) -> std::strong_ordering;",
+              "description": "2 [[single_color]]s can be compared."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator==",
+          "briefDescription": "2 [[single_color]]s can be compared.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator==(single_color, single_color) -> bool;",
+              "description": "2 [[single_color]]s can be compared."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "operator!=",
+          "briefDescription": "2 [[single_color]]s can be compared.",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit auto operator!=(single_color, single_color) -> bool;",
+              "description": "2 [[single_color]]s can be compared."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

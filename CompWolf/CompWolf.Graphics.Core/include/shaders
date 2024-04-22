@@ -1,3 +1,12 @@
-#include "private/shaders/shader_field.hpp"
+#include "private/shaders/color.hpp"
+#include "private/shaders/shader_int.hpp"
+
+#include "private/shaders/shader_field_info.hpp"
+#include "private/shaders/primitive_shader_field.hpp"
+#include "private/shaders/new_shader_field.hpp"
+
+#include "private/shaders/shader_field_info_handles.hpp"
+#include "private/shaders/shader_field_info_offsets.hpp"
+
 #include "private/shaders/shader.hpp"
-#include "private/shaders/vertex_shader.hpp"
+#include "private/shaders/input_shader.hpp"

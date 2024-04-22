@@ -3,12 +3,13 @@
 
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>
+#include "gpus"
 
 namespace CompWolf::Graphics
 {
 	/******************************** getters ********************************/
 
-	auto Private::base_shader::shader_module(const gpu_connection& vulkan_device) const -> Private::vulkan_shader
+	auto Private::base_shader::vulkan_shader(const gpu_connection& vulkan_device) const -> Private::vulkan_shader
 	{
 		auto compiled_shader_iterator = _compiled_shader.find(&vulkan_device);
 		Private::vulkan_shader shader_module_pointer;
@@ -24,8 +25,8 @@ namespace CompWolf::Graphics
 
 				VkShaderModuleCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-					.codeSize = _raw_code.size() * sizeof(shader_code_char_type),
-					.pCode = reinterpret_cast<const uint32_t*>(_raw_code.data()),
+					.codeSize = _raw_code.size() * sizeof(uint32_t),
+					.pCode = _raw_code.data(),
 				};
 
 				auto result = vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
@@ -49,9 +50,9 @@ namespace CompWolf::Graphics
 
 	void Private::base_shader::free() noexcept
 	{
-		for (auto& [vulkan_device, shader_module] : _compiled_shader)
+		for (auto& [vulkan_device, vulkan_shader] : _compiled_shader)
 		{
-			vkDestroyShaderModule(Private::to_vulkan(vulkan_device->vulkan_device()), Private::to_vulkan(shader_module), nullptr);
+			vkDestroyShaderModule(Private::to_vulkan(vulkan_device->vulkan_device()), Private::to_vulkan(vulkan_shader), nullptr);
 		}
 
 		_environment = nullptr;

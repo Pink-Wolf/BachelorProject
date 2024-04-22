@@ -12,29 +12,33 @@
 using namespace CompWolf;
 using namespace CompWolf::Graphics;
 
-auto load_shader(std::string path) -> shader_code_type
+auto load_shader(std::string path) -> std::vector<uint32_t>
 {
-    static const auto word_size = sizeof(shader_code_char_type);
+    static const auto word_size = sizeof(char);
 
     std::ifstream stream(path, std::ios::binary | std::ios::in | std::ios::ate);
     if (!stream.is_open()) throw std::runtime_error("Could not open " + path + "; make sure to run compile.bat to create the file.");
 
-    shader_code_type data;
+    std::vector<char> data;
     data.reserve(stream.tellg() * word_size);
 
     stream.seekg(0);
     char new_word[word_size];
     while (stream.read(new_word, word_size))
     {
-        shader_code_char_type new_data = 0;
+        char new_data = 0;
         for (std::size_t i = 0; i < word_size; ++i)
         {
-            new_data |= static_cast<shader_code_char_type>(new_word[i]) << (i * 8);
+            new_data |= static_cast<char>(new_word[i]) << (i * 8);
         }
         data.push_back(new_data);
     }
 
-    return data;
+    std::vector<uint32_t> output_data;
+    output_data.resize(data.size() / 4);
+    std::memcpy(output_data.data(), data.data(), data.size());
+
+    return output_data;
 }
 
 struct vertex
@@ -42,7 +46,7 @@ struct vertex
     float2 position;
     float2 uv;
 };
-template<> struct shader_field_info<vertex> : public combine_shader_fields<
+template<> struct shader_field_info<vertex> : public new_shader_field<
     type_value_pair<float2, offsetof(vertex, position)>,
     type_value_pair<float2, offsetof(vertex, uv)>
 > {};
@@ -66,8 +70,8 @@ int main()
             }
         );
 
-        auto vert_shader = vertex_shader<vertex, type_list<type_value_pair<transform, 9>>>(environment, load_shader("vertex.spv"));
-        auto frag_shader = shader<type_list<type_value_pair<shader_image, 4>>>(environment, load_shader("frag.spv"));
+        auto vert_shader = input_shader<vertex, type_value_pair<transform, 9>>(environment, load_shader("vertex.spv"));
+        auto frag_shader = shader<type_value_pair<shader_image, 4>>(environment, load_shader("frag.spv"));
         auto pipeline = new_draw_pipeline(vert_shader, frag_shader);
 
         gpu_vertex_buffer<vertex> vertices(win.device(), {
@@ -83,10 +87,10 @@ int main()
 
         gpu_image_buffer image(win.device(),
             {
-                {{255,255,255,255}, {255,255,255,255},  {255,255,255,255},  {255,255,255,255}},
-                {{255,0,0,255},     {0,255,0,255},      {0,0,255,255},      {255,0,0,255}},
-                {{255,0,0,255},     {0,255,0,255},      {0,0,255,255},      {255,0,0,255}},
-                {{0,0,0,255},       {0,0,0,255},        {0,0,0,255},        {0,0,0,255}}
+                {{1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}},
+                {{1,0,0,1}, {0,1,0,1}, {0,0,1,1}, {1,0,0,1}},
+                {{1,0,0,1}, {0,1,0,1}, {0,0,1,1}, {1,0,0,1}},
+                {{0,0,0,1}, {0,0,0,1}, {0,0,0,1}, {0,0,0,1}}
             }
         );
         gpu_uniform_buffer<float> tinter(win.device(), .75f);
@@ -101,13 +105,12 @@ int main()
             draw_program_settings{
                 .background = { 0, 0, 0 },
             },
-            [&drawer_command](const draw_program_input& args) { return drawer_command(args); }
+            [&drawer_command](const draw_program_input& args) { drawer_command(args); }
         );
 
         std::chrono::steady_clock clock;
         auto start_time = clock.now();
         auto time = clock.now();
-        const std::chrono::duration<double> min_delta_time(1 / 60.);
 
         double total_time = 0;
         std::size_t frames_since_last_print = 0;
@@ -127,10 +130,7 @@ int main()
             environment.update();
 
             {
-                auto new_time = clock.now();
-                auto delta_time = std::chrono::duration_cast<std::chrono::duration<double>>(new_time - time);
-                if (delta_time < min_delta_time) std::this_thread::sleep_for(min_delta_time - delta_time);
-                time = new_time;
+                time = clock.now();
                 total_time = std::chrono::duration<double>(time - start_time).count();
             }
 

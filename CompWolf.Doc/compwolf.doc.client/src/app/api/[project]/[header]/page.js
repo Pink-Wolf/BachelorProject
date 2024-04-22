@@ -2,12 +2,15 @@ import { getHeader, getOverview } from "@/lib/api/Entity";
 import HeaderViewer from "@/lib/api/HeaderViewer";
 
 export default async function HeaderApi({ params }) {
+    let project = decodeURIComponent(params.project)
+    let header = decodeURIComponent(params.header)
+
     const overview = await getOverview()
     const data = {
-        ...(await getHeader(params.project, params.header)),
+        ...(await getHeader(project, header)),
         entities: overview
-            .projects.find((x) => { return x.name === params.project })
-            .headers.find((x) => { return x.name === params.header })
+            .projects.find((x) => { return x.name === project })
+            .headers.find((x) => { return x.name === header })
             .entities
     }
 

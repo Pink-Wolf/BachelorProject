@@ -99,28 +99,16 @@
     <ClInclude Include="include\private\window\window_user.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shaders\shader_field.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\shader_field_type.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shaders\vertex_shader.hpp">
+    <ClInclude Include="include\private\shaders\input_shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\gpu_program\gpu_buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shaders\shader_field\shader_field_info.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\shaders\shader_field\primitive_shader_field.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\shaders\shader_field\combine_shader_fields.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\shaders\shader_field\shader_field_info_extractor.hpp">
+    <ClInclude Include="include\private\shaders\primitive_shader_field.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\gpu_program\gpu_program.hpp">
@@ -174,7 +162,22 @@
     <ClInclude Include="include\shaders">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\shaders\uniform_shader_field.hpp">
+    <ClInclude Include="include\private\shaders\shader_field_info.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shaders\color.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shaders\shader_field_info_handles.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shaders\shader_field_info_offsets.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shaders\new_shader_field.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shaders\shader_int.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -227,7 +230,7 @@
     <ClCompile Include="src\window_user.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader_field.cpp">
+    <ClCompile Include="src\primitive_shader_field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gpu_buffer.cpp">

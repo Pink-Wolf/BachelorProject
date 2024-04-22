@@ -2,11 +2,16 @@ import { getEntity } from "@/lib/api/Entity";
 import EntityViewer from "@/lib/api/EntityViewer";
 
 export default async function SubEntityPage({ params }) {
-    const owner = await getEntity(params.project, params.header, params.entity)
-    const target = params.subentity
+    let project = decodeURIComponent(params.project)
+    let header = decodeURIComponent(params.header)
+    let entity = decodeURIComponent(params.entity)
+    let subentity = decodeURIComponent(params.subentity)
+
+    const owner = await getEntity(project, header, entity)
+    const target = subentity
 
     var data = undefined
-    if (target == params.entity) {
+    if (target == entity) {
         data = { ...owner.constructor, type: "function" }
     } else owner.memberGroups?.find((i) => {
         i.items.find((j) => {

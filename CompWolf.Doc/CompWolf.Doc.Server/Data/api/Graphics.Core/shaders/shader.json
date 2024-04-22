@@ -4,9 +4,16 @@
   "namespace": "CompWolf",
   "declaration": "template <typename... FieldTypes> class shader;",
   "briefDescription": "Some code that can be run on a gpu.",
-  "detailedDescription": "Some code that can be run on a gpu.\nA shader receives some inputs, and for each input runs its code and outputs some values.\n\nFieldTypes specifies the type of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).",
+  "detailedDescription": "Some code that can be run on a gpu.\nA shader receives some inputs, and for each input runs its code and outputs some values.",
   "warnings": [
     "It is undefined behaviour to have FieldTypes not match what is specified in the actual shader-code."
+  ],
+
+  "templateParameters": [
+    {
+      "name": "FieldTypes",
+      "description": "The type of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).\nMust be [[type_value_pair]]s, specifying its type and binding position."
+    }
   ],
 
   "baseClasses": [ "basic_freeable" ],
@@ -73,8 +80,23 @@
           "exceptions": [
             "Throws std::runtime_error if there was an error getting the vulkan_shader due to causes outside of the program."
           ]
+        },
+        {
+          "type": "variable",
+          "name": "field_indices",
+          "briefDescription": "The indices given by FieldTypes, in a vector.",
+          "overloads": [
+            {
+              "declaration": "static std::vector<std::size_t> field_indices;",
+              "description": "The indices given by FieldTypes, in a vector."
+            }
+          ]
         }
       ]
     }
+  ],
+
+  "related": [
+    "ShaderField"
   ]
 }

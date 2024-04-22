@@ -1,0 +1,139 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct transparent_color;",
+  "briefDescription": "A color and transparency.",
+  "detailedDescription": "A color made out of a mix of red, green, and blue, and an alpha specifying how much one can see through the color.",
+
+  "baseClasses": [ "dimensions" ],
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "constexpr transparent_color() noexcept;",
+        "description": "A completely transparent color."
+      },
+      {
+        "declaration": "constexpr transparent_color(single_color r, single_color g, single_color b, single_color alpha = 1._scolor) noexcept;",
+        "description": "Constructs a color from mixing the given amount of red, green, and blue, and with the given alpha."
+      },
+      {
+        "declaration": "constexpr transparent_color(std::initializer_list<single_color>) noexcept;",
+        "description": "Like (2); the values in the initializer_list are red, green, blue, and alpha respectively."
+      },
+      {
+        "declaration": "constexpr transparent_color(std::initializer_list<float>) noexcept;",
+        "description": "Like (3); the floats are converted to [[single_color]]s."
+      },
+      {
+        "declaration": "constexpr transparent_color(const transparent_color&) noexcept;",
+        "description": "transparent_color is copyable."
+      },
+      {
+        "declaration": "constexpr transparent_color(transparent_color&&) noexcept;",
+        "description": "transparent_color is movable."
+      }
+    ],
+    "related": [
+      "single_color"
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "r",
+          "briefDescription": "Returns the amount of red used to make the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto r() noexcept -> single_color&;",
+              "description": "Returns the amount of red used to make the color."
+            },
+            {
+              "declaration": "constexpr auto r() const noexcept -> const single_color&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "single_color"
+          ]
+        },
+        {
+          "type": "function",
+          "name": "g",
+          "briefDescription": "Returns the amount of green used to make the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto g() noexcept -> single_color&;",
+              "description": "Returns the amount of green used to make the color."
+            },
+            {
+              "declaration": "constexpr auto g() const noexcept -> const single_color&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "single_color"
+          ]
+        },
+        {
+          "type": "function",
+          "name": "b",
+          "briefDescription": "Returns the amount of blue used to make the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto b() noexcept -> single_color&;",
+              "description": "Returns the amount of blue used to make the color."
+            },
+            {
+              "declaration": "constexpr auto b() const noexcept -> const single_color&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "single_color"
+          ]
+        },
+        {
+          "type": "function",
+          "name": "a",
+          "briefDescription": "Returns the alpha of the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto a() noexcept -> single_color&;",
+              "description": "Returns the alpha of the color."
+            },
+            {
+              "declaration": "constexpr auto a() const noexcept -> const single_color&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "single_color"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Operators",
+      "items": [
+        {
+          "type": "function",
+          "name": "opaque_color",
+          "briefDescription": "Can be explicitly converted to an [[opaque_color]].",
+          "overloads": [
+            {
+              "declaration": "constexpr explicit operator opaque_color() const;",
+              "description": "Can be explicit converted to an [[opaque_color]] representing the same color."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

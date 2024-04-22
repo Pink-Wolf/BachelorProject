@@ -1,0 +1,112 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct opaque_color;",
+  "briefDescription": "A color.",
+  "detailedDescription": "A color made out of a mix of red, green, and blue.",
+
+  "baseClasses": [ "dimensions" ],
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "constexpr opaque_color() noexcept;",
+        "description": "A black color."
+      },
+      {
+        "declaration": "constexpr opaque_color(single_color r, single_color g, single_color b) noexcept;",
+        "description": "Constructs a color from mixing the given amount of red, green, and blue."
+      },
+      {
+        "declaration": "constexpr opaque_color(std::initializer_list<single_color>) noexcept;",
+        "description": "Like (2); the values in the initializer_list are red, green, and blue respectively."
+      },
+      {
+        "declaration": "constexpr opaque_color(std::initializer_list<float>) noexcept;",
+        "description": "Like (3); the floats are converted to [[single_color]]s."
+      },
+      {
+        "declaration": "constexpr opaque_color(const opaque_color&) noexcept;",
+        "description": "opaque_color is copyable."
+      },
+      {
+        "declaration": "constexpr opaque_color(opaque_color&&) noexcept;",
+        "description": "opaque_color is movable."
+      }
+    ],
+    "related": [
+      "single_color"
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "r",
+          "briefDescription": "Returns the amount of red used to make the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto r() noexcept -> uint8_t&;",
+              "description": "Returns the amount of red used to make the color."
+            },
+            {
+              "declaration": "constexpr auto r() const noexcept -> const uint8_t&;",
+              "description": "Like (1), but const."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "g",
+          "briefDescription": "Returns the amount of green used to make the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto g() noexcept -> uint8_t&;",
+              "description": "Returns the amount of green used to make the color."
+            },
+            {
+              "declaration": "constexpr auto g() const noexcept -> const uint8_t&;",
+              "description": "Like (1), but const."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "b",
+          "briefDescription": "Returns the amount of blue used to make the color.",
+          "overloads": [
+            {
+              "declaration": "constexpr auto b() noexcept -> uint8_t&;",
+              "description": "Returns the amount of blue used to make the color."
+            },
+            {
+              "declaration": "constexpr auto b() const noexcept -> const uint8_t&;",
+              "description": "Like (1), but const."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Operators",
+      "items": [
+        {
+          "type": "function",
+          "name": "transparent_color",
+          "briefDescription": "Can be implicitly converted to a [[transparent_color]].",
+          "overloads": [
+            {
+              "declaration": "constexpr operator transparent_color() const;",
+              "description": "Can be implicitly converted to a [[transparent_color]] which a max alpha-value."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
