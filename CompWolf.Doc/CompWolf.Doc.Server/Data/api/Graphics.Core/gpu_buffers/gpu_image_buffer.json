@@ -1,0 +1,139 @@
+﻿{
+  "type": "class",
+
+  "declaration": "class gpu_image_buffer;",
+  "namespace": "CompWolf",
+  "briefDescription": "Contains field-data for one or more [[shader]]s, containing an image.",
+  "detailedDescription": "Contains field-data for one or more [[shader]]s, containing an image.",
+
+  "baseClasses": [ "base_gpu_buffer" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "gpu_image_buffer() noexcept;",
+        "description": "Constructs a freed gpu_field_buffer, as in one that has no data."
+      },
+      {
+        "declaration": "gpu_image_buffer(gpu_connection&, int width, int height);",
+        "description": "Constructs a gpu_image_buffer on the given gpu, with the given width and height in pixels."
+      },
+      {
+        "declaration": "gpu_image_buffer(gpu_connection&, std::initializer_list<std::initializer_list<value_type>>);",
+        "description": "Constructs a gpu_image_buffer on the given gpu, with the given data.\nThe data is specifically read as a list of rows of pixels."
+      },
+      {
+        "declaration": "gpu_image_buffer(gpu_image_buffer&&) noexcept;",
+        "description": "gpu_image_buffer is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during allocation due to causes outside of the program, including the gpu not having space."
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "value_type",
+          "declaration": "using value_type = transparent_color;",
+          "briefDescription": "The type of pixels making up the image.",
+          "detailedDescription": "The type of pixels making up the image.",
+          "related": [ "transparent_color" ]
+        }
+      ]
+    },
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "width",
+          "briefDescription": "Returns the width of the image in the buffer.",
+          "overloads": [
+            {
+              "declaration": "auto width() const noexcept -> int",
+              "description": "Returns the width of the image in the buffer."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "height",
+          "briefDescription": "Returns the height of the image in the buffer.",
+          "overloads": [
+            {
+              "declaration": "auto height() const noexcept -> int",
+              "description": "Returns the height of the image in the buffer."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "data",
+          "briefDescription": "Returns a [[gpu_buffer_access]] to read and modify the buffer's data.",
+          "overloads": [
+            {
+              "declaration": "auto data() -> gpu_buffer_access<value_type>",
+              "description": "Returns a [[gpu_buffer_access]] to read and modify the buffer's data."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error getting cpu-access to the data due to causes outside of the program."
+          ],
+          "related": [
+            "gpu_buffer_access"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "type": "function",
+          "name": "vulkan_allocator",
+          "briefDescription": "Returns the allocator used to allocate the buffer.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_allocator() noexcept -> gpu_image_allocator",
+              "description": "Returns the allocator used to allocate the buffer."
+            },
+            {
+              "declaration": "auto vulkan_allocator() const noexcept -> const gpu_image_allocator",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [ "gpu_image_allocator" ]
+        },
+        {
+          "type": "function",
+          "name": "vulkan_image",
+          "briefDescription": "Returns the image's vulkan_image, representing a VkImage.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_image() const noexcept -> Private::vulkan_image;",
+              "description": "Returns the image's vulkan_image, representing a VkImage."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "vulkan_image_view",
+          "briefDescription": "Returns the image's vulkan_image_view, representing a VkImageView.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_image_view() const noexcept -> Private::vulkan_image_view;",
+              "description": "Returns the image's vulkan_image_view, representing a VkImageView."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

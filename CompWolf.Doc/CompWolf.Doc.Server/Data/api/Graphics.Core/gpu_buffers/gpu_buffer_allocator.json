@@ -1,0 +1,152 @@
+﻿{
+  "type": "class",
+
+  "declaration": "class gpu_buffer_allocator;",
+  "namespace": "CompWolf",
+  "briefDescription": "Base, abstract class used by [[base_gpu_buffer]].",
+  "detailedDescription": "Base, abstract class used by [[base_gpu_buffer]] to actually allocate memory on the gpu, and get information about that memory.",
+
+  "warnings": [
+    "This reveals a lower level of abstractions, and so this should rarely be used directly."
+  ],
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "gpu_buffer_allocator() noexcept;",
+        "description": "Constructs a freed gpu_buffer_allocator, as in one that cannot be used to allocate memory."
+      },
+      {
+        "declaration": "gpu_buffer_allocator(gpu_connection&) noexcept;",
+        "description": "Constructs a gpu_buffer_allocator that can allocate memory on the given gpu."
+      },
+      {
+        "declaration": "gpu_buffer_allocator(const gpu_buffer_allocator&) noexcept;",
+        "description": "gpu_buffer_allocator is copyable."
+      },
+      {
+        "declaration": "gpu_buffer_allocator(gpu_buffer_allocator&&) noexcept;",
+        "description": "gpu_buffer_allocator is movable."
+      }
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "data_handle",
+          "declaration": "using data_handle = Private::vulkan_handle64<struct data_handle_t>;",
+          "briefDescription": "Represents some data allocated by the allocator.",
+          "detailedDescription": "Represents some data allocated by the allocator; the exact vulkan type this represents depends on the implementation."
+        }
+      ]
+    },
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "gpu",
+          "briefDescription": "Returns the gpu that the allocator can allocate memory on.",
+          "overloads": [
+            {
+              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "description": "Returns the gpu that the allocator can allocate memory on."
+            },
+            {
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_connection"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Virtual",
+      "items": [
+        {
+          "type": "function",
+          "name": "alloc_data",
+          "briefDescription": "Allocates some memory for the data to be send to and then read by the gpu.",
+          "overloads": [
+            {
+              "declaration": "virtual auto alloc_data() const -> data_handle = 0;",
+              "description": "Allocates some memory for the data to be send to and then read by the gpu."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error during allocation due to causes outside of the program."
+          ]
+        },
+        {
+          "type": "function",
+          "name": "alloc_cpu_access",
+          "briefDescription": "Allocates some memory for the cpu to write to, before being send to the gpu.",
+          "overloads": [
+            {
+              "declaration": "virtual auto alloc_cpu_access() const -> data_handle = 0;",
+              "description": "Allocates some memory for the cpu to write to, before being send to the gpu."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error during allocation due to causes outside of the program."
+          ]
+        },
+        {
+          "type": "function",
+          "name": "bind_data",
+          "briefDescription": "Binds the allocated data to the given vulkan_memory.",
+          "overloads": [
+            {
+              "declaration": "virtual void bind_data(data_handle, Private::vulkan_memory) const = 0;",
+              "description": "Binds the allocated data to the given vulkan_memory."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error binding due to causes outside of the program."
+          ]
+        },
+        {
+          "type": "function",
+          "name": "free_data",
+          "briefDescription": "Deallocates the given data.",
+          "overloads": [
+            {
+              "declaration": "virtual auto free_data(data_handle) const noexcept = 0;",
+              "description": "Deallocates the given data."
+            }
+          ],
+          "warnings": [
+            "It is undefined behaviour to allocate data with one allocator, but then free it with another allocator."
+          ]
+        },
+        {
+          "type": "function",
+          "name": "private_info",
+          "briefDescription": "Gets information about the given allocated data.",
+          "overloads": [
+            {
+              "declaration": "virtual void private_info(data_handle, private_info_handle out_info) const = 0;",
+              "description": "Gets information about the given allocated data."
+            }
+          ],
+          "warnings": [
+            "It is undefined behaviour to allocate data with one allocator, but then get info about the data from another allocator."
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error getting the info due to causes outside of the program."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+﻿{
+  "briefDescription": "Contains various buffers for data used by shaders.",
+  "detailedDescription": "Contains the following buffers, which keeps their data on the gpu to be used by shaders:\n-[[gpu_index_buffer]],\n-[[gpu_input_buffer]],\n-[[gpu_field_buffer]],\n-[[gpu_image_buffer]]."
+}

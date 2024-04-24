@@ -1,0 +1,112 @@
+﻿{
+  "type": "class",
+
+  "declaration": "template <typename ValueType> class gpu_input_buffer;",
+  "namespace": "CompWolf",
+  "briefDescription": "Contains input-data for one or more [[input_shader]]s.",
+  "detailedDescription": "Contains input-data for one or more [[input_shader]]s.",
+
+  "templateParameters": [
+    {
+      "name": "ValueType",
+      "description": "The type of data in the buffer. value_type is set to this type."
+    }
+  ],
+
+  "baseClasses": [ "base_gpu_buffer" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "gpu_input_buffer() noexcept;",
+        "description": "Constructs a freed gpu_input_buffer, as in one that has no data."
+      },
+      {
+        "declaration": "gpu_input_buffer(gpu_connection&, std::size_t size);",
+        "description": "Constructs a gpu_input_buffer on the given gpu, with the given amount of elements."
+      },
+      {
+        "declaration": "gpu_input_buffer(gpu_connection&, std::initializer_list<value_type>);",
+        "description": "Constructs a gpu_input_buffer on the given gpu, with the given data."
+      },
+      {
+        "declaration": "gpu_input_buffer(gpu_input_buffer&&) noexcept;",
+        "description": "gpu_input_buffer is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during allocation due to causes outside of the program, including the gpu not having space."
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "value_type",
+          "declaration": "using value_type = std::remove_cvref<VertexType>;",
+          "briefDescription": "The type of data in the buffer.",
+          "detailedDescription": "The type of data in the buffer."
+        }
+      ]
+    },
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "data",
+          "briefDescription": "Returns a [[gpu_buffer_access]] to read and modify the buffer's data.",
+          "overloads": [
+            {
+              "declaration": "auto data() -> gpu_buffer_access<value_type>",
+              "description": "Returns a [[gpu_buffer_access]] to read and modify the buffer's data."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error getting cpu-access to the data due to causes outside of the program."
+          ],
+          "related": [
+            "gpu_buffer_access"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "type": "function",
+          "name": "vulkan_allocator",
+          "briefDescription": "Returns the allocator used to allocate the buffer.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_allocator() noexcept -> gpu_vkBuffer_allocator",
+              "description": "Returns the allocator used to allocate the buffer."
+            },
+            {
+              "declaration": "auto vulkan_allocator() const noexcept -> const gpu_vkBuffer_allocator",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [ "gpu_vkBuffer_allocator" ]
+        },
+        {
+          "type": "function",
+          "name": "vulkan_buffer",
+          "briefDescription": "Returns the buffer's vulkan_buffer, representing a VkBuffer.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_buffer() const noexcept -> Private::vulkan_buffer;",
+              "description": "Returns the buffer's vulkan_buffer, representing a VkBuffer."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
