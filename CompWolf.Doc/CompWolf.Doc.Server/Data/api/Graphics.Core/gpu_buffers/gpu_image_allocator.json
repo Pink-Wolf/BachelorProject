@@ -3,14 +3,14 @@
 
   "declaration": "class gpu_image_allocator;",
   "namespace": "CompWolf",
-  "briefDescription": "A [[gpu_buffer_allocator]] which allocates a vulkan_image, representing a VkImage.",
-  "detailedDescription": "A [[gpu_buffer_allocator]] which allocates a vulkan_image, representing a VkImage.",
+  "briefDescription": "A [[base_gpu_buffer_allocator]] which allocates a vulkan_image, representing a VkImage.",
+  "detailedDescription": "A [[base_gpu_buffer_allocator]] which allocates a vulkan_image, representing a VkImage.",
 
   "warnings": [
     "This reveals a lower level of abstractions, and so this should rarely be used directly."
   ],
 
-  "baseClasses": [ "gpu_buffer_allocator" ],
+  "baseClasses": [ "base_gpu_buffer_allocator" ],
 
   "copyable": true,
   "movable": true,
@@ -21,7 +21,7 @@
         "description": "Constructs a freed gpu_image_allocator, as in one that cannot be used to allocate memory."
       },
       {
-        "declaration": "gpu_image_allocator(gpu_connection&, gpu_buffer_type, int width, int height);",
+        "declaration": "gpu_image_allocator(gpu_connection&, int width, int height);",
         "description": "Constructs a gpu_image_allocator that will allocate an image with the given width and height in pixels, on the given gpu."
       },
       {

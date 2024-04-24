@@ -105,9 +105,6 @@
     <ClInclude Include="include\private\shaders\input_shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\gpu_program\gpu_buffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\private\shaders\primitive_shader_field.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -130,12 +127,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\images">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\gpu_program\gpu_image.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\private\gpu_program\gpu_memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\gpu_memory_type.hpp">
@@ -178,6 +169,42 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\shaders\shader_int.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\base_gpu_buffer_allocator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\base_gpu_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\gpu_buffers">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_buffer_access.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_buffer_single_access.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_vkBuffer_type.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_vkBuffer_allocator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_index_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_input_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_field_buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_image_allocator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\gpu_buffers\gpu_image_buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -233,9 +260,6 @@
     <ClCompile Include="src\primitive_shader_field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gpu_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gpu_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -248,10 +272,16 @@
     <ClCompile Include="src\draw_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gpu_memory.cpp">
+    <ClCompile Include="src\gpu_vkBuffer_allocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gpu_image.cpp">
+    <ClCompile Include="src\gpu_image_allocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpu_image_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base_gpu_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

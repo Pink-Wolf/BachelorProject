@@ -17,16 +17,16 @@
         "description": "Constructs a freed base_gpu_buffer, as in one that cannot be used to allocate memory."
       },
       {
-        "declaration": "base_gpu_buffer(gpu_connection&);",
-        "description": "Constructs a base_gpu_buffer on the given gpu."
+        "declaration": "base_gpu_buffer(base_gpu_buffer_allocator*);",
+        "description": "Constructs a base_gpu_buffer that uses the given allocator."
       },
       {
-        "declaration": "template <typename DataType> base_gpu_buffer(gpu_connection&, std::initializer_list<DataType>);",
-        "description": "Constructs a base_gpu_buffer on the given gpu, with the given data."
+        "declaration": "template <typename ValueType> base_gpu_buffer(base_gpu_buffer_allocator*, std::initializer_list<ValueType>);",
+        "description": "Constructs a base_gpu_buffer that uses the given allocator, with the given data."
       },
       {
-        "declaration": "gpu_buffer_allocator(gpu_buffer_allocator&&) noexcept;",
-        "description": "gpu_buffer_allocator is movable."
+        "declaration": "base_gpu_buffer(base_gpu_buffer&&) noexcept;",
+        "description": "base_gpu_buffer is movable."
       }
     ]
   },
@@ -37,11 +37,11 @@
         {
           "type": "function",
           "name": "gpu",
-          "briefDescription": "Returns the gpu that the allocator can allocate memory on.",
+          "briefDescription": "Returns the gpu that the buffer is on.",
           "overloads": [
             {
               "declaration": "auto gpu() noexcept -> gpu_connection&",
-              "description": "Returns the gpu that the allocator can allocate memory on."
+              "description": "Returns the gpu that the buffer is on."
             },
             {
               "declaration": "auto gpu() const noexcept -> const gpu_connection&",
@@ -62,17 +62,6 @@
               "description": "Returns the amount of elements in the buffer."
             }
           ]
-        },
-        {
-          "type": "function",
-          "name": "vulkan_memory_size",
-          "briefDescription": "Returns the amount of elements in the buffer.",
-          "overloads": [
-            {
-              "declaration": "auto size() const noexcept -> std::size_t",
-              "description": "Returns the amount of elements in the buffer."
-            }
-          ]
         }
       ]
     },
@@ -86,15 +75,15 @@
           "briefDescription": "Returns the allocator used to allocate the buffer.",
           "overloads": [
             {
-              "declaration": "auto vulkan_allocator() noexcept -> gpu_buffer_allocator*",
+              "declaration": "auto vulkan_allocator() noexcept -> base_gpu_buffer_allocator*",
               "description": "Returns the allocator used to allocate the buffer."
             },
             {
-              "declaration": "auto vulkan_allocator() const noexcept -> const gpu_buffer_allocator*",
+              "declaration": "auto vulkan_allocator() const noexcept -> const base_gpu_buffer_allocator*",
               "description": "Like (1), but const."
             }
           ],
-          "related": [ "gpu_buffer_allocator" ]
+          "related": [ "base_gpu_buffer_allocator" ]
         },
         {
           "type": "function",
@@ -104,6 +93,17 @@
             {
               "declaration": "auto vulkan_memory() const noexcept -> Private::vulkan_memory;",
               "description": "Returns the buffer's vulkan_memory, representing a VkDeviceMemory."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "vulkan_memory_size",
+          "briefDescription": "Returns the size of the vulkan_memory.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_memory_size() const noexcept -> std::size_t",
+              "description": "Returns the size of the vulkan_memory."
             }
           ]
         },
@@ -122,19 +122,12 @@
           ]
         },
         {
-          "type": "alias",
-          "name": "bind_handle",
-          "declaration": "using bind_handle = Private::vulkan_handle64<struct bind_handle_t>;",
-          "briefDescription": "Represents a gpu_memory_bind_data*, used by the buffer's bind_to_shader-method.",
-          "detailedDescription": "Represents a gpu_memory_bind_data*, used by the buffer's bind_to_shader-method."
-        },
-        {
           "type": "function",
           "name": "bind_to_shader",
           "briefDescription": "Binds the buffer to the given shader; as in sets the buffer as one used by the shader.",
           "overloads": [
             {
-              "declaration": "void vulkan_data(bind_handle) const = 0;",
+              "declaration": "virtual void vulkan_data(bind_handle) const = 0;",
               "description": "Binds the buffer to the given shader; as in sets the buffer as one used by the shader.\nThe specific usage is specified by the given handle."
             }
           ],

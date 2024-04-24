@@ -3,14 +3,14 @@
 
   "declaration": "class gpu_vkBuffer_allocator;",
   "namespace": "CompWolf",
-  "briefDescription": "A [[gpu_buffer_allocator]] which allocates a vulkan_buffer, representing a VkBuffer.",
-  "detailedDescription": "A [[gpu_buffer_allocator]] which allocates a vulkan_buffer, representing a VkBuffer.\nMost gpu data is contained in a buffer, and so most uses this allocator (though for example an image uses [[gpu_image_allocator]]).",
+  "briefDescription": "A [[base_gpu_buffer_allocator]] which allocates a vulkan_buffer, representing a VkBuffer.",
+  "detailedDescription": "A [[base_gpu_buffer_allocator]] which allocates a vulkan_buffer, representing a VkBuffer.\nMost gpu data is contained in a buffer, and so most uses this allocator (though for example an image uses [[gpu_image_allocator]]).",
 
   "warnings": [
     "This reveals a lower level of abstractions, and so this should rarely be used directly."
   ],
 
-  "baseClasses": [ "gpu_buffer_allocator" ],
+  "baseClasses": [ "base_gpu_buffer_allocator" ],
 
   "copyable": true,
   "movable": true,
@@ -21,7 +21,7 @@
         "description": "Constructs a freed gpu_vkBuffer_allocator, as in one that cannot be used to allocate memory."
       },
       {
-        "declaration": "gpu_vkBuffer_allocator(gpu_connection&, gpu_buffer_type, std::size_t size, std::size_t element_stride) noexcept;",
+        "declaration": "gpu_vkBuffer_allocator(gpu_connection&, gpu_vkBuffer_type, std::size_t size, std::size_t element_stride) noexcept;",
         "description": "Constructs a gpu_vkBuffer_allocator that will allocate the given amount of elements, each with the given byte-size, on the given gpu."
       },
       {
@@ -32,6 +32,10 @@
         "declaration": "gpu_vkBuffer_allocator(gpu_vkBuffer_allocator&&) noexcept;",
         "description": "gpu_vkBuffer_allocator is movable."
       }
+    ],
+    "related": [
+      "gpu_connection",
+      "gpu_vkBuffer_type"
     ]
   },
   "memberGroups": [
@@ -63,11 +67,11 @@
         {
           "type": "function",
           "name": "type",
-          "briefDescription": "Returns the [[gpu_buffer_type]] that this allocator is.",
+          "briefDescription": "Returns the [[gpu_vkBuffer_type]] that this allocator is.",
           "overloads": [
             {
-              "declaration": "auto type() const noexcept -> gpu_buffer_type",
-              "description": "Returns the [[gpu_buffer_type]] that this allocator is."
+              "declaration": "auto type() const noexcept -> gpu_vkBuffer_type",
+              "description": "Returns the [[gpu_vkBuffer_type]] that this allocator is."
             }
           ]
         }

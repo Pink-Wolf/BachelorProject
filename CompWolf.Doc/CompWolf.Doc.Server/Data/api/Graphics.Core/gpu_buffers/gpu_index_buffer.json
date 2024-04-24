@@ -25,8 +25,8 @@
         "description": "Constructs a gpu_index_buffer on the given gpu, with the given data."
       },
       {
-        "declaration": "gpu_buffer_allocator(gpu_buffer_allocator&&) noexcept;",
-        "description": "gpu_buffer_allocator is movable."
+        "declaration": "gpu_index_buffer(gpu_index_buffer&&) noexcept;",
+        "description": "gpu_index_buffer is movable."
       }
     ],
     "exceptions": [

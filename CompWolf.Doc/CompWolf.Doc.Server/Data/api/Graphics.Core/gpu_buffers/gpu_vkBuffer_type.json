@@ -2,7 +2,7 @@
   "type": "enum",
 
   "namespace": "CompWolf",
-  "declaration": "enum class gpu_buffer_type;",
+  "declaration": "enum class gpu_vkBuffer_type;",
   "briefDescription": "The type of buffer that [[gpu_vkBuffer_allocator]] is.",
   "detailedDescription": "The type of buffer that [[gpu_vkBuffer_allocator]] is.",
 
@@ -17,7 +17,7 @@
       "detailedDescription": "An index buffer, as in one whose data specifies which, of the given inputs, an [[input_shader]] should use and in what order."
     },
     {
-      "name": "vertex",
+      "name": "input",
       "briefDescription": "A vertex buffer, as in one that contains the inputs to an [[input_shader]].",
       "detailedDescription": "A vertex buffer, as in one that contains the inputs to an [[input_shader]]."
     },

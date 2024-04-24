@@ -20,10 +20,10 @@ namespace CompWolf::Graphics
 		struct draw_data
 		{
 			gpu_index_buffer* indices;
-			base_gpu_buffer* vertices;
-			std::vector<gpu_memory*> uniform_vertex_data;
+			Private::base_gpu_vkBuffer_buffer* vertices;
+			std::vector<base_gpu_buffer*> uniform_vertex_data;
 			const std::vector<std::size_t>* uniform_vertex_indices;
-			std::vector<gpu_memory*> uniform_fragment_data;
+			std::vector<base_gpu_buffer*> uniform_fragment_data;
 			const std::vector<std::size_t>* uniform_fragment_indices;
 		};
 
@@ -43,7 +43,7 @@ namespace CompWolf::Graphics
 		public: // constructors
 			window_draw_command() = default;
 			window_draw_command(window_draw_command&&) = default;
-			auto operator=(window_draw_command&&) -> window_draw_command& = default;
+			auto operator=(window_draw_command&&)->window_draw_command & = default;
 
 			window_draw_command(window_specific_pipeline& pipeline, draw_data& data) : _pipeline(&pipeline), _data(&data)
 			{}
@@ -61,7 +61,7 @@ namespace CompWolf::Graphics
 		, typename... UniformVertexTypes, std::size_t... UniformVertexIndices
 		, typename... FragmentVertexTypes, std::size_t... UniformIndexIndices
 		>
-	class draw_command<draw_pipeline
+		class draw_command<draw_pipeline
 		< input_shader<VertexType, type_value_pair<UniformVertexTypes, UniformVertexIndices>...>
 		, shader<type_value_pair<FragmentVertexTypes, UniformIndexIndices>...>
 		>>
@@ -95,27 +95,27 @@ namespace CompWolf::Graphics
 	public: // constructors
 		draw_command() = default;
 		draw_command(draw_command&&) = default;
-		auto operator=(draw_command&&) -> draw_command& = default;
+		auto operator=(draw_command&&)->draw_command & = default;
 
 		draw_command(pipeline_type& pipeline
 			, gpu_index_buffer& indices
-			, gpu_vertex_buffer<VertexType>& vertices
+			, gpu_input_buffer<VertexType>& vertices
 			, std::conditional_t<std::same_as<UniformVertexTypes, shader_image>
-				, gpu_image_buffer
-				, gpu_uniform_buffer<UniformVertexTypes>
-				>&... uniform_vertex_data
+			, gpu_image_buffer
+			, gpu_field_buffer<UniformVertexTypes>
+			>&... uniform_vertex_data
 			, std::conditional_t<std::same_as<FragmentVertexTypes, shader_image>
-				, gpu_image_buffer
-				, gpu_uniform_buffer<FragmentVertexTypes>
-				>&... uniform_fragment_data
+			, gpu_image_buffer
+			, gpu_field_buffer<FragmentVertexTypes>
+			>&... uniform_fragment_data
 		) : _pipeline(&pipeline), _data
-			{ .indices = &indices
+		{ .indices = &indices
 			, .vertices = &vertices
-			, .uniform_vertex_data = std::vector<gpu_memory*>({&uniform_vertex_data.memory()...})
+			, .uniform_vertex_data = std::vector<base_gpu_buffer*>({static_cast<base_gpu_buffer*>(&uniform_vertex_data)...})
 			, .uniform_vertex_indices = &vertex_shader_type::field_indices
-			, .uniform_fragment_data = std::vector<gpu_memory*>({&uniform_fragment_data.memory()...})
+			, .uniform_fragment_data = std::vector<base_gpu_buffer*>({static_cast<base_gpu_buffer*>(&uniform_fragment_data)...})
 			, .uniform_fragment_indices = &fragment_shader_type::field_indices
-			}
+		}
 		{}
 	};
 

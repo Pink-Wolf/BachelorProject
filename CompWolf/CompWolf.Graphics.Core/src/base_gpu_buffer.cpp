@@ -1,7 +1,8 @@
 #include "pch.h"
-#include "gpu_program"
+#include "gpu_buffers"
 
 #include "compwolf_vulkan.hpp"
+#include "gpus"
 #include "gpu_memory_type.hpp"
 #include <compwolf_utility>
 
@@ -9,10 +10,8 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructor ********************************/
 
-	gpu_memory::gpu_memory(gpu_memory_allocator* allocator, bind_to_shader_function bind_to_shader)
-		: _device(allocator->target_device)
-		, _allocator(allocator)
-		, _bind_to_shader(bind_to_shader)
+	base_gpu_buffer::base_gpu_buffer(base_gpu_buffer_allocator* allocator)
+		: _allocator(allocator)
 		, _vulkan_data(nullptr), _vulkan_memory(nullptr)
 	{
 		auto logicDevice = Private::to_vulkan(device().vulkan_device());
@@ -22,9 +21,9 @@ namespace CompWolf::Graphics
 		{
 			_vulkan_data = allocator->alloc_data();
 
-			Private::gpu_memory_private_info data_info;
+			Private::gpu_buffer_private_info data_info;
 			{
-				allocator->private_info(_vulkan_data, Private::from_private(&data_info));
+				allocator->private_info(_vulkan_data, &data_info);
 				_item_count = data_info.size;
 				_memory_size = data_info.memoryRequirements.size;
 			}
@@ -81,19 +80,21 @@ namespace CompWolf::Graphics
 
 	}
 
-	Private::base_gpu_memory_access::base_gpu_memory_access(gpu_memory& target)
-		: _memory(&target)
+	Private::base_gpu_buffer_access::base_gpu_buffer_access(base_gpu_buffer* target)
+		: _buffer(target)
 	{
-		auto logicDevice = Private::to_vulkan(memory().device().vulkan_device());
-		auto vkMemory = Private::to_vulkan(memory().vulkan_memory());
-		auto memorySize = static_cast<VkDeviceSize>(memory().vulkan_memory_size());
+		if (target == nullptr) throw std::invalid_argument("base_gpu_buffer_access's constructor was given a nullptr");
+
+		auto logicDevice = Private::to_vulkan(target_buffer().device().vulkan_device());
+		auto vkMemory = Private::to_vulkan(target_buffer().vulkan_memory());
+		auto memorySize = static_cast<VkDeviceSize>(target_buffer().vulkan_memory_size());
 
 		vkMapMemory(logicDevice, vkMemory, 0, memorySize, 0, &_data);
 	}
 
 	/******************************** CompWolf::freeable ********************************/
 
-	void gpu_memory::free() noexcept
+	void base_gpu_buffer::free() noexcept
 	{
 		if (empty()) return;
 
@@ -103,18 +104,18 @@ namespace CompWolf::Graphics
 		if (memory) vkFreeMemory(logicDevice, memory, nullptr);
 		if (_vulkan_data) _allocator->free_data(_vulkan_data);
 
-		_device = nullptr;
+		vulkan_allocator()->free();
 	}
 
-	void Private::base_gpu_memory_access::free() noexcept
+	void Private::base_gpu_buffer_access::free() noexcept
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(memory().device().vulkan_device());
-		auto vkMemory = Private::to_vulkan(memory().vulkan_memory());
+		auto logicDevice = Private::to_vulkan(target_buffer().device().vulkan_device());
+		auto vkMemory = Private::to_vulkan(target_buffer().vulkan_memory());
 
 		vkUnmapMemory(logicDevice, vkMemory);
 
-		_memory = nullptr;
+		_buffer = nullptr;
 	}
 }

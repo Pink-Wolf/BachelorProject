@@ -169,16 +169,26 @@
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
     <ClInclude Include="include\draw_program" />
     <ClInclude Include="include\gpus" />
+    <ClInclude Include="include\gpu_buffers" />
     <ClInclude Include="include\gpu_program_pools" />
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\images" />
+    <ClInclude Include="include\private\gpu_buffers\base_gpu_buffer.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\base_gpu_buffer_allocator.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_buffer_access.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_buffer_single_access.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_field_buffer.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_image_allocator.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_image_buffer.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_index_buffer.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_input_buffer.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_vkBuffer_allocator.hpp" />
+    <ClInclude Include="include\private\gpu_buffers\gpu_vkBuffer_type.hpp" />
     <ClInclude Include="include\private\gpu_program_pools\gpu_fence.hpp" />
     <ClInclude Include="include\private\gpu_program_pools\gpu_program_sync.hpp" />
     <ClInclude Include="include\private\gpus\gpu_thread_type.hpp" />
     <ClInclude Include="include\private\gpu_program_pools\gpu_semaphore.hpp" />
     <ClInclude Include="include\private\gpus\gpu_thread_family.hpp" />
-    <ClInclude Include="include\private\gpu_program\gpu_image.hpp" />
-    <ClInclude Include="include\private\gpu_program\gpu_memory.hpp" />
     <ClInclude Include="include\private\graphics\glfw_handle.hpp" />
     <ClInclude Include="include\private\gpus\gpu_connection.hpp" />
     <ClInclude Include="include\private\gpus\gpu_manager.hpp" />
@@ -195,7 +205,6 @@
     <ClInclude Include="include\private\draw_program\draw_command.hpp" />
     <ClInclude Include="include\private\draw_program\draw_pipeline.hpp" />
     <ClInclude Include="include\private\draw_program\draw_program.hpp" />
-    <ClInclude Include="include\private\gpu_program\gpu_buffer.hpp" />
     <ClInclude Include="include\private\gpu_program\gpu_program.hpp" />
     <ClInclude Include="include\private\shaders\color.hpp" />
     <ClInclude Include="include\private\shaders\new_shader_field.hpp" />
@@ -220,18 +229,19 @@
     <ClInclude Include="include\window" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\gpu_image.cpp" />
-    <ClCompile Include="src\gpu_memory.cpp" />
+    <ClCompile Include="src\base_gpu_buffer.cpp" />
+    <ClCompile Include="src\gpu_image_allocator.cpp" />
+    <ClCompile Include="src\gpu_image_buffer.cpp" />
     <ClCompile Include="src\draw_command.cpp" />
     <ClCompile Include="src\draw_pipeline.cpp" />
     <ClCompile Include="src\draw_program.cpp" />
     <ClCompile Include="src\glfw_handle.cpp" />
     <ClCompile Include="src\gpu_connection.cpp" />
-    <ClCompile Include="src\gpu_buffer.cpp" />
     <ClCompile Include="src\gpu_fence.cpp" />
     <ClCompile Include="src\gpu_program_pool.cpp" />
     <ClCompile Include="src\gpu_manager.cpp" />
     <ClCompile Include="src\gpu_program.cpp" />
+    <ClCompile Include="src\gpu_vkBuffer_allocator.cpp" />
     <ClCompile Include="src\graphics_environment.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

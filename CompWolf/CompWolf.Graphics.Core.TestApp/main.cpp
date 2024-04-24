@@ -55,6 +55,9 @@ struct transform
 {
     float2 position;
 };
+template<> struct shader_field_info<transform> : public new_shader_field<
+    type_value_pair<float2, offsetof(vertex, position)>
+> {};
 
 int main()
 {
@@ -74,7 +77,7 @@ int main()
         auto frag_shader = shader<type_value_pair<shader_image, 4>>(environment, load_shader("frag.spv"));
         auto pipeline = new_draw_pipeline(vert_shader, frag_shader);
 
-        gpu_vertex_buffer<vertex> vertices(win.device(), {
+        gpu_input_buffer<vertex> vertices(win.device(), {
             {{-.5f, -.5f}, {0.f, 0.f}},
             {{+.5f, -.5f}, {1.f, 0.f}},
             {{+.5f, +.5f}, {1.f, 1.f}},
@@ -82,8 +85,8 @@ int main()
             });
         gpu_index_buffer indices(win.device(), { 0, 1, 2, 2, 3, 0 });
 
-        gpu_uniform_buffer<transform> trans(win.device(), transform());
-        gpu_uniform_buffer<float> scaler(win.device(), .5f);
+        gpu_field_buffer<transform> trans(win.device(), transform());
+        gpu_field_buffer<float> scaler(win.device(), .5f);
 
         gpu_image_buffer image(win.device(),
             {
@@ -93,7 +96,7 @@ int main()
                 {{0,0,0,1}, {0,0,0,1}, {0,0,0,1}, {0,0,0,1}}
             }
         );
-        gpu_uniform_buffer<float> tinter(win.device(), .75f);
+        gpu_field_buffer<float> tinter(win.device(), .75f);
 
         auto drawer_command = new_draw_command(pipeline
             , indices, vertices

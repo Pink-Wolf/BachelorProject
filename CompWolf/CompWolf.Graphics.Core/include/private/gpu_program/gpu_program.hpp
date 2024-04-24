@@ -2,14 +2,16 @@
 #define COMPWOLF_GRAPHICS_GPU_PROGRAM_HEADER
 
 #include "vulkan_types"
+#include "gpu_buffers"
 #include <freeable>
-#include <functional>
 #include <owned>
+#include <functional>
 
 namespace CompWolf::Graphics
 {
 	class gpu_program_pool;
 	class gpu_fence;
+	class gpu_connection;
 
 	struct gpu_program_input
 	{

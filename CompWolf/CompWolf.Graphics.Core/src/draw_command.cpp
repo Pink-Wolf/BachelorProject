@@ -53,7 +53,7 @@ namespace CompWolf::Graphics
 				.bindingIndex = static_cast<uint32_t>(index),
 			};
 
-			memory.bind_to_shader(Private::from_private(&bind_data));
+			memory.bind_to_shader(&bind_data);
 
 			vkCmdBindDescriptorSets(command
 				, VK_PIPELINE_BIND_POINT_GRAPHICS
@@ -82,7 +82,7 @@ namespace CompWolf::Graphics
 				.bindingIndex = static_cast<uint32_t>(index),
 			};
 
-			memory.bind_to_shader(Private::from_private(&bind_data));
+			memory.bind_to_shader(&bind_data);
 
 			vkCmdBindDescriptorSets(command
 				, VK_PIPELINE_BIND_POINT_GRAPHICS

@@ -9,7 +9,7 @@
   "templateParameters": [
     {
       "name": "ValueType",
-      "description": "The type of data in the buffer. value_type is set to this type."
+      "description": "The type of data in the buffer."
     }
   ],
 
@@ -24,7 +24,7 @@
         "description": "Constructs a freed gpu_buffer_access, as in one that has already released its access to any buffer."
       },
       {
-        "declaration": "explicit gpu_buffer_access(base_gpu_buffer&);",
+        "declaration": "explicit gpu_buffer_access(base_gpu_buffer*);",
         "description": "Constructs a gpu_buffer_access that gives access to the given buffer's data."
       },
       {
@@ -33,6 +33,7 @@
       }
     ],
     "exceptions": [
+      "Throws std::invalid_argument if the given buffer is a nullptr.",
       "Throws std::runtime_error if there was an error getting cpu-access to the data due to causes outside of the program."
     ],
     "warnings": [
@@ -40,18 +41,6 @@
     ]
   },
   "memberGroups": [
-    {
-      "name": "Type Definitions",
-      "items": [
-        {
-          "type": "alias",
-          "name": "value_type",
-          "declaration": "using value_type = std::remove_cvref<VertexType>;",
-          "briefDescription": "The type of data in the buffer.",
-          "detailedDescription": "The type of data in the buffer."
-        }
-      ]
-    },
     {
       "name": "Accessors",
       "items": [

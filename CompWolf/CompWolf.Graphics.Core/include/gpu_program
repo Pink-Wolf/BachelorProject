@@ -1,5 +1,1 @@
-#include "private/gpu_program/gpu_memory.hpp"
-#include "private/gpu_program/gpu_buffer.hpp"
-#include "private/gpu_program/gpu_image.hpp"
-
 #include "private/gpu_program/gpu_program.hpp"

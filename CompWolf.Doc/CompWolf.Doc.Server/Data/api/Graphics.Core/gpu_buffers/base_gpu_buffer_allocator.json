@@ -1,7 +1,7 @@
 ﻿{
   "type": "class",
 
-  "declaration": "class gpu_buffer_allocator;",
+  "declaration": "class base_gpu_buffer_allocator;",
   "namespace": "CompWolf",
   "briefDescription": "Base, abstract class used by [[base_gpu_buffer]].",
   "detailedDescription": "Base, abstract class used by [[base_gpu_buffer]] to actually allocate memory on the gpu, and get information about that memory.",
@@ -17,20 +17,20 @@
   "constructor": {
     "overloads": [
       {
-        "declaration": "gpu_buffer_allocator() noexcept;",
-        "description": "Constructs a freed gpu_buffer_allocator, as in one that cannot be used to allocate memory."
+        "declaration": "base_gpu_buffer_allocator() noexcept;",
+        "description": "Constructs a freed base_gpu_buffer_allocator, as in one that cannot be used to allocate memory."
       },
       {
-        "declaration": "gpu_buffer_allocator(gpu_connection&) noexcept;",
-        "description": "Constructs a gpu_buffer_allocator that can allocate memory on the given gpu."
+        "declaration": "base_gpu_buffer_allocator(gpu_connection&) noexcept;",
+        "description": "Constructs a base_gpu_buffer_allocator that can allocate memory on the given gpu."
       },
       {
-        "declaration": "gpu_buffer_allocator(const gpu_buffer_allocator&) noexcept;",
-        "description": "gpu_buffer_allocator is copyable."
+        "declaration": "base_gpu_buffer_allocator(const base_gpu_buffer_allocator&) noexcept;",
+        "description": "base_gpu_buffer_allocator is copyable."
       },
       {
-        "declaration": "gpu_buffer_allocator(gpu_buffer_allocator&&) noexcept;",
-        "description": "gpu_buffer_allocator is movable."
+        "declaration": "base_gpu_buffer_allocator(base_gpu_buffer_allocator&&) noexcept;",
+        "description": "base_gpu_buffer_allocator is movable."
       }
     ]
   },
@@ -56,11 +56,11 @@
           "briefDescription": "Returns the gpu that the allocator can allocate memory on.",
           "overloads": [
             {
-              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "declaration": "auto gpu() noexcept -> gpu_connection&;",
               "description": "Returns the gpu that the allocator can allocate memory on."
             },
             {
-              "declaration": "auto gpu() const noexcept -> const gpu_connection&",
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&;",
               "description": "Like (1), but const."
             }
           ],
@@ -93,12 +93,15 @@
           "briefDescription": "Allocates some memory for the cpu to write to, before being send to the gpu.",
           "overloads": [
             {
-              "declaration": "virtual auto alloc_cpu_access() const -> data_handle = 0;",
-              "description": "Allocates some memory for the cpu to write to, before being send to the gpu."
+              "declaration": "virtual auto alloc_cpu_access(data_handle) const -> data_handle = 0;",
+              "description": "Allocates some memory for the cpu to write to, before being send to the given data that the gpu can read."
             }
           ],
           "exceptions": [
             "Throws std::runtime_error if there was an error during allocation due to causes outside of the program."
+          ],
+          "warnings": [
+            "It is undefined behaviour if data_handle was not allocated by the allocator using alloc_data."
           ]
         },
         {
@@ -117,16 +120,32 @@
         },
         {
           "type": "function",
-          "name": "free_data",
-          "briefDescription": "Deallocates the given data.",
+          "name": "free_cpu_access",
+          "briefDescription": "Deallocates the given data that was allocated with alloc_cpu_data.",
           "overloads": [
             {
-              "declaration": "virtual auto free_data(data_handle) const noexcept = 0;",
-              "description": "Deallocates the given data."
+              "declaration": "virtual auto free_cpu_access(data_handle) const noexcept = 0;",
+              "description": "Deallocates the given data that was allocated with alloc_cpu_data."
             }
           ],
           "warnings": [
-            "It is undefined behaviour to allocate data with one allocator, but then free it with another allocator."
+            "It is undefined behaviour to allocate data with one allocator, but then free it with another allocator.",
+            "It is undefined behaviour to pass data allocated with alloc_data to this."
+          ]
+        },
+        {
+          "type": "function",
+          "name": "free_data",
+          "briefDescription": "Deallocates the given data that was allocated with alloc_data.",
+          "overloads": [
+            {
+              "declaration": "virtual auto free_data(data_handle) const noexcept = 0;",
+              "description": "Deallocates the given data that was allocated with alloc_data."
+            }
+          ],
+          "warnings": [
+            "It is undefined behaviour to allocate data with one allocator, but then free it with another allocator.",
+            "It is undefined behaviour to pass data allocated with alloc_cpu_access to this."
           ]
         },
         {

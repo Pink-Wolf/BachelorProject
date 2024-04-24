@@ -1,7 +1,7 @@
 ﻿{
   "type": "class",
 
-  "declaration": "template <typename ValueType> class gpu_input_buffer;",
+  "declaration": "template <ShaderField ValueType> class gpu_input_buffer;",
   "namespace": "CompWolf",
   "briefDescription": "Contains input-data for one or more [[input_shader]]s.",
   "detailedDescription": "Contains input-data for one or more [[input_shader]]s.",

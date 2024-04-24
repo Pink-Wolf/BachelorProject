@@ -1,7 +1,7 @@
 ﻿{
   "type": "class",
 
-  "declaration": "template <typename ValueType> class gpu_field_buffer;",
+  "declaration": "template <ShaderField ValueType> class gpu_field_buffer;",
   "namespace": "CompWolf",
   "briefDescription": "Contains field-data for one or more [[shader]]s.",
   "detailedDescription": "Contains field-data for one or more [[shader]]s. If the data is an image, [[gpu_image_buffer]] should be used instead.",
@@ -83,11 +83,12 @@
           "briefDescription": "Returns a [[gpu_buffer_single_access]] to read and modify the buffer's data.",
           "overloads": [
             {
-              "declaration": "auto data() -> gpu_buffer_single_access<value_type>",
+              "declaration": "auto single_data() -> gpu_buffer_single_access<value_type>",
               "description": "Returns a [[gpu_buffer_single_access]] to read and modify the buffer's data."
             }
           ],
           "exceptions": [
+            "Throws std::invalid_argument if the buffer has more than 1 element.",
             "Throws std::runtime_error if there was an error getting cpu-access to the data due to causes outside of the program."
           ],
           "related": [
