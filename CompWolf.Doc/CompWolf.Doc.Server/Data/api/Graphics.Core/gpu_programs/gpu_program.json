@@ -1,0 +1,114 @@
+﻿{
+  "type": "class",
+
+  "declaration": "class gpu_program;",
+  "namespace": "CompWolf",
+  "briefDescription": "Something that can be run on the gpu.",
+  "detailedDescription": "Contains instructions that a gpu can run.",
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "gpu_program() noexcept;",
+        "description": "Constructs a freed gpu_program, as in one that cannot run."
+      },
+      {
+        "declaration": "gpu_program(gpu_program_manager&, std::function<void(const gpu_program_input&)> code);",
+        "description": "Creates a program on the given manager, which runs the given code."
+      },
+      {
+        "declaration": "gpu_program(gpu_program&&) noexcept;",
+        "description": "gpu_program is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during creation due to causes outside of the program."
+    ],
+    "related": [
+      "gpu_program_manager"
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "gpu",
+          "briefDescription": "Returns the gpu that the program is on.",
+          "overloads": [
+            {
+              "declaration": "auto gpu() noexcept -> gpu_connection&",
+              "description": "Returns the gpu that the program is on."
+            },
+            {
+              "declaration": "auto gpu() const noexcept -> const gpu_connection&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_connection"
+          ]
+        },
+        {
+          "type": "function",
+          "name": "manager",
+          "briefDescription": "Returns the manager that the program is on.",
+          "overloads": [
+            {
+              "declaration": "auto manager() noexcept -> gpu_program_manager&",
+              "description": "Returns the manager that the program is on."
+            },
+            {
+              "declaration": "auto manager() const noexcept -> const gpu_program_manager&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "gpu_program_manager"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "type": "function",
+          "name": "execute",
+          "briefDescription": "Runs the program.",
+          "overloads": [
+            {
+              "declaration": "auto execute() -> const gpu_fence&",
+              "description": "Runs the program.\nReturns a fence denoting when the program is finished running."
+            }
+          ],
+          "exceptions": [
+            "Throws std::runtime_error if there was an error submitting the program to the gpu due to causes outside of the program."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "type": "function",
+          "name": "vulkan_command",
+          "briefDescription": "Returns the program's vulkan_command, representing a VkCommandBuffer.",
+          "overloads": [
+            {
+              "declaration": "auto vulkan_command() const noexcept -> Private::vulkan_command",
+              "description": "Returns the program's vulkan_command, representing a VkCommandBuffer."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

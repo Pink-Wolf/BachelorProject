@@ -8,20 +8,17 @@ namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
-	gpu_program::gpu_program(gpu_connection& target_device
-		, gpu_program_manager& job
-		, gpu_program_code code
-	) : _device(&target_device)
-		, _job(&job)
+	gpu_program::gpu_program(gpu_program_manager& manager, std::function<void(const gpu_program_code_parameters&)> code)
+		: _manager(&manager)
 		, _vulkan_command(nullptr)
 	{
-		auto logicDevice = Private::to_vulkan(target_device.vulkan_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
 		VkCommandBuffer commandBuffer;
 		{
 			VkCommandBufferAllocateInfo createInfo{
 				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-				.commandPool = Private::to_vulkan(job.vulkan_pool()),
+				.commandPool = Private::to_vulkan(manager.vulkan_pool()),
 				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 				.commandBufferCount = 1,
 			};
@@ -52,7 +49,7 @@ namespace CompWolf::Graphics
 				}
 			}
 
-			gpu_program_input compile_parameter{
+			gpu_program_code_parameters compile_parameter{
 				.command = _vulkan_command
 			};
 
@@ -70,17 +67,17 @@ namespace CompWolf::Graphics
 		}
 	}
 
-	/******************************** other methods ********************************/
+	/******************************** modifiers ********************************/
 
 	auto gpu_program::execute() -> gpu_fence&
 	{
 		auto& gpu_device = device();
 
-		auto& thread = job().thread();
+		auto& thread = manager().thread();
 		auto queue = Private::to_vulkan(thread.queue);
 
-		auto oldSemaphore = Private::to_vulkan(job().last_vulkan_semaphore());
-		auto& sync = job().push_synchronization(gpu_program_sync
+		auto oldSemaphore = Private::to_vulkan(manager().last_vulkan_semaphore());
+		auto& sync = manager().push_synchronization(gpu_program_sync
 			{
 				.fence = gpu_fence(gpu_device),
 				.semaphore = gpu_semaphore(gpu_device),
@@ -125,8 +122,8 @@ namespace CompWolf::Graphics
 		vkDeviceWaitIdle(logicDevice);
 
 		auto command = Private::to_vulkan(_vulkan_command);
-		vkFreeCommandBuffers(logicDevice, Private::to_vulkan(job().vulkan_pool()), 1, &command);
+		vkFreeCommandBuffers(logicDevice, Private::to_vulkan(manager().vulkan_pool()), 1, &command);
 
-		_device = nullptr;
+		_manager = nullptr;
 	}
 }

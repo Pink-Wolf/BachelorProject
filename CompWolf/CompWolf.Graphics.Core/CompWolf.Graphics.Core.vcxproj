@@ -184,6 +184,7 @@
     <ClInclude Include="include\private\gpu_buffers\gpu_vkBuffer_allocator.hpp" />
     <ClInclude Include="include\private\gpu_buffers\gpu_vkBuffer_type.hpp" />
     <ClInclude Include="include\private\gpu_programs\gpu_fence.hpp" />
+    <ClInclude Include="include\private\gpu_programs\gpu_program_code_parameters.hpp" />
     <ClInclude Include="include\private\gpu_programs\gpu_program_sync.hpp" />
     <ClInclude Include="include\private\gpus\gpu_thread_type.hpp" />
     <ClInclude Include="include\private\gpu_programs\gpu_semaphore.hpp" />

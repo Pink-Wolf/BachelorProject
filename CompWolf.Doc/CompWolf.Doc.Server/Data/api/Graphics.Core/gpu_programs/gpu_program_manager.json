@@ -153,7 +153,7 @@
           "briefDescription": "Returns whether any of the programs are still running.",
           "overloads": [
             {
-              "declaration": "inline auto working() const noexcept -> bool",
+              "declaration": "auto working() const noexcept -> bool",
               "description": "Returns whether any of the programs are still running."
             }
           ]
@@ -169,7 +169,7 @@
           "briefDescription": "Waits until all of the programs are done, and then returns.",
           "overloads": [
             {
-              "declaration": "inline auto working() const noexcept -> bool",
+              "declaration": "auto wait() const noexcept -> bool",
               "description": "Waits until all of the programs are done, and then returns."
             }
           ]
@@ -197,11 +197,11 @@
         {
           "type": "function",
           "name": "vulkan_pool",
-          "briefDescription": "Returns the pool's vulkan_command_pool, representing a VkCommandPool.",
+          "briefDescription": "Returns the manager's vulkan_command_pool, representing a VkCommandPool.",
           "overloads": [
             {
               "declaration": "auto vulkan_pool() const noexcept -> Private::vulkan_command_pool",
-              "description": "Returns the pool's vulkan_command_pool, representing a VkCommandPool."
+              "description": "Returns the manager's vulkan_command_pool, representing a VkCommandPool."
             }
           ]
         },

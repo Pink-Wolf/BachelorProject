@@ -5,6 +5,7 @@
 #include "graphics"
 #include "window"
 #include "gpu_programs"
+#include "shaders"
 
 #include <compwolf_type_traits>
 #include <utility>

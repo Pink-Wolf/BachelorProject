@@ -13,7 +13,7 @@
 
 namespace CompWolf::Graphics
 {
-	struct draw_program_input : public gpu_program_input
+	struct draw_program_input : public gpu_program_code_parameters
 	{
 		window* target_window;
 		std::size_t frame_index;
@@ -51,7 +51,7 @@ namespace CompWolf::Graphics
 		public: // other methods
 			auto execute() -> gpu_fence& { return _program.execute(); }
 		private:
-			void gpu_code(const gpu_program_input&);
+			void gpu_code(const gpu_program_code_parameters&);
 			
 		public: // constructors
 			draw_frame_program() = default;

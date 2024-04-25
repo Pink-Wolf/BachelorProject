@@ -15,7 +15,7 @@ namespace CompWolf::Graphics
 
 	/******************************** other methods ********************************/
 
-	void Private::draw_frame_program::gpu_code(const gpu_program_input& args)
+	void Private::draw_frame_program::gpu_code(const gpu_program_code_parameters& args)
 	{
 		auto commandBuffer = Private::to_vulkan(args.command);
 		auto& frame = target_window().swapchain().frames()[frame_index()];
@@ -72,8 +72,7 @@ namespace CompWolf::Graphics
 
 	Private::draw_frame_program::draw_frame_program(draw_program_data& data, window& target, std::size_t frame_index)
 		: _target_window(&target), _data(&data), _frame_index(frame_index)
-		, _program(target.device()
-			, target.swapchain().frames()[frame_index].draw_job
+		, _program(target.swapchain().frames()[frame_index].draw_job
 			, std::bind_front(&draw_frame_program::gpu_code, this)
 		)
 	{

@@ -5,6 +5,8 @@
 #include "gpu_programs"
 #include "draw_pipeline.hpp"
 #include "draw_program.hpp"
+#include "gpu_buffers"
+#include "shaders"
 #include "window"
 #include <utility>
 #include <freeable>

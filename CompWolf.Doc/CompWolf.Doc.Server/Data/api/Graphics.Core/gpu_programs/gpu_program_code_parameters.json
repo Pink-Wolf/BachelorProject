@@ -1,0 +1,30 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct gpu_program_code_parameters;",
+  "briefDescription": "Data passed by [[gpu_program]] to its code.",
+  "detailedDescription": "Aggregate type containing data passed by [[gpu_program]] to its code.",
+
+  "memberGroups": [
+    {
+      "name": "Vulkan-related",
+      "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
+      "items": [
+        {
+          "type": "variable",
+          "name": "vulkan_command",
+          "declaration": "Private::vulkan_command vulkan_command;",
+          "briefDescription": "The program's vulkan_command, representing a VkCommandBuffer.",
+          "detailedDescription": "The program's vulkan_command, representing a VkCommandBuffer."
+        }
+      ]
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "related": [
+    "gpu_program"
+  ]
+}

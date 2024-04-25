@@ -204,6 +204,9 @@
     <ClInclude Include="include\private\gpu_buffers\gpu_image_buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\gpu_programs\gpu_program_code_parameters.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

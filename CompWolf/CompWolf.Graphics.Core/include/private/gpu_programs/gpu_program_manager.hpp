@@ -96,7 +96,7 @@ namespace CompWolf::Graphics
 		}
 
 	public: // vulkan-related
-		/* Returns the pool's vulkan_command_pool, representing a VkCommandPool. */
+		/* Returns the manager's vulkan_command_pool, representing a VkCommandPool. */
 		inline auto vulkan_pool() const noexcept { return _vulkan_pool; }
 
 		/* Returns the latest synchronization-object's vulkan_fence, representing a VkFence.
