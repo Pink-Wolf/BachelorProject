@@ -4,7 +4,7 @@
 #include "vulkan_types"
 #include "graphics"
 #include "window"
-#include "gpu_program"
+#include "gpu_programs"
 
 #include <compwolf_type_traits>
 #include <utility>

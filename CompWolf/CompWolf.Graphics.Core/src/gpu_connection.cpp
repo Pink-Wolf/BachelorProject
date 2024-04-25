@@ -88,7 +88,7 @@ namespace CompWolf::Graphics
 
 				gpu_thread_family connection{
 					.type = 0,
-					.pool_count = 0,
+					.program_manager_count = 0,
 				};
 
 				bool draw_queue = queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT;

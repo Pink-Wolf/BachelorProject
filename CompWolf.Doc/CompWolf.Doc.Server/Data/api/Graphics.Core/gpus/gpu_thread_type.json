@@ -25,6 +25,6 @@
 
   "related": [
     "gpu_thread_type_set",
-    "gpu_program_pool"
+    "gpu_program_manager"
   ]
 }

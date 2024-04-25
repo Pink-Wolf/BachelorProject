@@ -1,0 +1,7 @@
+#include "private/gpu_programs/gpu_fence.hpp"
+#include "private/gpu_programs/gpu_semaphore.hpp"
+#include "private/gpu_programs/gpu_program_sync.hpp"
+
+#include "private/gpu_programs/gpu_program_manager_settings.hpp"
+#include "private/gpu_programs/gpu_program_manager.hpp"
+#include "private/gpu_programs/gpu_program.hpp"

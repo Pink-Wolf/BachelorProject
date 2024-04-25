@@ -9,7 +9,7 @@
 
 namespace CompWolf::Graphics
 {
-	class gpu_program_pool;
+	class gpu_program_manager;
 	class gpu_fence;
 	class gpu_connection;
 
@@ -23,7 +23,7 @@ namespace CompWolf::Graphics
 	{
 	public:
 		owned_ptr<gpu_connection*> _device;
-		gpu_program_pool* _job;
+		gpu_program_manager* _job;
 		Private::vulkan_command _vulkan_command;
 
 	public: // getters
@@ -44,7 +44,7 @@ namespace CompWolf::Graphics
 		auto operator=(gpu_program&&) -> gpu_program& = default;
 
 		gpu_program(gpu_connection& target_device
-			, gpu_program_pool& job
+			, gpu_program_manager& job
 			, gpu_program_code code
 		);
 	public: // CompWolf::freeable

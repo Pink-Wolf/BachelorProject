@@ -1,10 +1,10 @@
 ﻿{
   "type": "class",
 
-  "declaration": "class gpu_program_pool;",
+  "declaration": "class gpu_program_manager;",
   "namespace": "CompWolf",
   "briefDescription": "A manager for some [[gpu_program]]s.",
-  "detailedDescription": "A manager for some [[gpu_program]]s.\nPrograms should be split into different pools when they can run asynchronous.",
+  "detailedDescription": "A manager for some [[gpu_program]]s.\nPrograms should be split into different managers when they can run asynchronous.",
 
   "baseClasses": [ "basic_freeable" ],
 
@@ -13,29 +13,32 @@
   "constructor": {
     "overloads": [
       {
-        "declaration": "gpu_program_pool() noexcept;",
-        "description": "Constructs a freed gpu_program_pool, as in one that cannot contain any programs."
+        "declaration": "gpu_program_manager() noexcept;",
+        "description": "Constructs a freed gpu_program_manager, as in one that cannot contain any programs."
       },
       {
-        "declaration": "gpu_program_pool(gpu_connection&, std::size_t family_index, std::size_t thread_index);",
-        "description": "Creates a pool on the given thread;\nThe given thread is the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
+        "declaration": "gpu_program_manager(gpu_connection&, std::size_t family_index, std::size_t thread_index);",
+        "description": "Creates a manager on the given thread;\nThe given thread is the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector."
       },
       {
-        "declaration": "static auto new_pool_for(gpu_connection&, gpu_program_pool_settings) -> gpu_program_pool;",
-        "description": "Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a pool on it using (2)."
+        "declaration": "static auto new_manager_for(gpu_connection&, gpu_program_manager_settings) -> gpu_program_manager;",
+        "description": "Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a manager on it using (2)."
       },
       {
-        "declaration": "static auto new_pool_for(std::vector<gpu_connection>&, gpu_program_pool_settings) -> gpu_program_pool;",
-        "description": "Finds the best thread on the given gpus to run some programs, based on the given settings, and creates a pool on it using (2)."
+        "declaration": "static auto new_manager_for(std::vector<gpu_connection>&, gpu_program_manager_settings) -> gpu_program_manager;",
+        "description": "Finds the best thread on the given gpus to run some programs, based on the given settings, and creates a manager on it using (2)."
       },
       {
-        "declaration": "gpu_program_pool(gpu_program_pool&&) noexcept;",
-        "description": "gpu_program_pool is movable."
+        "declaration": "gpu_program_manager(gpu_program_manager&&) noexcept;",
+        "description": "gpu_program_manager is movable."
       }
     ],
     "exceptions": [
       "Throws std::out_of_range from (2) if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index.",
       "Throws std::runtime_error from (3) and (4) if the given gpus have no threads at all to perform the given type of programs."
+    ],
+    "related": [
+      "gpu_program_manager_settings"
     ]
   },
   "memberGroups": [
@@ -45,11 +48,11 @@
         {
           "type": "function",
           "name": "gpu",
-          "briefDescription": "Returns the gpu that the pool is on.",
+          "briefDescription": "Returns the gpu that the manager is on.",
           "overloads": [
             {
               "declaration": "auto gpu() noexcept -> gpu_connection&",
-              "description": "Returns the gpu that the pool is on."
+              "description": "Returns the gpu that the manager is on."
             },
             {
               "declaration": "auto gpu() const noexcept -> const gpu_connection&",
@@ -63,11 +66,11 @@
         {
           "type": "function",
           "name": "family",
-          "briefDescription": "Returns the family of threads that the pool is on.",
+          "briefDescription": "Returns the family of threads that the manager is on.",
           "overloads": [
             {
               "declaration": "auto family() noexcept -> gpu_thread_family&",
-              "description": "Returns the family of threads that the pool is on."
+              "description": "Returns the family of threads that the manager is on."
             },
             {
               "declaration": "auto family() const noexcept -> const gpu_thread_family&",
@@ -81,11 +84,11 @@
         {
           "type": "function",
           "name": "thread",
-          "briefDescription": "Returns the thread that the pool is on.",
+          "briefDescription": "Returns the thread that the manager is on.",
           "overloads": [
             {
               "declaration": "auto thread() noexcept -> gpu_thread&",
-              "description": "Returns the family of threads that the pool is on."
+              "description": "Returns the family of threads that the manager is on."
             },
             {
               "declaration": "auto thread() const noexcept -> const gpu_thread&",
@@ -129,11 +132,11 @@
         {
           "type": "function",
           "name": "latest_synchronization",
-          "briefDescription": "Returns the pool's latest synchronization-data.",
+          "briefDescription": "Returns the manager's latest synchronization-data.",
           "overloads": [
             {
               "declaration": "auto latest_synchronization() noexcept -> gpu_program_sync&",
-              "description": "Returns a pointer to the pool's latest synchronization-data.\nWaiting on the data's fence waits for all of the pool's programs to finish.\nReturns nullptr if there are no synchronization data."
+              "description": "Returns a pointer to the manager's latest synchronization-data.\nWaiting on the data's fence waits for all of the manager's programs to finish.\nReturns nullptr if there are no synchronization data."
             },
             {
               "declaration": "auto latest_synchronization() const noexcept -> const gpu_program_sync&",
@@ -147,11 +150,11 @@
         {
           "type": "function",
           "name": "working",
-          "briefDescription": "Returns whether any of the pool's programs are still running.",
+          "briefDescription": "Returns whether any of the programs are still running.",
           "overloads": [
             {
               "declaration": "inline auto working() const noexcept -> bool",
-              "description": "Returns whether any of the pool's programs are still running."
+              "description": "Returns whether any of the programs are still running."
             }
           ]
         }
@@ -163,11 +166,11 @@
         {
           "type": "function",
           "name": "wait",
-          "briefDescription": "Waits until all of the pool's programs are done, and then returns.",
+          "briefDescription": "Waits until all of the programs are done, and then returns.",
           "overloads": [
             {
               "declaration": "inline auto working() const noexcept -> bool",
-              "description": "Waits until all of the pool's programs are done, and then returns."
+              "description": "Waits until all of the programs are done, and then returns."
             }
           ]
         },
@@ -178,7 +181,7 @@
           "overloads": [
             {
               "declaration": "auto push_synchronization(gpu_program_sync&&) noexcept -> gpu_program_sync&",
-              "description": "Replaces the pool's latest synchronization-data; the new data should denote when all of the pool's programs are done."
+              "description": "Replaces the manager's latest synchronization-data; the new data should denote when all of the manager's programs are done."
             }
           ],
           "related": [

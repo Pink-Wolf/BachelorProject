@@ -6,7 +6,7 @@
 
 namespace CompWolf::Graphics
 {
-	/* Aggregate type containing data used by gpu_program_pool for synchronization between its work. */
+	/* Aggregate type containing data used by gpu_program_manager for synchronization between its work. */
 	struct gpu_program_sync
 	{
 		/* Fence waiting for all work to be done. */

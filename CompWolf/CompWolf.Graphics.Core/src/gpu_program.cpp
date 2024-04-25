@@ -1,16 +1,15 @@
 #include "pch.h"
-#include "gpu_program"
+#include "gpu_programs"
 
 #include "compwolf_vulkan.hpp"
 #include <compwolf_utility>
-#include "gpu_program_pools"
 
 namespace CompWolf::Graphics
 {
 	/******************************** constructors ********************************/
 
 	gpu_program::gpu_program(gpu_connection& target_device
-		, gpu_program_pool& job
+		, gpu_program_manager& job
 		, gpu_program_code code
 	) : _device(&target_device)
 		, _job(&job)

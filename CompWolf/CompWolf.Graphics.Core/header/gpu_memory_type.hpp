@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_GPU_MEMORY_TYPE_HEADER
 
 #include "compwolf_vulkan.hpp"
-#include "gpu_program"
+#include "gpu_programs"
 
 namespace CompWolf::Graphics::Private
 {

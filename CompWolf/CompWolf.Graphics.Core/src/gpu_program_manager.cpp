@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "gpu_program_pools"
+#include "gpu_programs"
 
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>
@@ -8,23 +8,23 @@ namespace CompWolf::Graphics
 {
 	/******************************** accessors ********************************/
 
-	auto gpu_program_pool::find_thread(const gpu_thread_family& family) noexcept -> std::size_t
+	auto gpu_program_manager::find_thread(const gpu_thread_family& family) noexcept -> std::size_t
 	{
 		std::size_t best_thread_index = 0;
-		if (family.threads[best_thread_index].pool_count == 0) return best_thread_index;
+		if (family.threads[best_thread_index].program_manager_count == 0) return best_thread_index;
 
 		for (size_t thread_index = 1; thread_index < family.threads.size(); ++thread_index)
 		{
-			auto pool_count = family.threads[best_thread_index].pool_count;
-			if (pool_count < family.threads[best_thread_index].pool_count)
+			auto program_manager_count = family.threads[best_thread_index].program_manager_count;
+			if (program_manager_count < family.threads[best_thread_index].program_manager_count)
 			{
 				best_thread_index = thread_index;
-				if (pool_count == 0) return thread_index;
+				if (program_manager_count == 0) return thread_index;
 			}
 		}
 		return best_thread_index;
 	}
-	auto gpu_program_pool::find_family(gpu_program_pool_settings& settings, const gpu_connection& gpu, float& best_score, float& best_custom_score) noexcept
+	auto gpu_program_manager::find_family(gpu_program_manager_settings& settings, const gpu_connection& gpu, float& best_score, float& best_custom_score) noexcept
 		-> std::optional<std::size_t>
 	{
 		const gpu_thread_family* best_family = nullptr;
@@ -46,7 +46,7 @@ namespace CompWolf::Graphics
 			{
 				score -= additional_work_types.count() / static_cast<float>(gpu_thread_type::size);
 
-				score -= static_cast<float>(family.pool_count / family.threads.size()); // Truncation of "job-count / thread-count" is intentional
+				score -= static_cast<float>(family.program_manager_count / family.threads.size()); // Truncation of "job-count / thread-count" is intentional
 			}
 
 			constexpr float very_small_score_difference = .1f / static_cast<float>(gpu_thread_type::size);
@@ -65,7 +65,7 @@ namespace CompWolf::Graphics
 		if (!best_family) return std::nullopt;
 		return best_family_index;
 	}
-	auto gpu_program_pool::find_family(gpu_program_pool_settings& settings, const std::vector<gpu_connection>& gpus) noexcept
+	auto gpu_program_manager::find_family(gpu_program_manager_settings& settings, const std::vector<gpu_connection>& gpus) noexcept
 		-> std::optional<std::pair<size_t, std::size_t>>
 	{
 		gpu_connection* best_gpu = nullptr;
@@ -107,7 +107,7 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	gpu_program_pool::gpu_program_pool(gpu_connection& device_in, std::size_t family_index_in, std::size_t thread_index_in)
+	gpu_program_manager::gpu_program_manager(gpu_connection& device_in, std::size_t family_index_in, std::size_t thread_index_in)
 		: _device(&device_in)
 		, _family_index(family_index_in)
 		, _thread_index(thread_index_in)
@@ -115,8 +115,8 @@ namespace CompWolf::Graphics
 	{
 		try
 		{
-			++family().pool_count;
-			++thread().pool_count;
+			++family().program_manager_count;
+			++thread().program_manager_count;
 
 			auto logicDevice = Private::to_vulkan(device().vulkan_device());
 
@@ -146,30 +146,30 @@ namespace CompWolf::Graphics
 		}
 	}
 
-	auto gpu_program_pool::new_pool_for(gpu_connection& gpu, gpu_program_pool_settings settings) -> gpu_program_pool
+	auto gpu_program_manager::new_manager_for(gpu_connection& gpu, gpu_program_manager_settings settings) -> gpu_program_manager
 	{
 		float a, b;
-		auto i = gpu_program_pool::find_family(settings, gpu, a, b);
+		auto i = gpu_program_manager::find_family(settings, gpu, a, b);
 		if (!i) throw std::runtime_error("The machine's GPUs could not perform a job because of the type of work it requires.");
 
 		auto family_index = i.value();
 		auto thread_index = find_thread(gpu.families()[family_index]);
-		return gpu_program_pool(gpu, family_index, thread_index);
+		return gpu_program_manager(gpu, family_index, thread_index);
 	}
-	auto gpu_program_pool::new_pool_for(std::vector<gpu_connection>& gpus, gpu_program_pool_settings settings) -> gpu_program_pool
+	auto gpu_program_manager::new_manager_for(std::vector<gpu_connection>& gpus, gpu_program_manager_settings settings) -> gpu_program_manager
 	{
-		auto i = gpu_program_pool::find_family(settings, gpus);
+		auto i = gpu_program_manager::find_family(settings, gpus);
 		if (!i) throw std::runtime_error("The machine's GPUs could not perform a job because of the type of work it requires.");
 
 		auto [gpu_index, family_index] = i.value();
 		auto& gpu = gpus[gpu_index];
 		auto thread_index = find_thread(gpu.families()[family_index]);
-		return gpu_program_pool(gpu, family_index, thread_index);
+		return gpu_program_manager(gpu, family_index, thread_index);
 	}
 
 	/******************************** CompWolf::freeable ********************************/
 
-	void gpu_program_pool::free() noexcept
+	void gpu_program_manager::free() noexcept
 	{
 		if (empty()) return;
 
@@ -178,8 +178,8 @@ namespace CompWolf::Graphics
 		vkDeviceWaitIdle(logicDevice);
 		vkDestroyCommandPool(logicDevice, Private::to_vulkan(_vulkan_pool), nullptr);
 
-		--family().pool_count;
-		--thread().pool_count;
+		--family().program_manager_count;
+		--thread().program_manager_count;
 
 		_device = nullptr;
 	}

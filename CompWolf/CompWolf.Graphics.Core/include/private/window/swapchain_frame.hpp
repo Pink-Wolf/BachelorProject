@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_SWAPCHAIN_FRAME_HEADER
 
 #include "vulkan_types"
-#include "gpu_program_pools"
+#include "gpu_programs"
 
 namespace CompWolf::Graphics
 {
@@ -10,7 +10,7 @@ namespace CompWolf::Graphics
 	struct swapchain_frame
 	{
 		/* Programs drawing to the image should normally be using this pool to keep them synchronized between each other. */
-		gpu_program_pool draw_job;
+		gpu_program_manager draw_job;
 
 		/* A vulkan_image_view, representing a VkImageView pointing towards the actual image. */
 		Private::vulkan_image_view image;

@@ -8,8 +8,8 @@
 
 namespace CompWolf::Graphics
 {
-	class gpu_program_pool;
-	struct gpu_program_pool_settings;
+	class gpu_program_manager;
+	struct gpu_program_manager_settings;
 
 	/* Contains a connection to each gpu on the machine. */
 	class gpu_manager : public basic_freeable

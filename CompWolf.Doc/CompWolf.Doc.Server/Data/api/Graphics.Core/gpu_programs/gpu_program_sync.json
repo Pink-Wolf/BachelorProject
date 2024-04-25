@@ -3,8 +3,8 @@
 
   "namespace": "CompWolf",
   "declaration": "struct gpu_program_sync;",
-  "briefDescription": "Aggregate type containing data used by gpu_program_pool for synchronization.",
-  "detailedDescription": "Aggregate type containing data used by gpu_program_pool for synchronization between its programs' work.",
+  "briefDescription": "Aggregate type containing data used by gpu_program_manager for synchronization.",
+  "detailedDescription": "Aggregate type containing data used by gpu_program_manager for synchronization between its programs' work.",
 
   "memberGroups": [
     {
@@ -36,7 +36,7 @@
   "copyable": true,
   "movable": true,
   "related": [
-    "gpu_program_pool",
+    "gpu_program_manager",
     "gpu_fence",
     "gpu_semaphore"
   ]

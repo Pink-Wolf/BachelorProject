@@ -8,6 +8,6 @@
 
   "related": [
     "gpu_thread_type",
-    "gpu_program_pool"
+    "gpu_program_manager"
   ]
 }

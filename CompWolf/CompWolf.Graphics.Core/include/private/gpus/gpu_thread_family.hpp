@@ -18,8 +18,8 @@ namespace CompWolf::Graphics
 		/* The family's threads, where a "thread" is a gpu queue. */
 		std::vector<gpu_thread> threads;
 
-		/* The amount of gpu_program_pool currently on the family's threads. */
-		std::size_t pool_count;
+		/* The amount of gpu_program_manager currently on the family's threads. */
+		std::size_t program_manager_count;
 	};
 }
 

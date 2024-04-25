@@ -31,12 +31,12 @@
         },
         {
           "type": "variable",
-          "name": "pool_count",
-          "declaration": "std::size_t pool_count;",
-          "briefDescription": "The amount of [[gpu_program_pool]] currently on the family's threads.",
-          "detailedDescription": "The amount of [[gpu_program_pool]] currently on the family's threads.",
+          "name": "program_manager_count",
+          "declaration": "std::size_t program_manager_count;",
+          "briefDescription": "The amount of [[gpu_program_manager]] currently on the family's threads.",
+          "detailedDescription": "The amount of [[gpu_program_manager]] currently on the family's threads.",
           "related": [
-            "gpu_program_pool"
+            "gpu_program_manager"
           ]
         }
       ]

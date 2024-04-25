@@ -11,8 +11,8 @@ namespace CompWolf::Graphics
 	 */
 	struct gpu_thread
 	{
-		/* The amount of gpu_program_pool currently on the thread. */
-		std::size_t pool_count = 0;
+		/* The amount of gpu_program_manager currently on the thread. */
+		std::size_t program_manager_count = 0;
 		/* Represents the VkQueue representing the gpu queue. */
 		Private::vulkan_queue queue;
 	};

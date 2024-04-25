@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_DRAW_PROGRAM_HEADER
 
 #include "vulkan_types"
-#include "gpu_program"
+#include "gpu_programs"
 #include "window"
 #include <functional>
 #include <dimensions>

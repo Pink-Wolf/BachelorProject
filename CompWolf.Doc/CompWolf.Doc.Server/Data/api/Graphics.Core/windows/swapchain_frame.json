@@ -12,9 +12,9 @@
         {
           "type": "variable",
           "name": "draw_job",
-          "declaration": "gpu_program_pool draw_job;",
-          "briefDescription": "The pool used to draw onto the image.",
-          "detailedDescription": "Programs drawing to the image should normally be using this pool to keep them synchronized between each other."
+          "declaration": "gpu_program_manager draw_job;",
+          "briefDescription": "The manager for the programs used to draw the image.",
+          "detailedDescription": "Programs drawing to the image should normally be using this manager to keep them synchronized between each other."
         },
         {
           "type": "variable",

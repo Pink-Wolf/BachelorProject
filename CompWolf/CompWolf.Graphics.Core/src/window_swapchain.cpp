@@ -192,7 +192,7 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					frame.draw_job = gpu_program_pool::new_pool_for(device(), gpu_program_pool_settings
+					frame.draw_job = gpu_program_manager::new_manager_for(device(), gpu_program_manager_settings
 						{
 							.type = { gpu_thread_type::draw, gpu_thread_type::present },
 						}
