@@ -1,4 +1,2 @@
 #include "private/inputs/key_parameter.hpp"
-#include "private/inputs/key_pressed_parameter.hpp"
-
 #include "private/inputs/input_manager.hpp"

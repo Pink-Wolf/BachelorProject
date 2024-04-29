@@ -43,19 +43,41 @@
           "detailedDescription": "This currently supports a-z, A-Z, 0-9, ' '.\nThis treats uppercase and lowercase as the same character",
           "overloads": [
             {
-              "declaration": "auto char_pressed(char) -> event<key_pressed_parameter>&",
+              "declaration": "auto char_pressed(char) -> event<key_parameter>&",
               "description": "Gets an event for when the a key representing the given character is beginning to be held down."
             },
             {
-              "declaration": "auto char_pressed() noexcept -> event<key_pressed_parameter>&",
-              "description": "Gets an event for when any key representing a character is betginning to be held down."
+              "declaration": "auto char_pressed() noexcept -> event<key_parameter>&",
+              "description": "Gets an event for when any key representing a character is beginning to be held down."
             }
           ],
           "exceptions": [
             "Throws std::invalid_argument from (1) if this currently does not support the given character."
           ],
           "related": [
-            "key_pressed_parameter"
+            "key_parameter"
+          ]
+        },
+        {
+          "type": "function",
+          "name": "char_released",
+          "briefDescription": "Gets an event for when a key representing the given character is being released from being held down.",
+          "detailedDescription": "This currently supports a-z, A-Z, 0-9, ' '.\nThis treats uppercase and lowercase as the same character",
+          "overloads": [
+            {
+              "declaration": "auto char_released(char) -> event<key_parameter>&",
+              "description": "Gets an event for when the a key representing the given character is being released from being held down."
+            },
+            {
+              "declaration": "auto char_released() noexcept -> event<key_parameter>&",
+              "description": "Gets an event for when any key representing a character is being released from being held down."
+            }
+          ],
+          "exceptions": [
+            "Throws std::invalid_argument from (1) if this currently does not support the given character."
+          ],
+          "related": [
+            "key_parameter"
           ]
         }
       ]

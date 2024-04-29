@@ -153,6 +153,8 @@ namespace CompWolf::Graphics
 
 			{
 				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+				glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 				auto glfwWindow = glfwCreateWindow(_pixel_size.value().first, _pixel_size.value().second
 					, _settings.name.data()
 					, nullptr, nullptr);
@@ -178,6 +180,7 @@ namespace CompWolf::Graphics
 					this_window->_draw_events.emplace(draw_event_type::resize, [width, height](window& w)->void { w.set_pixel_size(width, height); });
 					});
 
+				glfwSetInputMode(glfwWindow, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
 				_inputs = input_manager(settings, _glfw_window);
 				glfwSetKeyCallback(glfwWindow, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
 					window* this_window = static_cast<window*>(glfwGetWindowUserPointer(glfwWindow));

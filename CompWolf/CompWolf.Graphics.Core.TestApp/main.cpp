@@ -114,14 +114,19 @@ int main()
 
         double time_multiplier = 1;
 
-        win.inputs().char_pressed('w').subscribe([&time_multiplier](const event<key_pressed_parameter>&, key_pressed_parameter& args)
+        win.inputs().char_pressed('w').subscribe([&time_multiplier](const event<key_parameter>&, key_parameter& args)
             {
                 time_multiplier *= 2;
             }
         );
-        win.inputs().char_pressed('s').subscribe([&time_multiplier](const event<key_pressed_parameter>&, key_pressed_parameter& args)
+        win.inputs().char_pressed('s').subscribe([&time_multiplier](const event<key_parameter>&, key_parameter& args)
             {
                 time_multiplier /= 2;
+            }
+        );
+        win.inputs().char_released().subscribe([](const event<key_parameter>&, key_parameter& args)
+            {
+                std::cout << args.character << "\n";
             }
         );
 
@@ -134,7 +139,6 @@ int main()
                 t->position.y() = static_cast<float>(std::sin(total_time)) / 2;
             }
 
-            drawer.execute(win);
             win.update_image();
             environment.update();
 

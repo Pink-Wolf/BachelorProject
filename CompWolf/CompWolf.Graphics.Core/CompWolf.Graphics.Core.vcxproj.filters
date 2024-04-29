@@ -225,9 +225,6 @@
     <ClInclude Include="include\private\inputs\key_parameter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\inputs\key_pressed_parameter.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\inputs">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -10,7 +10,9 @@ namespace CompWolf::Graphics
 
 	void input_manager::on_glfw_input(int glfwKey, int glfwAction, int glfwModifiers)
 	{
-		bool capitalized = ((glfwModifiers & GLFW_MOD_SHIFT) != 0) != ((glfwModifiers & GLFW_MOD_CAPS_LOCK) != 0);
+		bool capitalized
+			= ((glfwModifiers & GLFW_MOD_SHIFT) != 0)
+			!= ((glfwModifiers & GLFW_MOD_CAPS_LOCK) != 0);
 
 		{
 			char character = 0;
@@ -25,15 +27,23 @@ namespace CompWolf::Graphics
 				};
 				key_args.character = capitalized ? key_args.uppercase_character : key_args.lowercase_character;
 
+				switch (glfwAction)
 				{
-					key_pressed_parameter key_pressed_args{
-						{ key_args }
-					};
+				case GLFW_PRESS:
+				{
+					_any_char_pressed.invoke(key_args);
 
-					_any_char_pressed.invoke(key_pressed_args);
-					
 					auto char_pressed_iterator = _char_pressed.find(key_args.lowercase_character);
-					if (char_pressed_iterator != _char_pressed.end()) char_pressed_iterator->second.invoke(key_pressed_args);
+					if (char_pressed_iterator != _char_pressed.end()) char_pressed_iterator->second.invoke(key_args);
+				} break;
+				case GLFW_RELEASE:
+				{
+					_any_char_released.invoke(key_args);
+
+					auto char_released_iterator = _char_released.find(key_args.lowercase_character);
+					if (char_released_iterator != _char_released.end()) char_released_iterator->second.invoke(key_args);
+				} break;
+				default: break;
 				}
 			}
 		}

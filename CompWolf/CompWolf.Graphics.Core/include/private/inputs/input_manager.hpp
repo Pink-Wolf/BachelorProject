@@ -4,9 +4,9 @@
 #include "vulkan_types"
 #include <freeable>
 #include "../window/window_settings.hpp"
+#include "key_parameter.hpp"
 #include <event>
 #include <map>
-#include "key_pressed_parameter.hpp"
 #include <cctype>
 
 namespace CompWolf::Graphics
@@ -19,8 +19,11 @@ namespace CompWolf::Graphics
 	private: // fields
 		bool _not_empty = false;
 
-		std::map<char, event<key_pressed_parameter>> _char_pressed;
-		event<key_pressed_parameter> _any_char_pressed;
+		std::map<char, event<key_parameter>> _char_pressed;
+		event<key_parameter> _any_char_pressed;
+
+		std::map<char, event<key_parameter>> _char_released;
+		event<key_parameter> _any_char_released;
 
 	public: // accessors
 		/* Gets an event for when the a key representing the given character is beginning to be held down.
@@ -29,10 +32,20 @@ namespace CompWolf::Graphics
 		 * @throws std::invalid_argument from if this currently does not support the given character.
 		 */
 		inline auto& char_pressed(char c) { return _char_pressed[static_cast<char>(std::tolower(c))]; }
-		/* Gets an event for when any key representing a character is betginning to be held down.
+		/* Gets an event for when any key representing a character is beginning to be held down.
 		 * This currently supports a-z, A-Z, 0-9, ' '.
 		 */
 		inline auto& char_pressed() noexcept { return _any_char_pressed; }
+		/* Gets an event for when the a key representing the given character is being released from being held down.
+		 * This currently supports a-z, A-Z, 0-9, ' '.
+		 * This treats uppercase and lowercase as the same character
+		 * @throws std::invalid_argument from if this currently does not support the given character.
+		 */
+		inline auto& char_released(char c) { return _char_released[static_cast<char>(std::tolower(c))]; }
+		/* Gets an event for when any key representing a character is being released from being held down.
+		 * This currently supports a-z, A-Z, 0-9, ' '.
+		 */
+		inline auto& char_released() noexcept { return _any_char_released; }
 
 	public: // vulkan-related
 		/* Tells the manager that a key with the given character was pressed. */

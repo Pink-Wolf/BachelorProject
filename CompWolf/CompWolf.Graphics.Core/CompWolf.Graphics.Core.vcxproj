@@ -212,7 +212,6 @@
     <ClInclude Include="include\private\gpu_programs\gpu_program.hpp" />
     <ClInclude Include="include\private\inputs\input_manager.hpp" />
     <ClInclude Include="include\private\inputs\key_parameter.hpp" />
-    <ClInclude Include="include\private\inputs\key_pressed_parameter.hpp" />
     <ClInclude Include="include\private\shaders\color.hpp" />
     <ClInclude Include="include\private\shaders\new_shader_field.hpp" />
     <ClInclude Include="include\private\shaders\shader_field_info.hpp" />
