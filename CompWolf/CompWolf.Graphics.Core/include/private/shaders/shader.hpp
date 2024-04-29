@@ -15,6 +15,11 @@ namespace CompWolf::Graphics
 	class graphics_environment;
 	class gpu_connection;
 
+	/* Gets the SPIR-V code from the given file. SPIR-V code is used to construct a shader.
+	 * @throws std::runtime_error if the given file could not be found or opened.
+	 */
+	auto shader_code_from_file(std::string) -> std::vector<uint32_t>;
+
 	namespace Private
 	{
 		class base_shader : public basic_freeable

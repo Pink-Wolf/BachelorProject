@@ -4,9 +4,26 @@
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>
 #include "gpus"
+#include <fstream>
 
 namespace CompWolf::Graphics
 {
+	auto shader_code_from_file(std::string path) -> std::vector<uint32_t>
+	{
+		// file is read in individual bytes to keep little-endian.
+
+		std::ifstream stream(path, std::ios::binary | std::ios::in | std::ios::ate);
+		if (!stream.is_open()) throw std::runtime_error("Could not open " + path + "; make sure to run compile.bat to create the file.");
+
+		std::vector<uint32_t> data;
+		data.resize(stream.tellg() / 4);
+
+		stream.seekg(0);
+		stream.read(static_cast<char*>(static_cast<void*>(data.data())), data.size() * 4);
+
+		return data;
+	}
+
 	/******************************** getters ********************************/
 
 	auto Private::base_shader::vulkan_shader(const gpu_connection& vulkan_device) const -> Private::vulkan_shader

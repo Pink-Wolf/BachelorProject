@@ -3,7 +3,6 @@
 #include <window>
 #include <shaders>
 #include <drawables>
-#include <fstream>
 #include <dimensions>
 #include <vector>
 #include <chrono>
@@ -12,35 +11,6 @@
 
 using namespace CompWolf;
 using namespace CompWolf::Graphics;
-
-auto load_shader(std::string path) -> std::vector<uint32_t>
-{
-    static const auto word_size = sizeof(char);
-
-    std::ifstream stream(path, std::ios::binary | std::ios::in | std::ios::ate);
-    if (!stream.is_open()) throw std::runtime_error("Could not open " + path + "; make sure to run compile.bat to create the file.");
-
-    std::vector<char> data;
-    data.reserve(stream.tellg() * word_size);
-
-    stream.seekg(0);
-    char new_word[word_size];
-    while (stream.read(new_word, word_size))
-    {
-        char new_data = 0;
-        for (std::size_t i = 0; i < word_size; ++i)
-        {
-            new_data |= static_cast<char>(new_word[i]) << (i * 8);
-        }
-        data.push_back(new_data);
-    }
-
-    std::vector<uint32_t> output_data;
-    output_data.resize(data.size() / 4);
-    std::memcpy(output_data.data(), data.data(), data.size());
-
-    return output_data;
-}
 
 struct vertex
 {
@@ -74,8 +44,8 @@ int main()
             }
         );
 
-        auto vert_shader = input_shader<vertex, type_value_pair<object_data, 9>>(environment, load_shader("vertex.spv"));
-        auto frag_shader = shader<type_value_pair<shader_image, 4>>(environment, load_shader("frag.spv"));
+        auto vert_shader = input_shader<vertex, type_value_pair<object_data, 9>>(environment, shader_code_from_file("vertex.spv"));
+        auto frag_shader = shader<type_value_pair<shader_image, 4>>(environment, shader_code_from_file("frag.spv"));
         auto material = draw_material(vert_shader, frag_shader);
 
         gpu_input_buffer<vertex> vertices(win.device(), {

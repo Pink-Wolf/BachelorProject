@@ -1,0 +1,19 @@
+﻿{
+  "type": "function",
+
+  "namespace": "CompWolf",
+  "briefDescription": "Gets the SPIR-V code from the given file. SPIR-V code is used to construct a [[shader]].",
+  "overloads": [
+    {
+      "declaration": "auto shader_code_from_file(std::string) -> std::vector<uint32_t>;",
+      "description": "Gets the SPIR-V code from the given file. SPIR-V code is used to construct a [[shader]]."
+    }
+  ],
+  "exceptions": [
+    "Throws std::runtime_error if the given file could not be found or opened."
+  ],
+
+  "related": [
+    "shader"
+  ]
+}

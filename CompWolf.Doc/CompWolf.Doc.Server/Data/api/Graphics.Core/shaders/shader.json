@@ -40,6 +40,7 @@
         "description": "shader is movable."
       }
     ],
+    "detailedDescription": "spir-V code can be gotten from a file with [[shader_code_from_file]].",
     "exceptions": [
       "Throws std::runtime_error if there was an error during setup due to causes outside of the program."
     ]
