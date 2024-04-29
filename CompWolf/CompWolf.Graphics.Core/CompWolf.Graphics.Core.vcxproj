@@ -172,6 +172,7 @@
     <ClInclude Include="include\gpu_buffers" />
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\images" />
+    <ClInclude Include="include\inputs" />
     <ClInclude Include="include\private\drawables\drawable.hpp" />
     <ClInclude Include="include\private\drawables\draw_material.hpp" />
     <ClInclude Include="include\private\drawables\draw_material_data.hpp" />
@@ -209,6 +210,9 @@
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
     <ClInclude Include="include\private\gpu_programs\gpu_program.hpp" />
+    <ClInclude Include="include\private\inputs\input_manager.hpp" />
+    <ClInclude Include="include\private\inputs\key_parameter.hpp" />
+    <ClInclude Include="include\private\inputs\key_pressed_parameter.hpp" />
     <ClInclude Include="include\private\shaders\color.hpp" />
     <ClInclude Include="include\private\shaders\new_shader_field.hpp" />
     <ClInclude Include="include\private\shaders\shader_field_info.hpp" />
@@ -246,6 +250,7 @@
     <ClCompile Include="src\gpu_specific_material.cpp" />
     <ClCompile Include="src\gpu_vkBuffer_allocator.cpp" />
     <ClCompile Include="src\graphics_environment.cpp" />
+    <ClCompile Include="src\input_manager.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -1,0 +1,13 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct key_pressed_parameter;",
+  "briefDescription": "Parameter for [[input_manager]]'s events for when a key is pressed.",
+  "detailedDescription": "Aggregate type used as the parameter for [[input_manager]]'s events for when a key is pressed.",
+
+  "baseClasses": [ "key_parameter" ],
+
+  "copyable": true,
+  "movable": true
+}

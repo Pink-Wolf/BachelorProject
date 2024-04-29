@@ -1,0 +1,42 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "struct key_parameter;",
+  "briefDescription": "Parameter for [[input_manager]]'s events for when a key is pressed, released, etc.",
+  "detailedDescription": "Aggregate type used as the parameter for [[input_manager]]'s events for when a key is pressed, released, etc.",
+
+  "memberGroups": [
+    {
+      "items": [
+        {
+          "type": "variable",
+          "name": "character",
+          "declaration": "char character;",
+          "briefDescription": "If the key represents a character, the character.",
+          "detailedDescription": "If the key represents a character, the character.\nThe character is uppercase if caps lock is active or a shift-key is held down (but not both); the character is otherwise lowercase."
+        },
+        {
+          "type": "variable",
+          "name": "lowercase_character",
+          "declaration": "char lowercase_character;",
+          "briefDescription": "If the key represents a character, the character.",
+          "detailedDescription": "If the key represents a character, the character.\nThe character is lowercase."
+        },
+        {
+          "type": "variable",
+          "name": "uppwercase_character",
+          "declaration": "char uppwercase_character;",
+          "briefDescription": "If the key represents a character, the character.",
+          "detailedDescription": "If the key represents a character, the character.\nThe character is uppwercase."
+        }
+      ]
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "related": [
+    "input_manager"
+  ]
+}

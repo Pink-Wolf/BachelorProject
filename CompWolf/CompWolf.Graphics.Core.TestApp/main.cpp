@@ -105,9 +105,25 @@ int main()
         auto start_time = clock.now();
         auto time = clock.now();
 
+        double real_total_time = 0;
+        double real_delta_time = 1;
         double total_time = 0;
+        double delta_time = 1;
         std::size_t frames_since_last_print = 0;
         double next_print_time = 0;
+
+        double time_multiplier = 1;
+
+        win.inputs().char_pressed('w').subscribe([&time_multiplier](const event<key_pressed_parameter>&, key_pressed_parameter& args)
+            {
+                time_multiplier *= 2;
+            }
+        );
+        win.inputs().char_pressed('s').subscribe([&time_multiplier](const event<key_pressed_parameter>&, key_pressed_parameter& args)
+            {
+                time_multiplier /= 2;
+            }
+        );
 
         while (win.running())
         {
@@ -123,17 +139,24 @@ int main()
             environment.update();
 
             {
-                time = clock.now();
-                total_time = std::chrono::duration<double>(time - start_time).count();
+                auto new_time = clock.now();;
+                
+                real_delta_time = std::chrono::duration<double>(new_time - time).count();
+                real_total_time = real_total_time += real_delta_time;
+
+                delta_time = real_delta_time * time_multiplier;
+                total_time = total_time += delta_time;
+                
+                time = new_time;
             }
 
             ++frames_since_last_print;
-            if (total_time >= next_print_time)
+            if (real_total_time >= next_print_time)
             {
-                auto framerate = frames_since_last_print / (total_time - next_print_time + 1);
+                auto framerate = frames_since_last_print / (real_total_time - next_print_time + 1);
                 std::cout << "framerate: " << framerate << "\n";
                 frames_since_last_print = 0;
-                next_print_time = total_time + 1;
+                next_print_time = real_total_time + 1;
             }
         }
 

@@ -12,7 +12,6 @@
 #include "vulkan_debug_handle.hpp"
 #include "gpus"
 
-
 namespace CompWolf::Graphics
 {
 	struct graphics_environment_update_parameter

@@ -177,6 +177,12 @@ namespace CompWolf::Graphics
 					this_window->_draw_events.erase(draw_event_type::resize);
 					this_window->_draw_events.emplace(draw_event_type::resize, [width, height](window& w)->void { w.set_pixel_size(width, height); });
 					});
+
+				_inputs = input_manager(settings, _glfw_window);
+				glfwSetKeyCallback(glfwWindow, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
+					window* this_window = static_cast<window*>(glfwGetWindowUserPointer(glfwWindow));
+					this_window->inputs().on_glfw_input(key, action, mods);
+					});
 			}
 
 			_surface = window_surface(_settings, _glfw_window, environment, gpu);

@@ -62,6 +62,24 @@
         },
         {
           "type": "function",
+          "name": "inputs",
+          "briefDescription": "Returns the [[input_manager]] handling inputs while the window is focused.",
+          "overloads": [
+            {
+              "declaration": "auto inputs() noexcept -> input_manager&;",
+              "description": "Returns the [[input_manager]] handling inputs while the window is focused."
+            },
+            {
+              "declaration": "auto inputs() const noexcept -> const input_manager&;",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "input_manager"
+          ]
+        },
+        {
+          "type": "function",
           "name": "pixel_size",
           "briefDescription": "Returns the size of the window, in pixels.",
           "overloads": [

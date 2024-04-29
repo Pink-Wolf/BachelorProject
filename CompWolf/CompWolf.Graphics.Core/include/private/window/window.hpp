@@ -12,6 +12,7 @@
 #include "utility"
 #include "gpu_programs"
 #include <functional>
+#include "inputs"
 
 namespace CompWolf::Graphics
 {
@@ -41,6 +42,8 @@ namespace CompWolf::Graphics
 		};
 		std::unordered_map<draw_event_type, std::function<void(window&)>> _draw_events;
 
+		input_manager _inputs;
+
 	public:
 		/* Event invoked before the window's surface is rebuild, for example because the size of the window changed. */
 		event<window_rebuild_surface_parameters> rebuilding_surface;
@@ -63,6 +66,11 @@ namespace CompWolf::Graphics
 
 		/* Returns whether the window is not freed. */
 		inline auto running() const noexcept { return !empty(); }
+
+		/* Returns the input_manager handling inputs while the window is focused */
+		inline auto& inputs() noexcept { return _inputs; }
+		/* Returns the input_manager handling inputs while the window is focused */
+		inline auto& inputs() const noexcept { return _inputs; }
 
 	public: // modifiers
 		/* Makes the window update what is shown on it.
