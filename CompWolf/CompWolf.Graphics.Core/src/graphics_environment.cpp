@@ -27,7 +27,7 @@ namespace CompWolf::Graphics
 
 	/******************************** constructors ********************************/
 
-	void graphics_environment::setup()
+	graphics_environment::graphics_environment(graphics_environment_settings settings) : _settings(std::move(settings))
 	{
 		if (_constructed) throw std::logic_error("Tried constructing a graphics_environment while one already exists.");
 		_constructed = true;
@@ -39,8 +39,14 @@ namespace CompWolf::Graphics
 		_vulkan_debug_handle = vulkan_debug_handle(_settings, vulkan_instance());
 		_gpus = gpu_manager(_settings, vulkan_instance());
 	}
-	graphics_environment::~graphics_environment()
+
+	void graphics_environment::free() noexcept
 	{
+		_gpus.free();
+		_vulkan_debug_handle.free();
+		_vulkan_handle.free();
+		_glfw_handle.free();
+
 		_constructed = false;
 	}
 }

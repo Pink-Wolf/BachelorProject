@@ -5,6 +5,7 @@
 #include <thread>
 #include <concepts>
 #include <event>
+#include <freeable>
 
 #include "graphics_environment_settings.hpp"
 #include "glfw_handle.hpp"
@@ -23,7 +24,7 @@ namespace CompWolf::Graphics
 	 * The environment's update-method should normally be called continually.
 	 * The thread that constructed the graphics_environment is considered the "main graphics thread".
 	 */
-	class graphics_environment
+	class graphics_environment : public basic_freeable
 	{
 	private: // fields
 		/* Whether an instance of the environment has already been constructed, which has not yet been destructed. */
@@ -80,30 +81,28 @@ namespace CompWolf::Graphics
 		/* Event invoked after all other logic in the environment's update-method. */
 		event<graphics_environment_update_parameter> updated;
 
-	private: // constructor
-		void setup();
-	public:
-		graphics_environment(const graphics_environment&) = delete;
-		auto operator=(const graphics_environment&) -> graphics_environment& = delete;
-		graphics_environment(graphics_environment&&) = delete;
-		auto operator=(graphics_environment&&) -> graphics_environment& = delete;
+	public: // constructor
+		/* Constructs a freed environment, as in one without any logic.
+		 * This does not count as an environment that exists.
+		 */
+		graphics_environment() = default;
+		graphics_environment(graphics_environment&&) = default;
+		auto operator=(graphics_environment&&) -> graphics_environment& = default;
+		/* Must be called from the main graphics thread, or else is undefined behaviour. */
+		inline ~graphics_environment() noexcept { free(); }
 
 		/* Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus, based on the given settings.
-		 * @throws std::logic_error if an environment already exists.
+		 * @throws std::logic_error if an environment already exists (which has not been freed).
 		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
 		 */
-		graphics_environment(graphics_environment_settings settings) : _settings(std::move(settings))
-			{ setup(); }
-		/* Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus.
-		 * @throws std::logic_error if an environment already exists.
-		 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
-		 */
-		graphics_environment() : graphics_environment(graphics_environment_settings()) {}
-		/* Must be called from the main graphics thread, or else is undefined behaviour.
-		 * If the environment is the last in the program, tears down program-wide logic.
-		 */
-		~graphics_environment();
+		graphics_environment(graphics_environment_settings);
 
+	public: // CompWolf::freeable
+		inline auto empty() const noexcept -> bool final
+		{
+			return _glfw_handle.empty();
+		}
+		void free() noexcept final;
 	};
 }
 

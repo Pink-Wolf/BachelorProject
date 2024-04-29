@@ -9,8 +9,10 @@
     "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
   ],
 
+  "baseClasses": [ "basic_freeable" ],
+
   "copyable": false,
-  "movable": false,
+  "movable": true,
   "constructor": {
     "warnings": [
       "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
@@ -18,17 +20,21 @@
 
     "overloads": [
       {
-        "declaration": "graphics_environment();",
-        "description": "Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus."
+        "declaration": "graphics_environment() noexcept;",
+        "description": "Constructs a freed environment, as in one without any logic.\nThis does not count as an environment that exists."
       },
       {
         "declaration": "graphics_environment(graphics_environment_settings);",
-        "description": "Like (1), but the environment has the given properties."
+        "description": "Constructs a valid environment, and sets up program-wide logic used for connecting to the gpus, based on the given settings."
+      },
+      {
+        "declaration": "graphics_environment(graphics_environment&&) noexcept;",
+        "description": "graphics_environment is movable."
       }
     ],
     "exceptions": [
       "Throws std::runtime_error if there was an error during setup due to causes outside of the program.",
-      "Throws std::logic_error if an environment already exists."
+      "Throws std::logic_error if an environment already exists (which has not been freed)."
     ],
 
     "related": [
