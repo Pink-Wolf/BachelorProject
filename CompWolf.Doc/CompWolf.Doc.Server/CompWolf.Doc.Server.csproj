@@ -26,9 +26,4 @@
     </ProjectReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\api\Core\dimensions\" />
-    <Folder Include="Data\api\Core\events\" />
-  </ItemGroup>
-
 </Project>

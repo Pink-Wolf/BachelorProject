@@ -167,11 +167,17 @@
     <ClInclude Include="header\present_device_info.hpp" />
     <ClInclude Include="header\shader_field_type.hpp" />
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
-    <ClInclude Include="include\draw_program" />
+    <ClInclude Include="include\drawables" />
     <ClInclude Include="include\gpus" />
     <ClInclude Include="include\gpu_buffers" />
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\images" />
+    <ClInclude Include="include\private\drawables\drawable.hpp" />
+    <ClInclude Include="include\private\drawables\draw_material.hpp" />
+    <ClInclude Include="include\private\drawables\draw_material_data.hpp" />
+    <ClInclude Include="include\private\drawables\draw_material_settings.hpp" />
+    <ClInclude Include="include\private\drawables\gpu_specific_material.hpp" />
+    <ClInclude Include="include\private\drawables\window_specific_material.hpp" />
     <ClInclude Include="include\private\gpu_buffers\base_gpu_buffer.hpp" />
     <ClInclude Include="include\private\gpu_buffers\base_gpu_buffer_allocator.hpp" />
     <ClInclude Include="include\private\gpu_buffers\gpu_buffer_access.hpp" />
@@ -202,9 +208,6 @@
     <ClInclude Include="include\private\gpu_programs\gpu_program_manager.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_debug_handle.hpp" />
     <ClInclude Include="include\private\graphics\vulkan_handle.hpp" />
-    <ClInclude Include="include\private\draw_program\draw_command.hpp" />
-    <ClInclude Include="include\private\draw_program\draw_pipeline.hpp" />
-    <ClInclude Include="include\private\draw_program\draw_program.hpp" />
     <ClInclude Include="include\private\gpu_programs\gpu_program.hpp" />
     <ClInclude Include="include\private\shaders\color.hpp" />
     <ClInclude Include="include\private\shaders\new_shader_field.hpp" />
@@ -215,6 +218,7 @@
     <ClInclude Include="include\private\shaders\shader_int.hpp" />
     <ClInclude Include="include\private\shaders\input_shader.hpp" />
     <ClInclude Include="include\private\window\swapchain_frame.hpp" />
+    <ClInclude Include="include\private\window\draw_code_parameters.hpp" />
     <ClInclude Include="include\private\window\window_rebuild_surface_parameters.hpp" />
     <ClInclude Include="include\private\window\window_settings.hpp" />
     <ClInclude Include="include\private\window\window_swapchain.hpp" />
@@ -230,17 +234,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\base_gpu_buffer.cpp" />
+    <ClCompile Include="src\drawable.cpp" />
     <ClCompile Include="src\gpu_image_allocator.cpp" />
     <ClCompile Include="src\gpu_image_buffer.cpp" />
-    <ClCompile Include="src\draw_command.cpp" />
-    <ClCompile Include="src\draw_pipeline.cpp" />
-    <ClCompile Include="src\draw_program.cpp" />
     <ClCompile Include="src\glfw_handle.cpp" />
     <ClCompile Include="src\gpu_connection.cpp" />
     <ClCompile Include="src\gpu_fence.cpp" />
     <ClCompile Include="src\gpu_program_manager.cpp" />
     <ClCompile Include="src\gpu_manager.cpp" />
     <ClCompile Include="src\gpu_program.cpp" />
+    <ClCompile Include="src\gpu_specific_material.cpp" />
     <ClCompile Include="src\gpu_vkBuffer_allocator.cpp" />
     <ClCompile Include="src\graphics_environment.cpp" />
     <ClCompile Include="src\pch.cpp">
@@ -256,6 +259,7 @@
     <ClCompile Include="src\vulkan_handle.cpp" />
     <ClCompile Include="src\gpu_semaphore.cpp" />
     <ClCompile Include="src\window.cpp" />
+    <ClCompile Include="src\window_specific_material.cpp" />
     <ClCompile Include="src\window_surface.cpp" />
     <ClCompile Include="src\window_swapchain.cpp" />
     <ClCompile Include="src\window_user.cpp" />

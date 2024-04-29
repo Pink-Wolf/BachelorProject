@@ -5,10 +5,113 @@
 #include <stdexcept>
 #include "graphics"
 #include <compwolf_utility>
+#include "shaders"
+#include <functional>
 
 namespace CompWolf::Graphics
 {
-	/******************************** setters ********************************/
+	/******************************** event handlers ********************************/
+
+	void window::frame_drawing_program_code(std::size_t frame_index, const gpu_program_code_parameters& args)
+	{
+		auto commandBuffer = Private::to_vulkan(args.command);
+		auto& frame = swapchain().frames()[frame_index];
+
+		auto clear_color = opaque_color(0._scolor, 0._scolor, 0._scolor);
+		VkClearValue clearColor = {
+			{{
+				static_cast<float>(clear_color.x()),
+				static_cast<float>(clear_color.y()),
+				static_cast<float>(clear_color.z())
+			}}
+		};
+
+		uint32_t width, height;
+		{
+			auto& size = pixel_size().value();
+			width = static_cast<uint32_t>(size.first);
+			height = static_cast<uint32_t>(size.second);
+		}
+
+		VkRenderPassBeginInfo renderpassInfo{
+			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+			.renderPass = Private::to_vulkan(surface().vulkan_render_pass()),
+			.framebuffer = Private::to_vulkan(frame.frame_buffer),
+			.renderArea = {
+				.offset = {0, 0},
+				.extent = {
+					.width = width,
+					.height = height,
+				},
+			},
+			.clearValueCount = 1,
+			.pClearValues = &clearColor,
+		};
+
+		vkCmdBeginRenderPass(commandBuffer, &renderpassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		{
+			draw_code_parameters drawing_args{
+				{ args },
+				this,
+				&frame,
+				frame_index,
+			};
+			_drawing_code.invoke(drawing_args);
+		}
+		vkCmdEndRenderPass(commandBuffer);
+	}
+
+	/******************************** modifiers ********************************/
+
+	void window::update_image()
+	{
+		// draw
+		{
+			if (_frame_drawing_programs.empty())
+				_frame_drawing_programs.resize(swapchain().frames().size());
+
+			auto& current_program = _frame_drawing_programs[swapchain().current_frame_index()];
+			if (current_program.empty())
+			{
+				current_program = gpu_program(
+					swapchain().current_frame().draw_job,
+					std::bind_front(&window::frame_drawing_program_code, this, swapchain().current_frame_index())
+				);
+			}
+
+			current_program.execute();
+		}
+
+		// present
+		{
+			auto& frame = swapchain().current_frame();
+			auto semaphore = Private::to_vulkan(frame.draw_job.last_vulkan_semaphore());
+			auto vkSwapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
+			auto frame_index = static_cast<uint32_t>(swapchain().current_frame_index());
+			auto queue = Private::to_vulkan(frame.draw_job.thread().queue);
+
+			VkPresentInfoKHR presentInfo{
+				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+				.waitSemaphoreCount = (semaphore == nullptr) ? 0_uint32 : 1_uint32,
+				.pWaitSemaphores = &semaphore,
+				.swapchainCount = 1,
+				.pSwapchains = &vkSwapchain,
+				.pImageIndices = &frame_index,
+			};
+
+			vkQueuePresentKHR(queue, &presentInfo);
+		}
+
+		// handle events
+		for (auto& event : _draw_events)
+		{
+			event.second(*this);
+		}
+		_draw_events.clear();
+
+		// get next frame
+		swapchain().to_next_frame();
+	}
 
 	void window::set_pixel_size(int width, int height)
 	{
@@ -32,38 +135,6 @@ namespace CompWolf::Graphics
 		rebuild_surface(event_args);
 
 		_pixel_size.set(std::make_pair(width, height));
-	}
-
-	/******************************** other methods ********************************/
-
-	void window::update_image()
-	{
-		{
-			auto& frame = swapchain().current_frame();
-			auto semaphore = Private::to_vulkan(frame.draw_job.last_vulkan_semaphore());
-			auto vkSwapchain = Private::to_vulkan(swapchain().vulkan_swapchain());
-			auto frame_index = static_cast<uint32_t>(swapchain().current_frame_index());
-			auto queue = Private::to_vulkan(frame.draw_job.thread().queue);
-
-			VkPresentInfoKHR presentInfo{
-				.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-				.waitSemaphoreCount = (semaphore == nullptr) ? 0_uint32 : 1_uint32,
-				.pWaitSemaphores = &semaphore,
-				.swapchainCount = 1,
-				.pSwapchains = &vkSwapchain,
-				.pImageIndices = &frame_index,
-			};
-
-			vkQueuePresentKHR(queue, &presentInfo);
-		}
-
-		for (auto& event : _draw_events)
-		{
-			event.second(*this);
-		}
-		_draw_events.clear();
-
-		swapchain().to_next_frame();
 	}
 
 	/******************************** constructors ********************************/
@@ -127,6 +198,8 @@ namespace CompWolf::Graphics
 		if (empty()) return;
 
 		freeing();
+
+		_frame_drawing_programs.clear();
 
 		_swapchain.free();
 		_surface.free();

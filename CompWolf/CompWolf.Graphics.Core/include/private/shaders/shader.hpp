@@ -6,7 +6,9 @@
 #include <owned>
 #include "shader_field_info.hpp"
 #include <vector>
+#include <set>
 #include <map>
+#include <compwolf_type_traits>
 
 namespace CompWolf::Graphics
 {
@@ -61,7 +63,7 @@ namespace CompWolf::Graphics
 
 	/* Some code that can be run on a gpu.
 	 * A shader receives some inputs, and for each input runs its code and outputs some values.
-	 * @typeparam FieldTypes The type of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).
+	 * @typeparam The type and binding position of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).
 	 * Must be type_value_pairs, specifying its type and binding position.
 	 */
 	template <typename... FieldTypes>
@@ -75,9 +77,15 @@ namespace CompWolf::Graphics
 	class shader<type_value_pair<FieldTypes, FieldIndices>...> : public Private::base_shader
 	{
 		using Private::base_shader::base_shader;
+	public: // type definitions
+		/* A collection of type_value_pairs, denoting the shader's fields' type and binding position.
+		 * Sorted by binding position.
+		 */
+		using field_types = type_list<type_value_pair<FieldTypes, FieldIndices>...>;
 
 	public: // fields
-		static inline std::vector<std::size_t> field_indices = std::vector<std::size_t>({ FieldIndices ... });
+		/* The indices given by FieldTypes, in a set. */
+		static inline std::set<std::size_t> field_indices = std::set<std::size_t>({ FieldIndices ... });
 	};
 }
 

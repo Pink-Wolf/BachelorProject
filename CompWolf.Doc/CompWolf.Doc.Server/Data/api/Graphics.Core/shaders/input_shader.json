@@ -43,6 +43,20 @@
       "Throws std::runtime_error if there was an error during setup due to causes outside of the program."
     ]
   },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "input_type",
+          "declaration": "using input_type = InputType;",
+          "briefDescription": "The type that the shader takes as its input.",
+          "detailedDescription": "The type that the shader takes as its input."
+        }
+      ]
+    }
+  ],
 
   "related": [
     "ShaderField"

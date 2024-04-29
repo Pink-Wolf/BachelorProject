@@ -93,11 +93,40 @@
         {
           "type": "function",
           "name": "update_image",
-          "briefDescription": "Makes the window display what has been drawn onto it.",
+          "briefDescription": "Makes the window update what is shown on it.",
           "overloads": [
             {
               "declaration": "void update_image()",
-              "description": "Makes the window display what has been drawn onto it (since the last call to update_image)."
+              "description": "Makes the window update what is shown on it.\nThe window updates its image internally by drawing to its swapchain's current frame, and then making it visible on screen. It then changes what is its current frame."
+            }
+          ]
+        },
+        {
+          "type": "alias",
+          "name": "draw_code_key",
+          "declaration": "using draw_code_key = event<draw_code_parameters>::key_type;",
+          "briefDescription": "The key used to identify some drawing-code added to a window with add_draw_code.",
+          "detailedDescription": "The key used to identify some drawing-code added to a window with add_draw_code."
+        },
+        {
+          "type": "function",
+          "name": "add_draw_code",
+          "briefDescription": "Adds the given code to be run when the window's image is being updated.",
+          "overloads": [
+            {
+              "declaration": "auto add_draw_code(std::function<void(draw_code_parameters)>) -> draw_code_key",
+              "description": "Adds the given code to be run when the window's image is being updated.\nReturns a key used to identify the piece of code."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "remove_draw_code",
+          "briefDescription": "Removes the given code from being run when the window's image is being updated.",
+          "overloads": [
+            {
+              "declaration": "void remove_draw_code(draw_code_key) noexcept",
+              "description": "Removes the given code from being run when the window's image is being updated."
             }
           ]
         },

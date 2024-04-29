@@ -98,6 +98,21 @@ namespace CompWolf
 	};
 	template <typename... TypeLists>
 	using combine_type_lists_t = combine_type_lists<TypeLists...>::type;
+
+	/* For each type in the type_list T, gets Transformer<T>::type; the gotten types are stored in a type_list. */
+	template <typename TypeList, template <typename> typename Transformer>
+	struct transform_type_list
+	{
+		using type = type_list<>;
+	};
+	template <typename... Ts, template <typename> typename Transformer>
+	struct transform_type_list<type_list<Ts...>, Transformer>
+	{
+		using type = type_list<typename Transformer<Ts>::type...>;
+	};
+	/* For each type in the type_list T, gets Transformer<T>::type; the gotten types are stored in a type_list. */
+	template <typename TypeList, template <typename> typename Transformer>
+	using transform_type_list_t = transform_type_list<TypeList, Transformer>::type;
 }
 
 #endif // ! COMPWOLF_TYPE_TRAIT_HEADER

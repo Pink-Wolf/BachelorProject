@@ -1,7 +1,8 @@
 #include <iostream>
 #include <graphics>
 #include <window>
-#include <draw_program>
+#include <shaders>
+#include <drawables>
 #include <fstream>
 #include <dimensions>
 #include <vector>
@@ -51,11 +52,11 @@ template<> struct shader_field_info<vertex> : public new_shader_field<
     type_value_pair<float2, offsetof(vertex, uv)>
 > {};
 
-struct transform
+struct object_data
 {
     float2 position;
 };
-template<> struct shader_field_info<transform> : public new_shader_field<
+template<> struct shader_field_info<object_data> : public new_shader_field<
     type_value_pair<float2, offsetof(vertex, position)>
 > {};
 
@@ -73,9 +74,9 @@ int main()
             }
         );
 
-        auto vert_shader = input_shader<vertex, type_value_pair<transform, 9>>(environment, load_shader("vertex.spv"));
+        auto vert_shader = input_shader<vertex, type_value_pair<object_data, 9>>(environment, load_shader("vertex.spv"));
         auto frag_shader = shader<type_value_pair<shader_image, 4>>(environment, load_shader("frag.spv"));
-        auto pipeline = new_draw_pipeline(vert_shader, frag_shader);
+        auto material = draw_material(vert_shader, frag_shader);
 
         gpu_input_buffer<vertex> vertices(win.device(), {
             {{-.5f, -.5f}, {0.f, 0.f}},
@@ -85,7 +86,7 @@ int main()
             });
         gpu_index_buffer indices(win.device(), { 0, 1, 2, 2, 3, 0 });
 
-        gpu_field_buffer<transform> trans(win.device(), transform());
+        gpu_field_buffer<object_data> trans(win.device(), object_data());
         gpu_field_buffer<float> scaler(win.device(), .5f);
 
         gpu_image_buffer image(win.device(),
@@ -98,18 +99,7 @@ int main()
         );
         gpu_field_buffer<float> tinter(win.device(), .75f);
 
-        auto drawer_command = new_draw_command(pipeline
-            , indices, vertices
-            , trans
-            , image);
-
-        auto drawer = draw_program
-        (
-            draw_program_settings{
-                .background = { 0, 0, 0 },
-            },
-            [&drawer_command](const draw_program_input& args) { drawer_command(args); }
-        );
+        auto square = drawable(win, material, indices, vertices, image, trans);
 
         std::chrono::steady_clock clock;
         auto start_time = clock.now();

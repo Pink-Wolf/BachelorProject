@@ -51,7 +51,7 @@
         {
           "type": "alias",
           "name": "value_type",
-          "declaration": "using value_type = std::remove_cvref<VertexType>;",
+          "declaration": "using value_type = VertexType;",
           "briefDescription": "The type of data in the buffer.",
           "detailedDescription": "The type of data in the buffer."
         }

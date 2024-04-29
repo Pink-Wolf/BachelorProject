@@ -20,6 +20,9 @@ namespace CompWolf::Graphics
 	class input_shader : public shader<FieldTypes...>
 	{
 		using shader<FieldTypes...>::shader;
+	public: // type definitions
+		/* The type that the shader takes as its input. */
+		using input_type = InputType;
 	};
 }
 

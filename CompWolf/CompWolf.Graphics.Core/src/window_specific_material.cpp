@@ -1,140 +1,28 @@
 #include "pch.h"
-#include "draw_program"
+#include "drawables"
 
 #include "compwolf_vulkan.hpp"
 #include "present_device_info.hpp"
 #include "shader_field_type.hpp"
+#include "window"
 #include <stdexcept>
-#include <algorithm>
-#include <ranges>
+#include <functional>
 
 namespace CompWolf::Graphics
 {
-	/******************************** event handlers ********************************/
-
-	void window_specific_pipeline::on_rebuild_surface(
-		const event<window_rebuild_surface_parameters>&,
-		window_rebuild_surface_parameters& args
-	) {
-		auto pipeline_data = _pipeline_data;
-		auto gpu_data = _gpu_data;
-		auto& target = target_window();
-
-		free();
-
-		_pipeline_data = pipeline_data;
-		_gpu_data = gpu_data;
-		set_window(&target);
-		setup();
-	}
-
 	/******************************** constructors ********************************/
 
-	Private::gpu_specific_pipeline::gpu_specific_pipeline(gpu_connection& gpu_device, const draw_pipeline_data& data)
-		: _layout_descriptor(nullptr), _layout(nullptr)
+	window_specific_material::window_specific_material
+	(Private::draw_material_data& data, Private::gpu_specific_material& gpu_data, window& window)
+		: window_user(window), _gpu_data(&gpu_data)
+		, _descriptor_pool(nullptr), _pipeline(nullptr)
+		, _field_indices(&data.field_indices)
 	{
-		_device = &gpu_device;
-		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
-
-		VkDescriptorSetLayout uniformLayout;
-		{
-			std::vector<VkDescriptorSetLayoutBinding> uniformVertexBindings;
-			uniformVertexBindings.reserve(data.vertex_uniform_types.size() + data.fragment_uniform_types.size());
-			for (std::size_t i = 0; i < data.vertex_uniform_types.size(); ++i)
-			{
-				auto uniformBinding = static_cast<uint32_t>((*data.vertex_uniform_indices)[i]);
-
-				switch (data.vertex_uniform_types[i])
-				{
-				case draw_pipeline_data::uniform_data_type::buffer: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = uniformBinding,
-					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-					.descriptorCount = 1,
-					.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-					}); break;
-				case draw_pipeline_data::uniform_data_type::image: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = uniformBinding,
-					.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-					.descriptorCount = 1,
-					.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-					}); break;
-				}
-			}
-			for (std::size_t i = 0; i < data.fragment_uniform_types.size(); ++i)
-			{
-				auto uniformBinding = static_cast<uint32_t>((*data.fragment_uniform_indices)[i]);
-
-				switch (data.fragment_uniform_types[i])
-				{
-				case draw_pipeline_data::uniform_data_type::buffer: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = uniformBinding,
-					.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-					.descriptorCount = 1,
-					.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-					}); break;
-				case draw_pipeline_data::uniform_data_type::image: uniformVertexBindings.emplace_back(VkDescriptorSetLayoutBinding{
-					.binding = uniformBinding,
-					.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-					.descriptorCount = 1,
-					.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-					}); break;
-				}
-			}
-
-			VkDescriptorSetLayoutCreateInfo createInfo{
-				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-				.bindingCount = static_cast<uint32_t>(uniformVertexBindings.size()),
-				.pBindings = uniformVertexBindings.data(),
-			};
-
-			auto result = vkCreateDescriptorSetLayout(logicDevice, &createInfo, nullptr, &uniformLayout);
-
-			switch (result)
-			{
-			case VK_SUCCESS: break;
-			default: throw std::runtime_error("Could not set up uniform fields for pipeline's vertex shader.");
-			}
-
-			_layout_descriptor = Private::from_vulkan(uniformLayout);
-		}
-
-		VkPipelineLayout pipelineLayout;
-		{
-			VkPipelineLayoutCreateInfo createInfo{
-				.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-				.setLayoutCount = 1,
-				.pSetLayouts = &uniformLayout,
-				.pushConstantRangeCount = 0,
-			};
-
-			auto result = vkCreatePipelineLayout(logicDevice, &createInfo, nullptr, &pipelineLayout);
-
-			switch (result)
-			{
-			case VK_SUCCESS: break;
-			default: throw std::runtime_error("Could not set up \"uniform\" values for shader in pipeline.");
-			}
-		}
-		_layout = Private::from_vulkan(pipelineLayout);
-	}
-
-	struct InputStateCreateInfoData
-	{
-		VkVertexInputBindingDescription description;
-		std::vector<VkVertexInputAttributeDescription> attributes;
-	};
-	void window_specific_pipeline::setup()
-	{
-		_descriptor_pool = nullptr;
-		_pipeline = nullptr;
-
-		auto& gpu_device = target_window().device();
-		auto logicDevice = Private::to_vulkan(gpu_device.vulkan_device());
+		auto logicDevice = Private::to_vulkan(device().vulkan_device());
 		auto& surface_format = *Private::to_private(target_window().surface().vulkan_format());
 		auto renderpass = Private::to_vulkan(target_window().surface().vulkan_render_pass());
 		auto& frames = target_window().swapchain().frames();
-
-		auto vkPipelineLayout = Private::to_vulkan(_gpu_data->layout());
+		auto vkPipelineLayout = Private::to_vulkan(vulkan_pipeline_layout());
 
 		try
 		{
@@ -143,14 +31,14 @@ namespace CompWolf::Graphics
 				VkPipelineShaderStageCreateInfo vertexCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_VERTEX_BIT,
-					.module = Private::to_vulkan(_pipeline_data->input_shader->vulkan_shader(gpu_device)),
+					.module = Private::to_vulkan(data.input_shader->vulkan_shader(device())),
 					.pName = "main",
 				};
 
 				VkPipelineShaderStageCreateInfo fragCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-					.module = Private::to_vulkan(_pipeline_data->fragment_shader->vulkan_shader(gpu_device)),
+					.module = Private::to_vulkan(data.pixel_shader->vulkan_shader(device())),
 					.pName = "main",
 				};
 
@@ -159,16 +47,16 @@ namespace CompWolf::Graphics
 
 			VkVertexInputBindingDescription bindingDescriptions{
 				.binding = static_cast<uint32_t>(0),
-				.stride = static_cast<uint32_t>(_pipeline_data->input_stride),
+				.stride = static_cast<uint32_t>(data.input_stride),
 				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
 			};
 			std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
 			{
-				attributeDescriptions.reserve(_pipeline_data->input_types->size());
-				for (uint32_t i = 0; i < _pipeline_data->input_types->size(); ++i)
+				attributeDescriptions.reserve(data.input_types->size());
+				for (uint32_t i = 0; i < data.input_types->size(); ++i)
 				{
-					auto& info = *Private::to_private(_pipeline_data->input_types->at(i));
-					auto offset = _pipeline_data->input_offsets->at(i);
+					auto& info = *Private::to_private(data.input_types->at(i));
+					auto offset = data.input_offsets->at(i);
 					attributeDescriptions.emplace_back(VkVertexInputAttributeDescription
 						{
 							.location = i,
@@ -234,7 +122,7 @@ namespace CompWolf::Graphics
 			}
 			std::vector<VkDescriptorSet> descriptorSets;
 			{
-				std::vector<VkDescriptorSetLayout> descriptorLayouts(descriptorSize, Private::to_vulkan(_gpu_data->layout_descriptor()));
+				std::vector<VkDescriptorSetLayout> descriptorLayouts(descriptorSize, Private::to_vulkan(vulkan_pipeline_layout_descriptor()));
 
 				VkDescriptorSetAllocateInfo allocateInfo{
 					.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
@@ -259,7 +147,7 @@ namespace CompWolf::Graphics
 
 			uint32_t width, height;
 			{
-				auto size = target_window().pixel_size().value();
+				auto& size = target_window().pixel_size().value();
 				width = static_cast<uint32_t>(size.first);
 				height = static_cast<uint32_t>(size.second);
 			}
@@ -379,42 +267,11 @@ namespace CompWolf::Graphics
 		}
 	}
 
-	/******************************** getters ********************************/
-
-	auto Private::base_draw_pipeline::window_data(window& target_window) const noexcept -> const window_specific_pipeline&
-	{
-		// Get data if it does exist
-		{
-			auto iterator = _window_data.find(&target_window);
-			if (iterator != _window_data.end()) return iterator->second;
-		}
-		// Create data if it does not exist
-		{
-			auto& gpu_device = target_window.device();
-			auto& gpu_data = _gpu_data.try_emplace(&gpu_device, gpu_device, _pipeline_data).first->second;
-			auto& window_data = _window_data.try_emplace(&target_window, target_window, _pipeline_data, gpu_data).first->second;
-			return window_data;
-		}
-	}
-
 	/******************************** CompWolf::freeable ********************************/
 
-	void Private::gpu_specific_pipeline::free() noexcept
+	void window_specific_material::free() noexcept
 	{
 		if (empty()) return;
-
-		auto logicDevice = to_vulkan(device().vulkan_device());
-		if (_layout_descriptor) vkDestroyDescriptorSetLayout(logicDevice, Private::to_vulkan(_layout_descriptor), nullptr);
-		if (_layout) vkDestroyPipelineLayout(logicDevice, Private::to_vulkan(_layout), nullptr);
-
-		_device = nullptr;
-	}
-
-	void window_specific_pipeline::free() noexcept
-	{
-		if (empty()) return;
-
-		freeing();
 
 		auto logicDevice = Private::to_vulkan(target_window().device().vulkan_device());
 

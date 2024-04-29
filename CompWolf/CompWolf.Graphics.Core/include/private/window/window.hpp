@@ -4,11 +4,14 @@
 #include "window_surface.hpp"
 #include "window_swapchain.hpp"
 #include "window_rebuild_surface_parameters.hpp"
+#include "draw_code_parameters.hpp"
 #include "window_settings.hpp"
 #include <freeable>
 #include <owned>
 #include "event"
 #include "utility"
+#include "gpu_programs"
+#include <functional>
 
 namespace CompWolf::Graphics
 {
@@ -27,6 +30,9 @@ namespace CompWolf::Graphics
 		window_surface _surface;
 		window_swapchain _swapchain;
 
+		std::vector<gpu_program> _frame_drawing_programs;
+		event<draw_code_parameters> _drawing_code;
+
 		value_event_wrapper<std::pair<int, int>> _pixel_size;
 
 		enum class draw_event_type
@@ -40,6 +46,9 @@ namespace CompWolf::Graphics
 		event<window_rebuild_surface_parameters> rebuilding_surface;
 		/* Event invoked after the window's surface is rebuild, for example because the size of the window changed. */
 		event<window_rebuild_surface_parameters> rebuild_surface;
+
+	private: // event handlers
+		void frame_drawing_program_code(std::size_t frame_index, const gpu_program_code_parameters&);
 
 	public: // accessors
 		/* Returns the gpu that the window is on. */
@@ -56,8 +65,28 @@ namespace CompWolf::Graphics
 		inline auto running() const noexcept { return !empty(); }
 
 	public: // modifiers
-		/* Makes the window display what has been drawn onto it (since the last call to update_image). */
+		/* Makes the window update what is shown on it.
+		 * The window updates its image by making its swapchain's current frame visible. It then changes what is its current frame.
+		 */
 		void update_image();
+
+		/* The key used to identify some drawing-code added to a window with add_draw_code. */
+		using draw_code_key = event<draw_code_parameters>::key_type;
+		/* Adds the given code to be run when the window's image is being updated.
+		 * Returns a key used to identify the piece of code.
+		 */
+		inline auto add_draw_code(std::function<void(draw_code_parameters&)> code) -> draw_code_key
+		{
+			_frame_drawing_programs.clear();
+			return _drawing_code.subscribe([code](const event<draw_code_parameters>&, draw_code_parameters& args) { code(args); });
+		}
+		/* Removes the given code from being run when the window's image is being updated. */
+		inline void remove_draw_code(draw_code_key code) noexcept
+		{
+			_frame_drawing_programs.clear();
+			return _drawing_code.unsubscribe(code);
+		}
+
 		/* Sets the size of the window, in pixels.
 		 * This size does not include any border around the window.
 		 * Throws std::runtime_error if there was an error while changing the size due to causes outside of the program.

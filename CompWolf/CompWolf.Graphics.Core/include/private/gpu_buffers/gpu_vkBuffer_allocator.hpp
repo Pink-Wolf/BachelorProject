@@ -30,6 +30,7 @@ namespace CompWolf::Graphics
 		auto from_buffer(Private::vulkan_buffer) const noexcept -> data_handle;
 		/* Converts a data_handle into a vulkan_buffer. */
 		auto to_buffer(data_handle) const noexcept -> Private::vulkan_buffer;
+
 	public: // constructors
 		gpu_vkBuffer_allocator() = default;
 		gpu_vkBuffer_allocator(const gpu_vkBuffer_allocator&) = default;
@@ -41,6 +42,7 @@ namespace CompWolf::Graphics
 			: base_gpu_buffer_allocator(gpu)
 			, _type(type), _size(size), _element_stride(element_stride)
 		{}
+
 	public: // CompWolf::base_gpu_buffer_allocator
 		auto alloc_data() const -> data_handle final;
 		auto alloc_cpu_access(data_handle) const -> data_handle final;

@@ -7,11 +7,9 @@
 #include <algorithm>
 #include <optional>
 
-#include <iostream>
-
 namespace CompWolf::Graphics
 {
-	/******************************** other methods ********************************/
+	/******************************** modifiers ********************************/
 
 	void window_swapchain::to_next_frame()
 	{

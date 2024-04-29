@@ -6,13 +6,18 @@
   "briefDescription": "Some code that can be run on a gpu.",
   "detailedDescription": "Some code that can be run on a gpu.\nA shader receives some inputs, and for each input runs its code and outputs some values.",
   "warnings": [
-    "It is undefined behaviour to have FieldTypes not match what is specified in the actual shader-code."
+    "It is undefined behaviour to have FieldTypes not match what is specified in the actual shader-code.",
+    "It is undefined behaviour for FieldTypes to not be sorted by binding position."
   ],
 
   "templateParameters": [
     {
       "name": "FieldTypes",
-      "description": "The type of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).\nMust be [[type_value_pair]]s, specifying its type and binding position."
+      "description": "The type and binding position of data the shader has, which is not unique to each input. That is, FieldTypes specifies its uniform buffers, specified in glsl using layout(binding = ?).\nMust be [[type_value_pair]]s, specifying its type and binding position.",
+      "warnings": [
+        "It is undefined behaviour to have FieldTypes not match what is specified in the actual shader-code.",
+        "It is undefined behaviour for FieldTypes to not be sorted by binding position."
+      ]
     }
   ],
 
@@ -41,6 +46,18 @@
   },
   "memberGroups": [
     {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "field_types",
+          "declaration": "using field_types = type_list<FieldTypes...>;",
+          "briefDescription": "The shader's fields.",
+          "detailedDescription": "A collection of [[type_value_pair]]s, denoting the shader's fields' type and binding position.\nSorted by binding position."
+        }
+      ]
+    },
+    {
       "name": "Accessors",
       "items": [
         {
@@ -60,6 +77,13 @@
           "related": [
             "graphics_environment"
           ]
+        },
+        {
+          "type": "variable",
+          "name": "field_indices",
+          "declaration": "inline static std::set<std::size_t> field_indices;",
+          "briefDescription": "The indices given by FieldTypes, in a set.",
+          "detailedDescription": "The indices given by FieldTypes, in a set."
         }
       ]
     },
@@ -79,17 +103,6 @@
           ],
           "exceptions": [
             "Throws std::runtime_error if there was an error getting the vulkan_shader due to causes outside of the program."
-          ]
-        },
-        {
-          "type": "variable",
-          "name": "field_indices",
-          "briefDescription": "The indices given by FieldTypes, in a vector.",
-          "overloads": [
-            {
-              "declaration": "static std::vector<std::size_t> field_indices;",
-              "description": "The indices given by FieldTypes, in a vector."
-            }
           ]
         }
       ]

@@ -1,0 +1,7 @@
+#include "private/drawables/draw_material_settings.hpp"
+#include "private/drawables/draw_material_data.hpp"
+#include "private/drawables/gpu_specific_material.hpp"
+#include "private/drawables/window_specific_material.hpp"
+#include "private/drawables/draw_material.hpp"
+
+#include "private/drawables/drawable.hpp"

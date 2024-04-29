@@ -172,6 +172,7 @@
     <ClInclude Include="include\private\type_traits\type_list.hpp" />
     <ClInclude Include="include\private\type_traits\for_each.hpp" />
     <ClInclude Include="include\private\type_traits\type_value_pair.hpp" />
+    <ClInclude Include="include\private\type_traits\type_value_pair_list.hpp" />
     <ClInclude Include="include\private\utility\int_literals.hpp" />
     <ClInclude Include="include\private\value_mutex\shared_value_lock.hpp" />
     <ClInclude Include="include\private\value_mutex\unique_value_lock.hpp" />

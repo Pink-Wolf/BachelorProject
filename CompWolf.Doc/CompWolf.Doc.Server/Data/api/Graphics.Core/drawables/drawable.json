@@ -1,0 +1,97 @@
+﻿{
+  "type": "class",
+
+  "declaration": "template <typename MaterialType> class drawable;",
+  "namespace": "CompWolf",
+  "briefDescription": "An object that is drawn on a window.",
+  "detailedDescription": "An object that is drawn on a window.",
+
+  "templateParameters": [
+    {
+      "name": "MaterialType",
+      "description": "The [[draw_material]] used to draw the object."
+    }
+  ],
+
+  "baseClasses": [ "basic_freeable", "window_user" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "drawable() noexcept;",
+        "description": "Constructs a freed drawable, as in one that is invisible."
+      },
+      {
+        "declaration": "drawable(MaterialType&, gpu_index_buffer, input_buffer_type&, ...);",
+        "description": "Constructs a drawable which is drawn using the given material, which uses the given buffers for its input-indices, inputs, and finally any fields its shaders has."
+      },
+      {
+        "declaration": "drawable(drawable&&) noexcept;",
+        "description": "drawable is movable."
+      }
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "material_type",
+          "declaration": "using material_type = MaterialType;",
+          "briefDescription": "The type of [[draw_material]] used to draw the drawable object.",
+          "detailedDescription": "The type of [[draw_material]] used to draw the drawable object.",
+          "related": [
+            "draw_material"
+          ]
+        },
+        {
+          "type": "alias",
+          "name": "input_buffer_type",
+          "declaration": "using input_buffer_type = gpu_input_buffer<MaterialType::typename input_shader_type::typename value_type>;",
+          "briefDescription": "The type of buffer used to contain the drawable object's inputs.",
+          "detailedDescription": "The type of buffer used to contain the drawable object's inputs.",
+          "related": [
+            "gpu_input_buffer"
+          ]
+        },
+        {
+          "type": "alias",
+          "name": "field_buffer_type",
+          "declaration": "using field_buffer_type = type_list<...>;",
+          "briefDescription": "The type of each buffer used to contain the drawable object's different fields.",
+          "detailedDescription": "The type of each buffer used to contain the drawable object's different fields, contained in a type_list.",
+          "related": [
+            "gpu_field_buffer",
+            "gpu_image_buffer"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "material",
+          "briefDescription": "Returns the material used to draw the drawable object.",
+          "overloads": [
+            {
+              "declaration": "auto material() noexcept -> material_type&",
+              "description": "Returns the material used to draw the drawable object."
+            },
+            {
+              "declaration": "auto material() const noexcept -> const material_type&",
+              "description": "Like (1), but const."
+            }
+          ],
+          "related": [
+            "draw_material"
+          ]
+        }
+      ]
+    }
+  ]
+}
