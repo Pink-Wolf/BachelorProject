@@ -93,7 +93,7 @@
           "briefDescription": "Invoked after the target window's surface is rebuild.",
           "overloads": [
             {
-              "declaration": "virtual void on_rebuild_surface(const event<window_rebuild_surface_parameters>&, window_rebuild_surface_parameters&);",
+              "declaration": "virtual void on_rebuild_surface(window_rebuild_surface_parameters&);",
               "description": "Invoked after the target window's surface is rebuild."
             }
           ],

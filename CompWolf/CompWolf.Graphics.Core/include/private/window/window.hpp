@@ -86,7 +86,7 @@ namespace CompWolf::Graphics
 		inline auto add_draw_code(std::function<void(draw_code_parameters&)> code) -> draw_code_key
 		{
 			_frame_drawing_programs.clear();
-			return _drawing_code.subscribe([code](const event<draw_code_parameters>&, draw_code_parameters& args) { code(args); });
+			return _drawing_code.subscribe([code](draw_code_parameters& args) { code(args); });
 		}
 		/* Removes the given code from being run when the window's image is being updated. */
 		inline void remove_draw_code(draw_code_key code) noexcept

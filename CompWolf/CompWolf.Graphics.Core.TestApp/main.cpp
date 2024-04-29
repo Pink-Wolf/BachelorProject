@@ -84,17 +84,17 @@ int main()
 
         double time_multiplier = 1;
 
-        win.inputs().char_pressed('w').subscribe([&time_multiplier](const event<key_parameter>&, key_parameter& args)
+        win.inputs().char_pressed('w').subscribe([&time_multiplier](key_parameter& args)
             {
                 time_multiplier *= 2;
             }
         );
-        win.inputs().char_pressed('s').subscribe([&time_multiplier](const event<key_parameter>&, key_parameter& args)
+        win.inputs().char_pressed('s').subscribe([&time_multiplier](key_parameter& args)
             {
                 time_multiplier /= 2;
             }
         );
-        win.inputs().char_released().subscribe([](const event<key_parameter>&, key_parameter& args)
+        win.inputs().char_released().subscribe([](key_parameter& args)
             {
                 std::cout << args.character << "\n";
             }

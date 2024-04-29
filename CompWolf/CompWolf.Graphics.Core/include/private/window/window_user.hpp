@@ -35,7 +35,7 @@ namespace CompWolf::Graphics
 
 	protected: // virtual
 		/* Invoked after the target window's surface is rebuild. */
-		inline virtual void on_rebuild_surface(const event<window_rebuild_surface_parameters>&, window_rebuild_surface_parameters&) {}
+		inline virtual void on_rebuild_surface(window_rebuild_surface_parameters&) {}
 
 	public: // constructors
 		/* Constructs a window_user that does not point to any window. */

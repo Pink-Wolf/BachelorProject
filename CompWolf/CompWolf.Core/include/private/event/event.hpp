@@ -22,7 +22,7 @@ namespace CompWolf
 		using parameter_reference = std::add_lvalue_reference_t<ParameterType>;
 
 		/* The type of callable object that can listen to this event. */
-		using value_type = std::function<void(const event<ParameterType>&, parameter_reference)>;
+		using value_type = std::function<void(parameter_reference)>;
 		/* The type of callable object that can listen to this event, as a reference type. */
 		using reference = value_type&;
 		/* The type of callable object that can listen to this event, as a const reference type. */
@@ -39,12 +39,10 @@ namespace CompWolf
 
 	public:
 		/* Subscribes the given object to the event. */
-		template <typename ObserverType>
-			requires std::is_constructible_v<value_type, ObserverType&&>
-		key_type subscribe(ObserverType&& observer) noexcept(std::is_nothrow_convertible_v<ObserverType, value_type>)
+		key_type subscribe(value_type observer) noexcept(std::is_nothrow_move_constructible_v<value_type>)
 		{
 			auto key = _observers.size();
-			_observers.emplace_back(std::forward<ObserverType>(observer));
+			_observers.emplace_back(std::move(observer));
 			return key;
 		}
 		/* Unsubscribes the given object from the event. */
@@ -59,7 +57,7 @@ namespace CompWolf
 			for (auto& observer : internal_container(_observers)) // copy vector so it cannot be modified during loop
 			{
 				if (observer == nullptr) continue;
-				observer(*this, parameter);
+				observer(parameter);
 			}
 		}
 		/* Invokes all subscribed objects, passing the given parameters to each. */
@@ -78,7 +76,7 @@ namespace CompWolf
 		using parameter_reference = void;
 
 		/* The type of callable object that can listen to this event. */
-		using value_type = std::function<void(const event<void>&)>;
+		using value_type = std::function<void()>;
 		/* The type of callable object that can listen to this event, as a reference type. */
 		using reference = value_type&;
 		/* The type of callable object that can listen to this event, as a const reference type. */
@@ -95,12 +93,10 @@ namespace CompWolf
 
 	public:
 		/* Subscribes the given object to the event. */
-		template <typename ObserverType>
-			requires std::is_constructible_v<value_type, ObserverType&&>
-		key_type subscribe(ObserverType&& observer) noexcept(std::is_nothrow_convertible_v<ObserverType, value_type>)
+		key_type subscribe(value_type observer) noexcept(std::is_nothrow_move_constructible_v<value_type>)
 		{
 			auto key = _observers.size();
-			_observers.emplace_back(std::forward<ObserverType>(observer));
+			_observers.emplace_back(std::move(observer));
 			return key;
 		}
 		/* Unsubscribes the given object from the event. */
@@ -115,7 +111,7 @@ namespace CompWolf
 			for (auto& observer : internal_container(_observers)) // copy vector so it cannot be modified during loop
 			{
 				if (observer == nullptr) continue;
-				observer(*this);
+				observer();
 			}
 		}
 		/* Invokes all subscribed objects, passing the given parameters to each. */

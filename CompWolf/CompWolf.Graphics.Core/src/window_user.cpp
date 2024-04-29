@@ -18,7 +18,7 @@ namespace CompWolf::Graphics
 
 		if (has_window())
 		{
-			_freeing_event_key = target_window().freeing.subscribe([this](const event<void>&)
+			_freeing_event_key = target_window().freeing.subscribe([this]()
 				{
 					free();
 					set_window(nullptr);
