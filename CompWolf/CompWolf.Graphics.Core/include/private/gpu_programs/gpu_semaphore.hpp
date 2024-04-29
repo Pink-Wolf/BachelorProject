@@ -20,7 +20,7 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu that the semaphore is on. */
-		inline auto& device() const noexcept { return *_device; }
+		inline auto& gpu() const noexcept { return *_device; }
 
 	public: // vulkan-related
 		/* Returns the vulkan_semaphore, representing a VkSemaphore. */

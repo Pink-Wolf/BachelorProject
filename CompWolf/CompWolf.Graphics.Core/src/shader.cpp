@@ -38,7 +38,7 @@ namespace CompWolf::Graphics
 		{
 			VkShaderModule shaderModule;
 			{
-				auto device = Private::to_vulkan(vulkan_device.vulkan_device());
+				auto logicDevice = Private::to_vulkan(vulkan_device.vulkan_device());
 
 				VkShaderModuleCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
@@ -46,7 +46,7 @@ namespace CompWolf::Graphics
 					.pCode = _raw_code.data(),
 				};
 
-				auto result = vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
+				auto result = vkCreateShaderModule(logicDevice, &createInfo, nullptr, &shaderModule);
 
 				switch (result)
 				{

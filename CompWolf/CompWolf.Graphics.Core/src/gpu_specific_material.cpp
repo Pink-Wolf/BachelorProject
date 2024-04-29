@@ -9,11 +9,11 @@ namespace CompWolf::Graphics::Private
 {
 	/******************************** constructors ********************************/
 
-	gpu_specific_material::gpu_specific_material(draw_material_data& data, gpu_connection& gpu)
-		: _gpu(&gpu)
+	gpu_specific_material::gpu_specific_material(draw_material_data& data, gpu_connection& in_gpu)
+		: _gpu(&in_gpu)
 		, _layout_descriptor(nullptr), _layout(nullptr)
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		try
 		{
@@ -88,7 +88,7 @@ namespace CompWolf::Graphics::Private
 	{
 		if (empty()) return;
 
-		auto logicDevice = to_vulkan(device().vulkan_device());
+		auto logicDevice = to_vulkan(gpu().vulkan_device());
 		if (_layout) vkDestroyPipelineLayout(logicDevice, Private::to_vulkan(_layout), nullptr);
 		if (_layout_descriptor) vkDestroyDescriptorSetLayout(logicDevice, Private::to_vulkan(_layout_descriptor), nullptr);
 

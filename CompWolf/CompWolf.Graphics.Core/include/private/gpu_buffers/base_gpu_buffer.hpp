@@ -28,9 +28,9 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu that the buffer is on. */
-		inline auto& device() noexcept { return _allocator->device(); }
+		inline auto& gpu() noexcept { return _allocator->gpu(); }
 		/* Returns the gpu that the buffer is on. */
-		inline auto& device() const noexcept { return _allocator->device(); }
+		inline auto& gpu() const noexcept { return _allocator->gpu(); }
 
 		/* Returns the amount of elements in the buffer. */
 		inline auto size() const noexcept { return _item_count; }

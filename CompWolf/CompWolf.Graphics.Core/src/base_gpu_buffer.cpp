@@ -14,8 +14,8 @@ namespace CompWolf::Graphics
 		: _allocator(allocator)
 		, _vulkan_data(nullptr), _vulkan_memory(nullptr)
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
-		auto physicalDevice = Private::to_vulkan(device().vulkan_physical_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
+		auto physicalDevice = Private::to_vulkan(gpu().vulkan_physical_device());
 
 		try
 		{
@@ -85,7 +85,7 @@ namespace CompWolf::Graphics
 	{
 		if (target == nullptr) throw std::invalid_argument("base_gpu_buffer_access's constructor was given a nullptr");
 
-		auto logicDevice = Private::to_vulkan(target_buffer().device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(target_buffer().gpu().vulkan_device());
 		auto vkMemory = Private::to_vulkan(target_buffer().vulkan_memory());
 		auto memorySize = static_cast<VkDeviceSize>(target_buffer().vulkan_memory_size());
 
@@ -98,7 +98,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto memory = Private::to_vulkan(_vulkan_memory);
 
 		if (memory) vkFreeMemory(logicDevice, memory, nullptr);
@@ -111,7 +111,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(target_buffer().device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(target_buffer().gpu().vulkan_device());
 		auto vkMemory = Private::to_vulkan(target_buffer().vulkan_memory());
 
 		vkUnmapMemory(logicDevice, vkMemory);

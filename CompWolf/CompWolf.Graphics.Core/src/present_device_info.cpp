@@ -50,9 +50,9 @@ namespace CompWolf::Graphics::Private
 		return best_gpu;
 	}
 
-	std::optional<surface_format_info> get_present_device_info(const gpu_connection& device, VkSurfaceKHR surface)
+	std::optional<surface_format_info> get_present_device_info(const gpu_connection& gpu, VkSurfaceKHR surface)
 	{
-		auto physicalDevice = Private::to_vulkan(device.vulkan_physical_device());
+		auto physicalDevice = Private::to_vulkan(gpu.vulkan_physical_device());
 
 		surface_format_info return_value{};
 

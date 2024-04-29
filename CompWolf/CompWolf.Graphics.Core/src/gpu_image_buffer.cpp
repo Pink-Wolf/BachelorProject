@@ -15,9 +15,9 @@ namespace CompWolf::Graphics
 	{
 		_image_view = nullptr;
 
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		VkPhysicalDeviceProperties physicalDeviceProperties;
-		vkGetPhysicalDeviceProperties(Private::to_vulkan(device().vulkan_physical_device()), &physicalDeviceProperties);
+		vkGetPhysicalDeviceProperties(Private::to_vulkan(gpu().vulkan_physical_device()), &physicalDeviceProperties);
 
 		VkImageView imageView;
 		{
@@ -81,7 +81,7 @@ namespace CompWolf::Graphics
 
 	void gpu_image_buffer::bind_to_shader(Private::gpu_memory_bind_data* bind_ptr) const
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto vkImage = Private::to_vulkan(vulkan_image());
 		auto& bind_data = *bind_ptr;
 
@@ -109,7 +109,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		if (_sampler) vkDestroySampler(logicDevice, Private::to_vulkan(_sampler), nullptr);
 		if (_image_view) vkDestroyImageView(logicDevice, Private::to_vulkan(_image_view), nullptr);

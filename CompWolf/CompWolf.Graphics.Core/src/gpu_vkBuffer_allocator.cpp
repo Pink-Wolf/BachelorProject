@@ -12,7 +12,7 @@ namespace CompWolf::Graphics
 
 	void Private::base_gpu_vkBuffer_buffer::bind_to_shader(gpu_memory_bind_data* bind_ptr) const
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto vkBuffer = Private::to_vulkan(vulkan_buffer());
 		auto& bind_data = *bind_ptr;
 
@@ -49,7 +49,7 @@ namespace CompWolf::Graphics
 
 	auto gpu_vkBuffer_allocator::alloc_data() const -> data_handle
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		VkBuffer buffer;
 		{
@@ -86,7 +86,7 @@ namespace CompWolf::Graphics
 
 	void gpu_vkBuffer_allocator::bind_data(data_handle data, Private::vulkan_memory memory) const
 	{
-		vkBindBufferMemory(Private::to_vulkan(device().vulkan_device())
+		vkBindBufferMemory(Private::to_vulkan(gpu().vulkan_device())
 			, to_VkBuffer(data)
 			, Private::to_vulkan(memory)
 			, 0
@@ -96,7 +96,7 @@ namespace CompWolf::Graphics
 	void gpu_vkBuffer_allocator::free_cpu_access(data_handle data) const noexcept {}
 	void gpu_vkBuffer_allocator::free_data(data_handle data) const noexcept
 	{
-		vkDestroyBuffer(Private::to_vulkan(device().vulkan_device())
+		vkDestroyBuffer(Private::to_vulkan(gpu().vulkan_device())
 			, to_VkBuffer(data)
 			, nullptr
 		);
@@ -104,7 +104,7 @@ namespace CompWolf::Graphics
 
 	void gpu_vkBuffer_allocator::private_info(data_handle data, Private::gpu_buffer_private_info* out_pointer) const
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto buffer = to_VkBuffer(data);
 		auto& out = *out_pointer;
 

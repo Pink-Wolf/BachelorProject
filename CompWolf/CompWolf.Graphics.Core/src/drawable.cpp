@@ -12,7 +12,7 @@ namespace CompWolf::Graphics
 	void base_drawable::draw_program_code(draw_code_parameters& args)
 	{
 		auto command = Private::to_vulkan(args.command);
-		auto logicDevice = Private::to_vulkan(target_window().device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(target_window().gpu().vulkan_device());
 
 		{
 			vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, Private::to_vulkan(material().vulkan_pipeline()));

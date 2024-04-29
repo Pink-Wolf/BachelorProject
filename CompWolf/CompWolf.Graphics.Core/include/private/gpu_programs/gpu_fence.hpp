@@ -20,7 +20,7 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu that the fence is on. */
-		inline auto& device() const noexcept { return *_device; }
+		inline auto& gpu() const noexcept { return *_device; }
 		/* Returns true if the work is done, otherwise returns false. */
 		auto signaled() const noexcept -> bool;
 

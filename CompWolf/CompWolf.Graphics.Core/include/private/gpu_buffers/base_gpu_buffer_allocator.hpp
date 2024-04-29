@@ -25,9 +25,9 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu that the allocator can allocate memory on. */
-		inline auto& device() noexcept { return *_gpu; }
+		inline auto& gpu() noexcept { return *_gpu; }
 		/* Returns the gpu that the allocator can allocate memory on. */
-		inline auto& device() const noexcept { return *_gpu; }
+		inline auto& gpu() const noexcept { return *_gpu; }
 
 	public: // virtual
 		/* Allocates some memory for the data to be send to and then read by the gpu.

@@ -24,9 +24,9 @@ namespace CompWolf::Graphics::Private
 
 	public: // accessors
 		/* Returns the gpu this material is for. */
-		inline auto& device() noexcept { return *_gpu; }
+		inline auto& gpu() noexcept { return *_gpu; }
 		/* Returns the gpu this material is for. */
-		inline auto& device() const noexcept { return *_gpu; }
+		inline auto& gpu() const noexcept { return *_gpu; }
 
 	public: // vulkan-related
 		/* Returns the pipeline's vulkan_pipeline_layout, representing a VkPipelineLayout. */

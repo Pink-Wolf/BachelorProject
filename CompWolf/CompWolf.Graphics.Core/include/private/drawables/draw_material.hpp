@@ -106,7 +106,7 @@ namespace CompWolf::Graphics
 			}
 			// Create data if it does not exist
 			{
-				auto& gpu_data = _gpu_data.try_emplace(&target_window.device(), _data, target_window.device()).first->second;
+				auto& gpu_data = _gpu_data.try_emplace(&target_window.gpu(), _data, target_window.gpu()).first->second;
 				auto& window_data = _window_data.try_emplace(&target_window, _data, gpu_data, target_window).first->second;
 				return window_data;
 			}

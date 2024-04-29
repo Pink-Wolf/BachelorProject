@@ -12,7 +12,7 @@ namespace CompWolf::Graphics
 	gpu_fence::gpu_fence(const gpu_connection& target_gpu, bool signaled)
 	{
 		_device = &target_gpu;
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		VkFenceCreateInfo createInfo{
 			.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
@@ -33,7 +33,7 @@ namespace CompWolf::Graphics
 
 	bool gpu_fence::signaled() const noexcept
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto fence = Private::to_vulkan(_vulkan_fence);
 
 		return vkWaitForFences(logicDevice, 1, &fence, VK_TRUE, 0) == VK_SUCCESS;
@@ -43,7 +43,7 @@ namespace CompWolf::Graphics
 
 	void gpu_fence::wait() const noexcept
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto fence = Private::to_vulkan(_vulkan_fence);
 
 		vkWaitForFences(logicDevice, 1, &fence, VK_TRUE, UINT64_MAX);
@@ -51,7 +51,7 @@ namespace CompWolf::Graphics
 
 	void gpu_fence::reset() noexcept
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto fence = Private::to_vulkan(_vulkan_fence);
 
 		vkResetFences(logicDevice, 1, &fence);
@@ -63,7 +63,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		vkDestroyFence(logicDevice, Private::to_vulkan(_vulkan_fence), nullptr);
 
 		_vulkan_fence = nullptr;

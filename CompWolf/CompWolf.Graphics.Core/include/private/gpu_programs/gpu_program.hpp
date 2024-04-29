@@ -27,9 +27,9 @@ namespace CompWolf::Graphics
 		inline auto& manager() const noexcept { return *_manager; }
 
 		/* Returns the gpu that the program is on. */
-		inline auto& device() noexcept { return manager().device(); }
+		inline auto& gpu() noexcept { return manager().gpu(); }
 		/* Returns the gpu that the program is on. */
-		inline auto& device() const noexcept { return manager().device(); }
+		inline auto& gpu() const noexcept { return manager().gpu(); }
 
 	public: // modifiers
 		/* Runs the program.

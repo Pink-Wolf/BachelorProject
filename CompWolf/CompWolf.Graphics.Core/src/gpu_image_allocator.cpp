@@ -23,7 +23,7 @@ namespace CompWolf::Graphics
 
 	auto gpu_image_allocator::alloc_data() const -> data_handle
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		VkImage image;
 		{
@@ -66,7 +66,7 @@ namespace CompWolf::Graphics
 
 	void gpu_image_allocator::bind_data(data_handle data, Private::vulkan_memory memory) const
 	{
-		vkBindImageMemory(Private::to_vulkan(device().vulkan_device())
+		vkBindImageMemory(Private::to_vulkan(gpu().vulkan_device())
 			, to_VkImage(data)
 			, Private::to_vulkan(memory)
 			, 0
@@ -76,7 +76,7 @@ namespace CompWolf::Graphics
 	void gpu_image_allocator::free_cpu_access(data_handle data) const noexcept {}
 	void gpu_image_allocator::free_data(data_handle data) const noexcept
 	{
-		vkDestroyImage(Private::to_vulkan(device().vulkan_device())
+		vkDestroyImage(Private::to_vulkan(gpu().vulkan_device())
 			, to_VkImage(data)
 			, nullptr
 		);
@@ -84,7 +84,7 @@ namespace CompWolf::Graphics
 
 	void gpu_image_allocator::private_info(data_handle data, Private::gpu_buffer_private_info* out_pointer) const
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto image = to_VkImage(data);
 		auto& out = *out_pointer;
 

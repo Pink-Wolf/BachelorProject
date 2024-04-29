@@ -52,7 +52,7 @@ namespace CompWolf::Graphics
 				_target_gpu = Private::find_gpu_for_present(_vulkan_surface, *optional_environment, &surface_format);
 				if (!_target_gpu) throw std::runtime_error("Could not create a window; no suitable gpu.");
 			}
-			auto logicDevice = Private::to_vulkan(device().vulkan_device());
+			auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 			VkRenderPass renderPass;
 			{
@@ -111,8 +111,8 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto instance = Private::to_vulkan(device().vulkan_instance());
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto instance = Private::to_vulkan(gpu().vulkan_instance());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		if (_render_pass) vkDestroyRenderPass(logicDevice, Private::to_vulkan(_render_pass), nullptr);
 		if (_format) delete Private::to_private(_format);

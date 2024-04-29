@@ -59,7 +59,7 @@ namespace CompWolf::Graphics
 		/* Sets up a connection to the given gpu.
 		 * @throws std::runtime_error if there was an error while setting up the connection due to causes outside of the program.
 		 */
-		gpu_connection(Private::vulkan_instance vulkan_instance, Private::vulkan_physical_device device);
+		gpu_connection(Private::vulkan_instance, Private::vulkan_physical_device);
 
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final

@@ -22,9 +22,9 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu that the window is on. */
-		inline auto& device() noexcept { return *_target_gpu; }
+		inline auto& gpu() noexcept { return *_target_gpu; }
 		/* Returns the gpu that the window is on. */
-		inline auto& device() const noexcept { return *_target_gpu; }
+		inline auto& gpu() const noexcept { return *_target_gpu; }
 
 	public: // vulkan-related
 

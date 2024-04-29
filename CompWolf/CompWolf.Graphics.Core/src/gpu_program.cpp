@@ -12,7 +12,7 @@ namespace CompWolf::Graphics
 		: _manager(&manager)
 		, _vulkan_command(nullptr)
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		VkCommandBuffer commandBuffer;
 		{
@@ -71,7 +71,7 @@ namespace CompWolf::Graphics
 
 	auto gpu_program::execute() -> gpu_fence&
 	{
-		auto& gpu_device = device();
+		auto& gpu_device = gpu();
 
 		auto& thread = manager().thread();
 		auto queue = Private::to_vulkan(thread.queue);
@@ -117,7 +117,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		vkDeviceWaitIdle(logicDevice);
 

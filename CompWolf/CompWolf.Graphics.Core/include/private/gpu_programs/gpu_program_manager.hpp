@@ -33,14 +33,14 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu that the manager is on. */
-		inline auto& device() noexcept { return *_device; }
+		inline auto& gpu() noexcept { return *_device; }
 		/* Returns the gpu that the manager is on. */
-		inline auto& device() const noexcept { return *_device; }
+		inline auto& gpu() const noexcept { return *_device; }
 
 		/* Returns the family of threads that the manager is on. */
-		inline auto& family() noexcept { return device().families()[_family_index]; }
+		inline auto& family() noexcept { return gpu().families()[_family_index]; }
 		/* Returns the family of threads that the manager is on. */
-		inline auto& family() const noexcept { return device().families()[_family_index]; }
+		inline auto& family() const noexcept { return gpu().families()[_family_index]; }
 
 		/* Returns the family of threads that the manager is on. */
 		inline auto& thread() noexcept { return family().threads[_thread_index]; }
@@ -127,7 +127,7 @@ namespace CompWolf::Graphics
 		 * The given thread is the thread on the given gpu, whose family is at the given family-index of the gpu's families()-vector, and who is at the given thread-index of the family's threads-vector.
 		 * @throws std::out_of_range if the given gpu does not have a family at the given family-index, or the family does not have a thread at the given thread-index.
 		 */
-		gpu_program_manager(gpu_connection& device, std::size_t family_index, std::size_t thread_index);
+		gpu_program_manager(gpu_connection& gpu, std::size_t family_index, std::size_t thread_index);
 
 		/* Finds the best thread on the given gpu to run some programs, based on the given settings, and creates a manager on it.
 		 * @throws std::runtime_error if the given gpus have no threads at all to perform the given type of programs.

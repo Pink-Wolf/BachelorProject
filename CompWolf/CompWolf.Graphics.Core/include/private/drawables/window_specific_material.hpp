@@ -35,9 +35,9 @@ namespace CompWolf::Graphics
 
 	public: // accessors
 		/* Returns the gpu this material is for. */
-		inline auto& device() noexcept { return _gpu_data->device(); }
+		inline auto& gpu() noexcept { return _gpu_data->gpu(); }
 		/* Returns the gpu this material is for. */
-		inline auto& device() const noexcept { return _gpu_data->device(); }
+		inline auto& gpu() const noexcept { return _gpu_data->gpu(); }
 
 		/* Returns the binding position of the material's shaders' fields.
 		 * The order matches the draw_material's field_types.

@@ -118,7 +118,7 @@ namespace CompWolf::Graphics
 			++family().program_manager_count;
 			++thread().program_manager_count;
 
-			auto logicDevice = Private::to_vulkan(device().vulkan_device());
+			auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 			VkCommandPool commandPool;
 			{
@@ -173,7 +173,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		vkDeviceWaitIdle(logicDevice);
 		vkDestroyCommandPool(logicDevice, Private::to_vulkan(_vulkan_pool), nullptr);

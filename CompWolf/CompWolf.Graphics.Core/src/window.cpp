@@ -120,7 +120,7 @@ namespace CompWolf::Graphics
 			.swapchain = &_swapchain,
 		};
 		rebuilding_surface(event_args);
-		auto& old_gpu = device();
+		auto& old_gpu = gpu();
 
 		_swapchain.free();
 		_surface.free();

@@ -13,11 +13,11 @@ namespace CompWolf::Graphics
 
 	void window_swapchain::to_next_frame()
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto swapchain = Private::to_vulkan(vulkan_swapchain());
 
 		uint32_t index;
-		gpu_fence fence(device());
+		gpu_fence fence(gpu());
 		auto result = vkAcquireNextImageKHR(logicDevice, swapchain, UINT64_MAX, VK_NULL_HANDLE, Private::to_vulkan(fence.vulkan_fence()), &index);
 
 		switch (result)
@@ -41,9 +41,9 @@ namespace CompWolf::Graphics
 	{
 		auto glfwWindow = Private::to_glfw(window);
 
-		_target_gpu = &window_surface.device();
-		auto instance = Private::to_vulkan(device().vulkan_instance());
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		_target_gpu = &window_surface.gpu();
+		auto instance = Private::to_vulkan(gpu().vulkan_instance());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 
 		auto surface = Private::to_vulkan(window_surface.vulkan_surface());
 		auto& surface_format = *Private::to_private(window_surface.vulkan_format());
@@ -190,7 +190,7 @@ namespace CompWolf::Graphics
 
 				for (auto& frame : _frames)
 				{
-					frame.draw_job = gpu_program_manager::new_manager_for(device(), gpu_program_manager_settings
+					frame.draw_job = gpu_program_manager::new_manager_for(gpu(), gpu_program_manager_settings
 						{
 							.type = { gpu_thread_type::draw, gpu_thread_type::present },
 						}
@@ -214,8 +214,8 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto instance = Private::to_vulkan(device().vulkan_instance());
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto instance = Private::to_vulkan(gpu().vulkan_instance());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto vkSwapchain = Private::to_vulkan(_vulkan_swapchain);
 
 		vkDeviceWaitIdle(logicDevice);

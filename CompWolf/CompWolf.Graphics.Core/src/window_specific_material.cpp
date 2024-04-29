@@ -18,7 +18,7 @@ namespace CompWolf::Graphics
 		, _descriptor_pool(nullptr), _pipeline(nullptr)
 		, _field_indices(&data.field_indices)
 	{
-		auto logicDevice = Private::to_vulkan(device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(gpu().vulkan_device());
 		auto& surface_format = *Private::to_private(target_window().surface().vulkan_format());
 		auto renderpass = Private::to_vulkan(target_window().surface().vulkan_render_pass());
 		auto& frames = target_window().swapchain().frames();
@@ -31,14 +31,14 @@ namespace CompWolf::Graphics
 				VkPipelineShaderStageCreateInfo vertexCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_VERTEX_BIT,
-					.module = Private::to_vulkan(data.input_shader->vulkan_shader(device())),
+					.module = Private::to_vulkan(data.input_shader->vulkan_shader(gpu())),
 					.pName = "main",
 				};
 
 				VkPipelineShaderStageCreateInfo fragCreateInfo{
 					.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					.stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-					.module = Private::to_vulkan(data.pixel_shader->vulkan_shader(device())),
+					.module = Private::to_vulkan(data.pixel_shader->vulkan_shader(gpu())),
 					.pName = "main",
 				};
 
@@ -273,7 +273,7 @@ namespace CompWolf::Graphics
 	{
 		if (empty()) return;
 
-		auto logicDevice = Private::to_vulkan(target_window().device().vulkan_device());
+		auto logicDevice = Private::to_vulkan(target_window().gpu().vulkan_device());
 
 		vkDeviceWaitIdle(logicDevice);
 

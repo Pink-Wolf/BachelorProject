@@ -48,18 +48,18 @@ int main()
         auto frag_shader = shader<type_value_pair<shader_image, 4>>(environment, shader_code_from_file("frag.spv"));
         auto material = draw_material(vert_shader, frag_shader);
 
-        gpu_input_buffer<vertex> vertices(win.device(), {
+        gpu_input_buffer<vertex> vertices(win.gpu(), {
             {{-.5f, -.5f}, {0.f, 0.f}},
             {{+.5f, -.5f}, {1.f, 0.f}},
             {{+.5f, +.5f}, {1.f, 1.f}},
             {{-.5f, +.5f}, {0.f, 1.f}}
             });
-        gpu_index_buffer indices(win.device(), { 0, 1, 2, 2, 3, 0 });
+        gpu_index_buffer indices(win.gpu(), { 0, 1, 2, 2, 3, 0 });
 
-        gpu_field_buffer<object_data> trans(win.device(), object_data());
-        gpu_field_buffer<float> scaler(win.device(), .5f);
+        gpu_field_buffer<object_data> trans(win.gpu(), object_data());
+        gpu_field_buffer<float> scaler(win.gpu(), .5f);
 
-        gpu_image_buffer image(win.device(),
+        gpu_image_buffer image(win.gpu(),
             {
                 {{1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {1,1,1,1}},
                 {{1,0,0,1}, {0,1,0,1}, {0,0,1,1}, {1,0,0,1}},
@@ -67,7 +67,7 @@ int main()
                 {{0,0,0,1}, {0,0,0,1}, {0,0,0,1}, {0,0,0,1}}
             }
         );
-        gpu_field_buffer<float> tinter(win.device(), .75f);
+        gpu_field_buffer<float> tinter(win.gpu(), .75f);
 
         auto square = drawable(win, material, indices, vertices, image, trans);
 
