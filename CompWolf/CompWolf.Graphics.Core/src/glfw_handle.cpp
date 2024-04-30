@@ -30,13 +30,13 @@ namespace CompWolf
 	{
 		if (other.empty()) return;
 		_not_empty = true;
-		++glfw_handle_counter;
+		other._not_empty = false;
 	}
 	glfw_handle& glfw_handle::operator=(glfw_handle&& other) noexcept
 	{
 		if (other.empty()) return *this;
 		_not_empty = true;
-		++glfw_handle_counter;
+		other._not_empty = false;
 		return *this;
 	}
 
