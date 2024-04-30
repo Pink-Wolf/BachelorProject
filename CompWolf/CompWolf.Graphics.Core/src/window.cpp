@@ -158,12 +158,16 @@ namespace CompWolf
 				auto glfwWindow = glfwCreateWindow(_pixel_size.value().first, _pixel_size.value().second
 					, _settings.name.data()
 					, nullptr, nullptr);
-				if (!glfwWindow) switch (glfwGetError(NULL))
+				if (!glfwWindow)
 				{
-				case GLFW_API_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right API.");
-				case GLFW_VERSION_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right version of OpenGL or openGL ES.");
-				case GLFW_FORMAT_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right pixel format.");
-				default: throw std::runtime_error("Could not create a window; unknown error from glfw-function.");
+					auto error_code = glfwGetError(NULL);
+					switch (error_code)
+					{
+					case GLFW_API_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right API.");
+					case GLFW_VERSION_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right version of OpenGL or openGL ES.");
+					case GLFW_FORMAT_UNAVAILABLE: throw std::runtime_error("Could not create a window; the machine does not support the right pixel format.");
+					default: throw std::runtime_error("Could not create a window; unknown error from glfw-function.");
+					}
 				}
 				_glfw_window = Private::from_glfw(glfwWindow);
 
