@@ -5,9 +5,9 @@
 #include "graphics_environment_settings.hpp"
 #include <freeable>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
-	/* Contains program-wide logic for glfw, used by CompWolf::Graphics. */
+	/* Contains program-wide logic for glfw, used by CompWolf. */
 	class glfw_handle : public basic_freeable
 	{
 	private: // fields

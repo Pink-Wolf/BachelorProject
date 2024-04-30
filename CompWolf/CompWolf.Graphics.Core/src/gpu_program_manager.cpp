@@ -4,7 +4,7 @@
 #include "compwolf_vulkan.hpp"
 #include <stdexcept>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** accessors ********************************/
 

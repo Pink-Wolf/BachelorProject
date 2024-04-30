@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_REBUILD_SURFACE_PARAMETERS_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_REBUILD_SURFACE_PARAMETERS_HEADER
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class window_surface;
 	class window_swapchain;

@@ -4,7 +4,7 @@
 #include "gpu_fence.hpp"
 #include "gpu_semaphore.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type containing data used by gpu_program_manager for synchronization between its work. */
 	struct gpu_program_sync

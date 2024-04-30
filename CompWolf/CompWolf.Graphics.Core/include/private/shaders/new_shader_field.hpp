@@ -4,7 +4,7 @@
 #include "shader_field_info.hpp"
 #include <compwolf_type_traits>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Implements everything a specialization of shader_field_info needs, which means specializations can just inherit from this instead of manually implementing the fields.
 	 * @typeparam FieldAndOffsets Must be some type_value_pairs, specifying the target type's various data members. The pairs should specifically specify their type and offset (offset can be calculated with offsetof).

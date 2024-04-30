@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <limits>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 

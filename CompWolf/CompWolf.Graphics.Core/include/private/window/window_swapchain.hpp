@@ -7,7 +7,7 @@
 #include <owned>
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_connection;
 	class window;

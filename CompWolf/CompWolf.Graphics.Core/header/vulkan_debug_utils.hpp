@@ -6,7 +6,7 @@
 #include <compwolf_functional>
 #include "format"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	template <typename OnMessageType>
 		requires std::invocable<OnMessageType, std::string>
@@ -35,7 +35,7 @@ namespace CompWolf::Graphics
 		default: type_string = "unknown_type"; break;
 		}
 
-		auto message = std::format("CompWolf::Graphics debugger: {} {}:\n{}\n", type_string, severity_string, callback_data->pMessage);
+		auto message = std::format("CompWolf debugger: {} {}:\n{}\n", type_string, severity_string, callback_data->pMessage);
 
 		auto& reporter = *static_cast<OnMessageType*>(user_data);
 		reporter(message);

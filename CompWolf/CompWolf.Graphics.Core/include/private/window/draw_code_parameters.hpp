@@ -4,7 +4,7 @@
 #include "gpu_programs"
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class window;
 	struct swapchain_frame;

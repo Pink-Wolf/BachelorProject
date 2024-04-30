@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <functional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 

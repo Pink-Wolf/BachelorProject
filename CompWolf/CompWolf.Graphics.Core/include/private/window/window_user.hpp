@@ -5,7 +5,7 @@
 #include <event>
 #include "window_rebuild_surface_parameters.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class window;
 

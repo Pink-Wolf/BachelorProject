@@ -13,7 +13,7 @@
 #include "vulkan_debug_handle.hpp"
 #include "gpus"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	struct graphics_environment_update_parameter
 	{
@@ -63,7 +63,7 @@ namespace CompWolf::Graphics
 			return is_main_thread(std::this_thread::get_id());
 		}
 
-		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf::Graphics.
+		/* This should rarely be used directly, as it exposes data of an abstaction layer lower than CompWolf.
 		 * Returns the vulkan instance, which handles vulkan-specific logic.
 		 */
 		inline Private::vulkan_instance vulkan_instance() const noexcept

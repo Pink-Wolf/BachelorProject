@@ -4,7 +4,7 @@
 #include "compwolf_vulkan.hpp"
 #include <compwolf_utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 

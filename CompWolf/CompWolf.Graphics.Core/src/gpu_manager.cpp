@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 

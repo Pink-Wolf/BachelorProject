@@ -8,7 +8,7 @@
 #include "shaders"
 #include <functional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** event handlers ********************************/
 

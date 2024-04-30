@@ -3,7 +3,7 @@
 
 #include "compwolf_vulkan.hpp"
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	struct shader_field_info
 	{

@@ -10,7 +10,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <glfw3.h>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 #define COMPWOLF_GRAPHICS_PRIVATE_DEFINE_CONVERTERS(library, library_type, compwolf_type)					\
 	inline auto to_##library(compwolf_type a) { return reinterpret_cast<library_type>(a); }					\
@@ -90,7 +90,7 @@ namespace CompWolf::Graphics::Private
 		return (FunctionType)function;
 	}
 #define COMPWOLF_GRAPHICS_DECLARE_DEFINE_VULKAN_FUNCTION(instance, function_name)\
-	auto function_name = ::CompWolf::Graphics::Private::create_vulkan_function<PFN_##function_name>(instance, #function_name)
+	auto function_name = ::CompWolf::Private::create_vulkan_function<PFN_##function_name>(instance, #function_name)
 }
 
 #endif // ! COMPWOLF_GRAPHICS_PRIVATE_VULKAN_HEADER

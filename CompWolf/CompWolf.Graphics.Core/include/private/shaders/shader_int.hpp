@@ -4,7 +4,7 @@
 #include <dimensions>
 #include <cstdint>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* An int or uint in for example the shader language glsl is 32 bits. This is a 32 bit int to match.
 	 * 

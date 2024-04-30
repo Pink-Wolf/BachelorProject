@@ -8,7 +8,7 @@
 #include <utility>
 #include <initializer_list>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_vkBuffer_allocator : public base_gpu_buffer_allocator
 	{

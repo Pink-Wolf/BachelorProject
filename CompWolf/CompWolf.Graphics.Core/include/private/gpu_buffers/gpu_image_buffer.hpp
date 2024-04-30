@@ -8,7 +8,7 @@
 #include <utility>
 #include <initializer_list>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	namespace Private
 	{

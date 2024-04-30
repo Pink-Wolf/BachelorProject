@@ -3,7 +3,7 @@
 
 #include "primitive_shader_field.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Returns the offsets of the primitive shader types making up the given type.
 	 * This function specifically returns a reference to a statically constructed object of the given "Container" type; the object is constructed with a begin- and end-iterator.

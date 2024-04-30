@@ -8,7 +8,7 @@
 #include "shader_int.hpp"
 #include "color.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	template <typename T>
 	concept PrimitiveShaderField = ShaderField<T> && requires ()

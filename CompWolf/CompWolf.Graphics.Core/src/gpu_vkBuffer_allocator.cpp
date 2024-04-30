@@ -6,7 +6,7 @@
 #include <compwolf_utility>
 #include "gpus"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** other methods ********************************/
 

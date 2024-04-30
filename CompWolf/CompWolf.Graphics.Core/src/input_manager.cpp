@@ -4,7 +4,7 @@
 #include "compwolf_vulkan.hpp"
 #include "window"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** vulkan-related ********************************/
 

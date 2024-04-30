@@ -11,7 +11,7 @@
 #include <optional>
 #include <event>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	namespace Private
 	{

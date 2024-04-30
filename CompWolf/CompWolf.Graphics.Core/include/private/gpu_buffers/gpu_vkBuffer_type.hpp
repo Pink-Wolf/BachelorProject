@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_GPU_VKBUFFER_TYPE_HEADER
 #define COMPWOLF_GRAPHICS_GPU_VKBUFFER_TYPE_HEADER
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* The type of buffer that gpu_vkBuffer_allocator is. */
 	enum class gpu_vkBuffer_type

@@ -5,7 +5,7 @@
 #include <vector>
 #include <utility>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	class base_shader;
 

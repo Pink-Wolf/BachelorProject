@@ -16,7 +16,7 @@
 #include <utility>
 #include <concepts>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_connection;
 

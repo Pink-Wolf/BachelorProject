@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_DRAW_MATERIAL_SETTINGS_HEADER
 #define COMPWOLF_GRAPHICS_DRAW_MATERIAL_SETTINGS_HEADER
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type used by draw_material's constructor to specify the material to create.
 	 * Currently empty.

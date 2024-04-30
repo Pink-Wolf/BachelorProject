@@ -6,9 +6,9 @@
 #include <freeable>
 #include <owned>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
-	/* Contains debugging logic for vulkan, used by CompWolf::Graphics. */
+	/* Contains debugging logic for vulkan, used by CompWolf. */
 	class vulkan_debug_handle : public basic_freeable
 	{
 	private: // fields

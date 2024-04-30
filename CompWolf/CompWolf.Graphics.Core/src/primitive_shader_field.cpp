@@ -4,7 +4,7 @@
 #include "compwolf_vulkan.hpp"
 #include "shader_field_type.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 #define COMPWOLF_GRAPHICS_DEFINE_PRIMITIVE_TYPE_INFO(type, format_value)					\
 	auto shader_field_info<type>::type_info() noexcept -> Private::shader_field_info_handle	\

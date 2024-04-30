@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <optional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 

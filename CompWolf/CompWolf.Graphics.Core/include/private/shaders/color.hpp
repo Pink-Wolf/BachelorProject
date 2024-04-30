@@ -7,7 +7,7 @@
 #include <initializer_list>
 #include <algorithm>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	struct single_color
 	{

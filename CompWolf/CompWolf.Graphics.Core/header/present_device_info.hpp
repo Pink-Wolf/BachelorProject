@@ -7,7 +7,7 @@
 #include "private/graphics/graphics_environment.hpp"
 #include <optional>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	struct surface_format_info
 	{

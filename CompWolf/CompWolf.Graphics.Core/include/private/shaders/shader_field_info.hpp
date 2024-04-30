@@ -5,7 +5,7 @@
 #include <array>
 #include "utility"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* A type trait class for types passed to shaders; That is, to be able to pass your class or struct to a shader, then you must specialize this template with your type. The type would then fulfill ShaderField.
 	 * You can use new_shader_field to easily define your specialization.

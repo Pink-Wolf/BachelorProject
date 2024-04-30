@@ -5,7 +5,7 @@
 #include "gpu_buffer_access.hpp"
 #include "shaders"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Contains input-data for one or more input_shaders. */
 	template <ShaderField ValueType>

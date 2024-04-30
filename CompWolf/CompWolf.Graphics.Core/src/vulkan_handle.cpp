@@ -5,7 +5,7 @@
 #include "vulkan_debug_utils.hpp"
 #include <stdexcept>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 
@@ -55,10 +55,10 @@ namespace CompWolf::Graphics
 		switch (result)
 		{
 		case VK_SUCCESS: break;
-		case VK_ERROR_LAYER_NOT_PRESENT: throw std::runtime_error("Could not set up vulkan, used by CompWolf::Graphics; the machine does not have the right layers.");
-		case VK_ERROR_EXTENSION_NOT_PRESENT: throw std::runtime_error("Could not set up vulkan, used by CompWolf::Graphics; the machine does not have the right extensions.");
-		case VK_ERROR_INCOMPATIBLE_DRIVER: throw std::runtime_error("Could not set up vulkan, used by CompWolf::Graphics; the machine has incompatible drivers.");
-		default: throw std::runtime_error("Could not set up vulkan, used by CompWolf::Graphics.");
+		case VK_ERROR_LAYER_NOT_PRESENT: throw std::runtime_error("Could not set up vulkan, used by CompWolf; the machine does not have the right layers.");
+		case VK_ERROR_EXTENSION_NOT_PRESENT: throw std::runtime_error("Could not set up vulkan, used by CompWolf; the machine does not have the right extensions.");
+		case VK_ERROR_INCOMPATIBLE_DRIVER: throw std::runtime_error("Could not set up vulkan, used by CompWolf; the machine has incompatible drivers.");
+		default: throw std::runtime_error("Could not set up vulkan, used by CompWolf.");
 		}
 
 		_vulkan_instance = Private::from_vulkan(instance);

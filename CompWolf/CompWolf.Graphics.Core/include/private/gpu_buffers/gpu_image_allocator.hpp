@@ -7,7 +7,7 @@
 #include <utility>
 #include <stdexcept>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	struct transparent_color;
 

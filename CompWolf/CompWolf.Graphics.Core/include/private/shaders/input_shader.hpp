@@ -3,7 +3,7 @@
 
 #include "shader.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* A shader that can take a custom type of input.
 	 * A program using this shader takes the given InputType as its input.

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	/* Contains a 64-bit unsigned integer, but is its own unique class.
 	 * In Vulkan, these can be used to represent non-dispatchable handles

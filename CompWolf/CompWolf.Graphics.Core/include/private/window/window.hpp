@@ -14,7 +14,7 @@
 #include <functional>
 #include "inputs"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class graphics_environment;
 	class gpu_connection;

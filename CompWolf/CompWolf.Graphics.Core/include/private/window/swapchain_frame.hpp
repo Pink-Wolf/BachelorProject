@@ -4,7 +4,7 @@
 #include "vulkan_types"
 #include "gpu_programs"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type containing data about an actual image that is being drawn before being displayed on a window. */
 	struct swapchain_frame

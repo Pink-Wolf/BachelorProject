@@ -3,7 +3,7 @@
 
 #include "vulkan_types"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type containing data passed by gpu_program to its code. */
 	struct gpu_program_code_parameters

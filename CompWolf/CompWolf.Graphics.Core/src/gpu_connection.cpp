@@ -13,7 +13,7 @@
 #include <map>
 #include <stdexcept>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** accessors ********************************/
 

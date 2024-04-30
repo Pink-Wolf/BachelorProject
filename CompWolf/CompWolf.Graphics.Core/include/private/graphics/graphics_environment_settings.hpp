@@ -5,7 +5,7 @@
 #include <string>
 #include <version_number>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type used by graphics_environment's constructor to specify program-wide behaviour. */
 	struct graphics_environment_settings

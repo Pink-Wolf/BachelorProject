@@ -4,7 +4,7 @@
 #include <utility>
 #include <enum_bitset>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* A type of work that a thread on a gpu may be able to do. */
 	enum class gpu_thread_type : std::size_t

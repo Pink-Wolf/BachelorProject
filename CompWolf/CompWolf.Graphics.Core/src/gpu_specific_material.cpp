@@ -5,7 +5,7 @@
 #include "gpus"
 #include <stdexcept>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	/******************************** constructors ********************************/
 

@@ -6,7 +6,7 @@
 #include "gpu_memory_type.hpp"
 #include <compwolf_utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructor ********************************/
 

@@ -8,7 +8,7 @@
 #include <owned>
 #include <functional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_fence;
 	class gpu_connection;

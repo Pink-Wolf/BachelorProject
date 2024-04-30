@@ -5,7 +5,7 @@
 #include "gpu_buffer_access.hpp"
 #include "shaders"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Contains index-data for one or more input_shaders. This specifies which of the shader's inputs, and in what order, it should use. */
 	class gpu_index_buffer : public Private::base_gpu_vkBuffer_buffer

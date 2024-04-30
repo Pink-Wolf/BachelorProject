@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* The amount of glfw_handles that the program currently has. */
 	static std::size_t glfw_handle_counter;
@@ -22,7 +22,7 @@ namespace CompWolf::Graphics
 
 		if (result != GLFW_TRUE)
 		{
-			throw std::runtime_error("Could not set up glfw, used by CompWolf::Graphics");
+			throw std::runtime_error("Could not set up glfw, used by CompWolf");
 		}
 	}
 

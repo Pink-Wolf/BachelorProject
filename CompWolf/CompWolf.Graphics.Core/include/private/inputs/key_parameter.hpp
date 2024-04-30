@@ -1,7 +1,7 @@
 #ifndef COMPWOLF_GRAPHICS_KEY_PARAMETER_HEADER
 #define COMPWOLF_GRAPHICS_KEY_PARAMETER_HEADER
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type used as the parameter for input_manager's events for when a key is pressed, released, etc. */
 	struct key_parameter

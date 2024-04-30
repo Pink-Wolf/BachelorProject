@@ -12,7 +12,7 @@
 #include <tuple>
 #include <concepts>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class base_drawable : public basic_freeable, public window_user
 	{

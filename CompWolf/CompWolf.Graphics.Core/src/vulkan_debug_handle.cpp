@@ -5,7 +5,7 @@
 #include "vulkan_debug_utils.hpp"
 #include <stdexcept>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** constructors ********************************/
 
@@ -17,9 +17,9 @@ namespace CompWolf::Graphics
 		auto instance = Private::to_vulkan(vulkan_instance);
 
 		COMPWOLF_GRAPHICS_DECLARE_DEFINE_VULKAN_FUNCTION(instance, vkCreateDebugUtilsMessengerEXT);
-		if (vkCreateDebugUtilsMessengerEXT == nullptr) throw std::runtime_error("Could not set up CompWolf::Graphics debugger; could not create constructor for Vulkan debug messenger.");
+		if (vkCreateDebugUtilsMessengerEXT == nullptr) throw std::runtime_error("Could not set up CompWolf debugger; could not create constructor for Vulkan debug messenger.");
 		COMPWOLF_GRAPHICS_DECLARE_DEFINE_VULKAN_FUNCTION(instance, vkDestroyDebugUtilsMessengerEXT);
-		if (vkDestroyDebugUtilsMessengerEXT == nullptr) throw std::runtime_error("Could not set up CompWolf::Graphics debugger; could not create destructor for Vulkan debug messenger.");
+		if (vkDestroyDebugUtilsMessengerEXT == nullptr) throw std::runtime_error("Could not set up CompWolf debugger; could not create destructor for Vulkan debug messenger.");
 
 		auto createInfo = vulkan_debug_messenger_create_info(&settings.internal_debug_callback);
 
@@ -29,7 +29,7 @@ namespace CompWolf::Graphics
 		switch (result)
 		{
 		case VK_SUCCESS: break;
-		default: throw std::runtime_error("Could not set up CompWolf::Graphics debugger; could not create Vulkan debug messenger.");
+		default: throw std::runtime_error("Could not set up CompWolf debugger; could not create Vulkan debug messenger.");
 		}
 
 		_messenger = Private::from_vulkan(debugMessenger);

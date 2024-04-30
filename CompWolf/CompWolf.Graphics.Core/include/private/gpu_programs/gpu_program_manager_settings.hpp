@@ -5,7 +5,7 @@
 #include <functional>
 #include <optional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_connection;
 	struct gpu_thread_family;

@@ -4,7 +4,7 @@
 #include <string_view>
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type used by window's constructor to specify its behaviour. */
 	struct window_settings

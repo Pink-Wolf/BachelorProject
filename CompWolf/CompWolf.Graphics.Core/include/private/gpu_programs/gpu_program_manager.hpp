@@ -11,7 +11,7 @@
 #include <vector>
 #include <optional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* A manager for some gpu_programs.
 	 * Programs should be split into different managers when they can run asynchronous.

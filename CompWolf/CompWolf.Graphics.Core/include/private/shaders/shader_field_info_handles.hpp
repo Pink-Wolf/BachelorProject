@@ -4,7 +4,7 @@
 #include "primitive_shader_field.hpp"
 #include <compwolf_type_traits>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	namespace Private
 	{

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	gpu_connection* find_gpu_for_present(Private::vulkan_surface vulkan_surface, graphics_environment& environment, surface_format_info* out_info) noexcept
 	{

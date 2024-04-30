@@ -4,7 +4,7 @@
 #include "vulkan_types"
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type representing a thread on a gpu, where a "thread" is a gpu queue.
 	 * A gpu queue is like a thread, in that commands send to the gpu will run on a single queue, and queues can execute commands in parallel.

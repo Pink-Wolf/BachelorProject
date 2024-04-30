@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <stdexcept>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* A smart-pointer to a base_gpu_buffer's memory. That is, one that on construction gets cpu-access to the buffer's data, and on destruction/freeing releases the access.
 	 * The buffer this accesses must only contain 1 element.

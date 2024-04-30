@@ -7,7 +7,7 @@
 #include <vector>
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Aggregate type representing a collection of threads on a gpu, where a "thread" is a gpu queue. */
 	struct gpu_thread_family

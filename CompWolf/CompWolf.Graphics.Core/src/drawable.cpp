@@ -5,7 +5,7 @@
 #include "gpu_memory_type.hpp"
 #include <functional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** event handler ********************************/
 

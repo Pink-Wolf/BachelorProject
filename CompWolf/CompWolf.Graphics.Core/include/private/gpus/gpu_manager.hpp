@@ -6,7 +6,7 @@
 #include <utility>
 #include "../graphics/graphics_environment_settings.hpp"
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_program_manager;
 	struct gpu_program_manager_settings;

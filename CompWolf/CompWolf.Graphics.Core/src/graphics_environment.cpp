@@ -7,7 +7,7 @@
 #include <format>
 #include <iostream>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** fields ********************************/
 

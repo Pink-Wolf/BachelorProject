@@ -6,7 +6,7 @@
 #include "gpus"
 #include <fstream>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	auto shader_code_from_file(std::string path) -> std::vector<uint32_t>
 	{

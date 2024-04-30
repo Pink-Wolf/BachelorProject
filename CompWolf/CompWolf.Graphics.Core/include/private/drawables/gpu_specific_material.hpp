@@ -5,12 +5,12 @@
 #include <freeable>
 #include <owned>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_connection;
 }
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	struct draw_material_data;
 

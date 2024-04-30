@@ -6,7 +6,7 @@
 #include "shaders"
 #include <utility>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Contains field-data for one or more shaders. If the data is an image, gpu_image_buffer should be used instead. */
 	template <ShaderField ValueType>

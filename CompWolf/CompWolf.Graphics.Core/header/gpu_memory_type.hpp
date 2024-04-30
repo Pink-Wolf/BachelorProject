@@ -4,7 +4,7 @@
 #include "compwolf_vulkan.hpp"
 #include "gpu_programs"
 
-namespace CompWolf::Graphics::Private
+namespace CompWolf::Private
 {
 	struct gpu_buffer_private_info
 	{

@@ -2,7 +2,7 @@
 #include "window"
 #include <functional>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/******************************** modifiers ********************************/
 

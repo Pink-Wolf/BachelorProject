@@ -5,7 +5,7 @@
 #include <freeable>
 #include <owned>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class gpu_connection;
 

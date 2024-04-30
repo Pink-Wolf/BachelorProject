@@ -10,7 +10,7 @@
 #include <map>
 #include <compwolf_type_traits>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	class graphics_environment;
 	class gpu_connection;

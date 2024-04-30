@@ -10,7 +10,6 @@
 #include <cmath>
 
 using namespace CompWolf;
-using namespace CompWolf::Graphics;
 
 struct vertex
 {

@@ -9,7 +9,7 @@
 #include <map>
 #include <cctype>
 
-namespace CompWolf::Graphics
+namespace CompWolf
 {
 	/* Manages inputs from a user, like a keyboard key being pressed.
 	 * This should be constructed by the graphics_environment.
