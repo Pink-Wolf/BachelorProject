@@ -76,7 +76,7 @@ export default function Home() {
             <h2>Final code</h2>
             <CodeViewer>
                 {`#include <graphics>
-#include <window>
+#include <windows>
 #include <shaders>
 #include <gpu_buffers>
 #include <drawables>

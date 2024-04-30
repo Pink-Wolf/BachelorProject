@@ -2,7 +2,7 @@
 #include "inputs"
 
 #include "compwolf_vulkan.hpp"
-#include "window"
+#include "windows"
 
 namespace CompWolf
 {

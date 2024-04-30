@@ -1,0 +1,9 @@
+#include "private/windows/window_settings.hpp"
+#include "private/windows/window_surface.hpp"
+#include "private/windows/window_swapchain.hpp"
+
+#include "private/windows/window_rebuild_surface_parameters.hpp"
+#include "private/windows/draw_code_parameters.hpp"
+
+#include "private/windows/window.hpp"
+#include "private/windows/window_user.hpp"

@@ -220,20 +220,20 @@
     <ClInclude Include="include\private\shaders\shader_field_info_offsets.hpp" />
     <ClInclude Include="include\private\shaders\shader_int.hpp" />
     <ClInclude Include="include\private\shaders\input_shader.hpp" />
-    <ClInclude Include="include\private\window\swapchain_frame.hpp" />
-    <ClInclude Include="include\private\window\draw_code_parameters.hpp" />
-    <ClInclude Include="include\private\window\window_rebuild_surface_parameters.hpp" />
-    <ClInclude Include="include\private\window\window_settings.hpp" />
-    <ClInclude Include="include\private\window\window_swapchain.hpp" />
-    <ClInclude Include="include\private\window\window_surface.hpp" />
+    <ClInclude Include="include\private\windows\swapchain_frame.hpp" />
+    <ClInclude Include="include\private\windows\draw_code_parameters.hpp" />
+    <ClInclude Include="include\private\windows\window_rebuild_surface_parameters.hpp" />
+    <ClInclude Include="include\private\windows\window_settings.hpp" />
+    <ClInclude Include="include\private\windows\window_swapchain.hpp" />
+    <ClInclude Include="include\private\windows\window_surface.hpp" />
     <ClInclude Include="include\private\shaders\shader.hpp" />
     <ClInclude Include="include\private\other\vulkan_types.hpp" />
-    <ClInclude Include="include\private\window\window.hpp" />
-    <ClInclude Include="include\private\window\window_user.hpp" />
+    <ClInclude Include="include\private\windows\window.hpp" />
+    <ClInclude Include="include\private\windows\window_user.hpp" />
     <ClInclude Include="include\gpu_programs" />
     <ClInclude Include="include\shaders" />
     <ClInclude Include="include\vulkan_types" />
-    <ClInclude Include="include\window" />
+    <ClInclude Include="include\windows" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\base_gpu_buffer.cpp" />

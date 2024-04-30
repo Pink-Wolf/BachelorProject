@@ -2,7 +2,7 @@
 #define COMPWOLF_GRAPHICS_DRAWABLE_HEADER
 
 #include "vulkan_types"
-#include "window"
+#include "windows"
 #include "gpu_buffers"
 #include "gpu_programs"
 #include <freeable>

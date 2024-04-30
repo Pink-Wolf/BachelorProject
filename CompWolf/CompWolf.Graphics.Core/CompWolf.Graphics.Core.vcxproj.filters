@@ -24,7 +24,7 @@
     <ClInclude Include="header\compwolf_vulkan.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\window.hpp">
+    <ClInclude Include="include\private\windows\window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\other\vulkan_types.hpp">
@@ -69,7 +69,7 @@
     <ClInclude Include="header\present_device_info.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\window_surface.hpp">
+    <ClInclude Include="include\private\windows\window_surface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\shaders\shader.hpp">
@@ -78,13 +78,13 @@
     <ClInclude Include="include\gpu_programs">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\window_swapchain.hpp">
+    <ClInclude Include="include\private\windows\window_swapchain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\gpu_programs\gpu_program_manager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\window">
+    <ClInclude Include="include\windows">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\gpus">
@@ -96,7 +96,7 @@
     <ClInclude Include="include\private\gpu_programs\gpu_semaphore.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\window_user.hpp">
+    <ClInclude Include="include\private\windows\window_user.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\shader_field_type.hpp">
@@ -111,7 +111,7 @@
     <ClInclude Include="include\private\gpu_programs\gpu_program.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\window_settings.hpp">
+    <ClInclude Include="include\private\windows\window_settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\drawables">
@@ -132,10 +132,10 @@
     <ClInclude Include="include\private\gpu_programs\gpu_program_sync.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\window_rebuild_surface_parameters.hpp">
+    <ClInclude Include="include\private\windows\window_rebuild_surface_parameters.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\swapchain_frame.hpp">
+    <ClInclude Include="include\private\windows\swapchain_frame.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\shaders">
@@ -213,7 +213,7 @@
     <ClInclude Include="include\private\drawables\window_specific_material.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\window\draw_code_parameters.hpp">
+    <ClInclude Include="include\private\windows\draw_code_parameters.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\drawables\drawable.hpp">

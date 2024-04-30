@@ -3,7 +3,7 @@
 
 #include "vulkan_types"
 #include <freeable>
-#include "../window/window_settings.hpp"
+#include "../windows/window_settings.hpp"
 #include "key_parameter.hpp"
 #include <event>
 #include <map>
