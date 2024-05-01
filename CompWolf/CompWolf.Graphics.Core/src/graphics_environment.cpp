@@ -42,6 +42,8 @@ namespace CompWolf
 
 	void graphics_environment::free() noexcept
 	{
+		if (empty()) return;
+
 		_gpus.free();
 		_vulkan_debug_handle.free();
 		_vulkan_handle.free();

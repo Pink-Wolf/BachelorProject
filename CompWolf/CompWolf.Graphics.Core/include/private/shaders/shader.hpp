@@ -9,6 +9,7 @@
 #include <set>
 #include <map>
 #include <compwolf_type_traits>
+#include <string>
 
 namespace CompWolf
 {
@@ -25,18 +26,12 @@ namespace CompWolf
 		class base_shader : public basic_freeable
 		{
 		private: // fields
-			owned_ptr<graphics_environment*> _environment;
 			std::vector<uint32_t> _raw_code;
 
 			using compiled_shader_type = std::map<const gpu_connection*, Private::vulkan_shader>;
 			mutable compiled_shader_type _compiled_shader;
 
 		public: // getters
-			/* Returns the environment that the shader is on. */
-			inline auto& environment() noexcept { return *_environment; }
-			/* Returns the environment that the shader is on. */
-			inline auto& environment() const noexcept { return *_environment; }
-
 			/* Returns the shader's vulkan_shader, representing a VkShaderModule, for the given gpu.
 			 * @throws std::runtime_error if there was an error getting the vulkan_shader due to causes outside of the program.
 			 */
@@ -52,15 +47,14 @@ namespace CompWolf
 			/* Constructs a shader with the given SPIR-V code.
 			 * @throws std::runtime_error if there was an error during setup due to causes outside of the program.
 			 */
-			base_shader(graphics_environment& environment, std::vector<uint32_t>&& code)
-				: _environment(&environment)
-				, _raw_code(std::move(code))
+			base_shader(std::vector<uint32_t>&& code)
+				: _raw_code(std::move(code))
 			{}
 
 		public: // CompWolf::freeable
 			inline auto empty() const noexcept -> bool final
 			{
-				return !_environment;
+				return _compiled_shader.empty();
 			}
 			void free() noexcept final;
 		};

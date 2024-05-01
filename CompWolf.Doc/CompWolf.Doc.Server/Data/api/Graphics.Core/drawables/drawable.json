@@ -24,7 +24,7 @@
         "description": "Constructs a freed drawable, as in one that is invisible."
       },
       {
-        "declaration": "drawable(MaterialType&, gpu_index_buffer, input_buffer_type&, ...);",
+        "declaration": "drawable(MaterialType&, gpu_index_buffer&, input_buffer_type&, ...);",
         "description": "Constructs a drawable which is drawn using the given material, which uses the given buffers for its input-indices, inputs, and finally any fields its shaders has."
       },
       {

@@ -228,6 +228,27 @@
     <ClInclude Include="include\inputs">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\private\basic_drawables\simple_shape.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\basic_drawables\basic_square.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\basic_drawables\simple_material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\basic_drawables\simple_vertex_shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\basic_drawables\single_color_pixel_shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\basic_drawables">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\private\shaders\static_shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -308,8 +329,23 @@
     <ClCompile Include="src\input_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\simple_shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\basic_square.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Project Settings Changes.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\CompWolf.Graphics.single_color_pixel_shader.frag" />
+    <None Include="resources\CompWolf.Graphics.simple_vertex_shader.vert" />
+    <None Include="resources\compile_shaders.bat">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="resources\CompWolf.Graphics.simple_vertex_shader.spv" />
+    <None Include="resources\CompWolf.Graphics.single_color_pixel_shader.spv" />
   </ItemGroup>
 </Project>

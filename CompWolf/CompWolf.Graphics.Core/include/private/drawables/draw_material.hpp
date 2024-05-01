@@ -154,7 +154,7 @@ namespace CompWolf
 		{
 			return !_input_shader;
 		}
-		inline void free() noexcept final { _input_shader = nullptr; }
+		inline void free() noexcept override { _input_shader = nullptr; }
 	};
 }
 

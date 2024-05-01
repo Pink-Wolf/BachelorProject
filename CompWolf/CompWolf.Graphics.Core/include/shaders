@@ -10,3 +10,4 @@
 
 #include "private/shaders/shader.hpp"
 #include "private/shaders/input_shader.hpp"
+#include "private/shaders/static_shader.hpp"

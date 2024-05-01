@@ -12,7 +12,7 @@
   "templateParameters": [
     {
       "name": "InputType",
-      "description": "The type of data the shader takes as input. That is, FieldTypes specifies its vertex input, specified in glsl using layout(location = ?).\nThe shader specifically takes multiple InputType-objects as its input"
+      "description": "The type of data the shader takes as input. That is, FieldTypes specifies its vertex input, specified in glsl using layout(location = ?).\nThe shader specifically takes multiple InputType-objects as its input."
     },
     {
       "name": "FieldTypes",
@@ -31,7 +31,7 @@
         "description": "Constructs a freed shader, that is one that cannot be run."
       },
       {
-        "declaration": "input_shader(graphics_environment&, std::vector<char32_t>&& spirV_code);",
+        "declaration": "input_shader(std::vector<char32_t>&& spirV_code);",
         "description": "Constructs a shader with the given SPIR-V code."
       },
       {

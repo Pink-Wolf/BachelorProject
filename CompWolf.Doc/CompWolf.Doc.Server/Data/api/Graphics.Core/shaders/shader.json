@@ -32,7 +32,7 @@
         "description": "Constructs a freed shader, that is one that cannot be run."
       },
       {
-        "declaration": "shader(graphics_environment&, std::vector<char32_t>&& spirV_code);",
+        "declaration": "shader(std::vector<char32_t>&& spirV_code);",
         "description": "Constructs a shader with the given SPIR-V code."
       },
       {
@@ -61,24 +61,6 @@
     {
       "name": "Accessors",
       "items": [
-        {
-          "type": "function",
-          "name": "environment",
-          "briefDescription": "Returns the environment that the shader is on.",
-          "overloads": [
-            {
-              "declaration": "auto environment() noexcept -> graphics_environment&;",
-              "description": "Returns the environment that the shader is on."
-            },
-            {
-              "declaration": "auto environment() const noexcept -> const graphics_environment&;",
-              "description": "Like (1), but const."
-            }
-          ],
-          "related": [
-            "graphics_environment"
-          ]
-        },
         {
           "type": "variable",
           "name": "field_indices",

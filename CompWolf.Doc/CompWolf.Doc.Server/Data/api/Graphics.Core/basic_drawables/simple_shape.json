@@ -1,0 +1,90 @@
+﻿{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "class simple_shape;",
+  "briefDescription": "A simple [[drawable]] with a color and position.",
+  "detailedDescription": "A simple [[drawable]] which contains 2 buffers: a float3 color and float2 position. This is moved to the given position, and are drawn with the single color given.\nRequires the resource-folder from Graphics.Core to be included with the executable.",
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "simple_shape() noexcept;",
+        "description": "Constructs a freed simple_shape, as in one that is invisible."
+      },
+      {
+        "declaration": "simple_shape(window&, gpu_index_buffer&, input_buffer_type&);",
+        "description": "Constructs a simple_shape with the given index and vertices, drawn on the given window."
+      },
+      {
+        "declaration": "simple_shape(window&, gpu_index_buffer&, input_buffer_type&, float2 position, float3 color);",
+        "description": "Constructs a simple_shape with the given index, vertices, position and color, drawn on the given window."
+      },
+      {
+        "declaration": "simple_shape(simple_shape&&) noexcept;",
+        "description": "simple_shape is movable."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if the resources could not be found or opened.",
+      "Throws std::runtime_error if there was an error during setup due to causes outside of the program."
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "drawable_type",
+          "declaration": "using drawable_type = drawable<simple_material>;",
+          "briefDescription": "The type of drawable this contains.",
+          "detailedDescription": "The type of drawable this contains."
+        }
+      ]
+    },
+    {
+      "name": "Accessors",
+      "items": [
+        {
+          "type": "function",
+          "name": "color",
+          "briefDescription": "Returns the color of this shape.",
+          "overloads": [
+            {
+              "declaration": "auto color() noexcept -> gpu_field_buffer<float3>&",
+              "description": "Returns the color of this shape."
+            },
+            {
+              "declaration": "auto color() const noexcept -> const gpu_field_buffer<float3>&",
+              "description": "Like (1), but const."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "position",
+          "briefDescription": "Returns the position of this shape.",
+          "overloads": [
+            {
+              "declaration": "auto position() noexcept -> gpu_field_buffer<float2>&",
+              "description": "Returns the position of this shape."
+            },
+            {
+              "declaration": "auto position() const noexcept -> const gpu_field_buffer<float2>&",
+              "description": "Like (1), but const."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "related": [
+    "shader"
+  ]
+}

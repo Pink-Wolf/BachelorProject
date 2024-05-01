@@ -17,7 +17,7 @@ namespace CompWolf
 		auto commandBuffer = Private::to_vulkan(args.command);
 		auto& frame = swapchain().frames()[frame_index];
 
-		auto clear_color = opaque_color(0._scolor, 0._scolor, 0._scolor);
+		auto clear_color = opaque_color(.2_scolor, .2_scolor, .2_scolor);
 		VkClearValue clearColor = {
 			{{
 				static_cast<float>(clear_color.x()),

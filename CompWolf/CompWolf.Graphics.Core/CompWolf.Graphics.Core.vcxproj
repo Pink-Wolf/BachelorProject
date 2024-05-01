@@ -167,12 +167,18 @@
     <ClInclude Include="header\present_device_info.hpp" />
     <ClInclude Include="header\shader_field_type.hpp" />
     <ClInclude Include="header\vulkan_debug_utils.hpp" />
+    <ClInclude Include="include\basic_drawables" />
     <ClInclude Include="include\drawables" />
     <ClInclude Include="include\gpus" />
     <ClInclude Include="include\gpu_buffers" />
     <ClInclude Include="include\graphics" />
     <ClInclude Include="include\images" />
     <ClInclude Include="include\inputs" />
+    <ClInclude Include="include\private\basic_drawables\simple_material.hpp" />
+    <ClInclude Include="include\private\basic_drawables\simple_shape.hpp" />
+    <ClInclude Include="include\private\basic_drawables\basic_square.hpp" />
+    <ClInclude Include="include\private\basic_drawables\simple_vertex_shader.hpp" />
+    <ClInclude Include="include\private\basic_drawables\single_color_pixel_shader.hpp" />
     <ClInclude Include="include\private\drawables\drawable.hpp" />
     <ClInclude Include="include\private\drawables\draw_material.hpp" />
     <ClInclude Include="include\private\drawables\draw_material_data.hpp" />
@@ -220,6 +226,7 @@
     <ClInclude Include="include\private\shaders\shader_field_info_offsets.hpp" />
     <ClInclude Include="include\private\shaders\shader_int.hpp" />
     <ClInclude Include="include\private\shaders\input_shader.hpp" />
+    <ClInclude Include="include\private\shaders\static_shader.hpp" />
     <ClInclude Include="include\private\windows\swapchain_frame.hpp" />
     <ClInclude Include="include\private\windows\draw_code_parameters.hpp" />
     <ClInclude Include="include\private\windows\window_rebuild_surface_parameters.hpp" />
@@ -259,6 +266,8 @@
     <ClCompile Include="src\present_device_info.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\primitive_shader_field.cpp" />
+    <ClCompile Include="src\simple_shape.cpp" />
+    <ClCompile Include="src\basic_square.cpp" />
     <ClCompile Include="src\vulkan_debug_handle.cpp" />
     <ClCompile Include="src\vulkan_handle.cpp" />
     <ClCompile Include="src\gpu_semaphore.cpp" />
@@ -275,6 +284,17 @@
     <ProjectReference Include="..\CompWolf.Core\CompWolf.Core.vcxproj">
       <Project>{674e23f8-611a-4c8e-9a25-fd72cbb31e37}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\compile_shaders.bat" />
+    <None Include="resources\CompWolf.Graphics.simple_vertex_shader.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\CompWolf.Graphics.simple_vertex_shader.vert" />
+    <None Include="resources\CompWolf.Graphics.single_color_pixel_shader.frag" />
+    <None Include="resources\CompWolf.Graphics.single_color_pixel_shader.spv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

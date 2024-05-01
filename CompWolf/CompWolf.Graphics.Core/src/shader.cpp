@@ -13,7 +13,7 @@ namespace CompWolf
 		// file is read in individual bytes to keep little-endian.
 
 		std::ifstream stream(path, std::ios::binary | std::ios::in | std::ios::ate);
-		if (!stream.is_open()) throw std::runtime_error("Could not open " + path + "; make sure to run compile.bat to create the file.");
+		if (!stream.is_open()) throw std::runtime_error("Could not open \"" + path + "\".");
 
 		std::vector<uint32_t> data;
 		data.resize(stream.tellg() / 4);
@@ -67,11 +67,13 @@ namespace CompWolf
 
 	void Private::base_shader::free() noexcept
 	{
+		if (empty()) return;
+
 		for (auto& [vulkan_device, vulkan_shader] : _compiled_shader)
 		{
 			vkDestroyShaderModule(Private::to_vulkan(vulkan_device->vulkan_device()), Private::to_vulkan(vulkan_shader), nullptr);
 		}
 
-		_environment = nullptr;
+		_compiled_shader.clear();
 	}
 }

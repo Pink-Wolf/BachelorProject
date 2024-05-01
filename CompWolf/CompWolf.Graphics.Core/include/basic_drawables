@@ -1,0 +1,6 @@
+#include "private/basic_drawables/simple_vertex_shader.hpp"
+#include "private/basic_drawables/single_color_pixel_shader.hpp"
+#include "private/basic_drawables/simple_material.hpp"
+
+#include "private/basic_drawables/simple_shape.hpp"
+#include "private/basic_drawables/basic_square.hpp"

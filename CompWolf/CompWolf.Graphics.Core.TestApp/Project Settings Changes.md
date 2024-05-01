@@ -5,6 +5,9 @@ Added project reference to:
 - CompWolf.Graphics.Core
 
 Configuration Properties:
+- Debugging
+- - Working Directory
+- - - Set to $(TargetDir)
 - C/C++
 - - General
 - - - Additional Include Directories
