@@ -10,6 +10,7 @@
 #include <map>
 #include <compwolf_type_traits>
 #include <string>
+#include <event>
 
 namespace CompWolf
 {
@@ -23,19 +24,25 @@ namespace CompWolf
 
 	namespace Private
 	{
+		struct gpu_specific_shader_data
+		{
+			Private::vulkan_shader vulkan_shader;
+			event<>::key_type gpu_freeing_key;
+		};
+
 		class base_shader : public basic_freeable
 		{
 		private: // fields
 			std::vector<uint32_t> _raw_code;
 
-			using compiled_shader_type = std::map<const gpu_connection*, Private::vulkan_shader>;
+			using compiled_shader_type = std::map<gpu_connection*, gpu_specific_shader_data>;
 			mutable compiled_shader_type _compiled_shader;
 
 		public: // getters
 			/* Returns the shader's vulkan_shader, representing a VkShaderModule, for the given gpu.
 			 * @throws std::runtime_error if there was an error getting the vulkan_shader due to causes outside of the program.
 			 */
-			auto vulkan_shader(const gpu_connection&) const -> Private::vulkan_shader;
+			auto vulkan_shader(gpu_connection&) const -> Private::vulkan_shader;
 
 		public: // constructors
 			/* Constructs a freed shader, that is one that cannot be run. */

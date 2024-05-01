@@ -80,7 +80,7 @@
           "briefDescription": "Returns the shader's vulkan_shader, representing a VkShaderModule.",
           "overloads": [
             {
-              "declaration": "auto vulkan_shader(const gpu_connection&) const -> Private::vulkan_instance;",
+              "declaration": "auto vulkan_shader(gpu_connection&) const -> Private::vulkan_instance;",
               "description": "Returns the shader's vulkan_shader, representing a VkShaderModule, for the given gpu."
             }
           ],

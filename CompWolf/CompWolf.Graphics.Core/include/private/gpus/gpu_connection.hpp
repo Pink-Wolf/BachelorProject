@@ -6,6 +6,7 @@
 #include <owned>
 #include "gpu_thread_family.hpp"
 #include <vector>
+#include <event>
 
 namespace CompWolf
 {
@@ -67,6 +68,15 @@ namespace CompWolf
 			return !_vulkan_instance;
 		}
 		void free() noexcept final;
+
+		/* Invoked right before the gpu's data is freed.
+		 * @see free()
+		 */
+		event<> freeing;
+		/* Invoked right after the gpu's data is freed.
+		 * @see free()
+		 */
+		event<> freed;
 	};
 }
 

@@ -156,7 +156,12 @@ namespace CompWolf
 	void gpu_connection::free() noexcept
 	{
 		if (empty()) return;
+
+		freeing();
+
 		vkDestroyDevice(Private::to_vulkan(_vulkan_device), nullptr);
 		_vulkan_device = nullptr;
+
+		freed();
 	}
 }

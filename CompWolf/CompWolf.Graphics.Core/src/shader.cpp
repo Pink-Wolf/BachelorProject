@@ -26,19 +26,19 @@ namespace CompWolf
 
 	/******************************** getters ********************************/
 
-	auto Private::base_shader::vulkan_shader(const gpu_connection& vulkan_device) const -> Private::vulkan_shader
+	auto Private::base_shader::vulkan_shader(gpu_connection& gpu) const -> Private::vulkan_shader
 	{
-		auto compiled_shader_iterator = _compiled_shader.find(&vulkan_device);
+		auto compiled_shader_iterator = _compiled_shader.find(&gpu);
 		Private::vulkan_shader shader_module_pointer;
 		if (compiled_shader_iterator != _compiled_shader.end())
 		{
-			shader_module_pointer = compiled_shader_iterator->second;
+			shader_module_pointer = compiled_shader_iterator->second.vulkan_shader;
 		}
 		else
 		{
 			VkShaderModule shaderModule;
 			{
-				auto logicDevice = Private::to_vulkan(vulkan_device.vulkan_device());
+				auto logicDevice = Private::to_vulkan(gpu.vulkan_device());
 
 				VkShaderModuleCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
@@ -57,7 +57,12 @@ namespace CompWolf
 			}
 
 			shader_module_pointer = Private::from_vulkan(shaderModule);
-			_compiled_shader.insert({ &vulkan_device, shader_module_pointer });
+			auto gpu_freeing_key = gpu.freeing.subscribe([this, &gpu]()
+				{
+					_compiled_shader.erase(&gpu);
+				}
+			);
+			_compiled_shader.insert({ &gpu, { shader_module_pointer, gpu_freeing_key} });
 		}
 
 		return shader_module_pointer;
@@ -69,9 +74,10 @@ namespace CompWolf
 	{
 		if (empty()) return;
 
-		for (auto& [vulkan_device, vulkan_shader] : _compiled_shader)
+		for (auto& [gpu, data] : _compiled_shader)
 		{
-			vkDestroyShaderModule(Private::to_vulkan(vulkan_device->vulkan_device()), Private::to_vulkan(vulkan_shader), nullptr);
+			vkDestroyShaderModule(Private::to_vulkan(gpu->vulkan_device()), Private::to_vulkan(data.vulkan_shader), nullptr);
+			gpu->freeing.unsubscribe(data.gpu_freeing_key);
 		}
 
 		_compiled_shader.clear();

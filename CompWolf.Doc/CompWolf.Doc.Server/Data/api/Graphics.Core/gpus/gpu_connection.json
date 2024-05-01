@@ -88,6 +88,32 @@
       ]
     },
     {
+      "name": "freeable",
+      "description": "While not inherited from [[freeable]], these members are related to how the gpu is inheriting from [[freeable]].",
+      "items": [
+        {
+          "type": "variable",
+          "name": "freeing",
+          "declaration": "event<void> freeing;",
+          "briefDescription": "Event invoked before the gpu is freed.",
+          "detailedDescription": "Event invoked before the gpu is freed.",
+          "related": [
+            "event"
+          ]
+        },
+        {
+          "type": "variable",
+          "name": "freed",
+          "declaration": "event<void> freed;",
+          "briefDescription": "Event invoked after the gpu is freed.",
+          "detailedDescription": "Event invoked after the gpu is freed.",
+          "related": [
+            "event"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Vulkan-related",
       "description": "These members reveal a lower level of abstractions, and so they should rarely be used.",
       "items": [
