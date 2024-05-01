@@ -6,7 +6,7 @@ export default function Home() {
             <h1>Tutorials</h1>
             <sl>
                 <li><Link href="/tutorial/your-first-window">Your First Window</Link></li>
-                <li><Link href="/tutorial/your-first-triangle">Your First Triangle</Link></li>
+                <li><Link href="/tutorial/your-first-square">Your First Square</Link></li>
             </sl>
         </div>
     );

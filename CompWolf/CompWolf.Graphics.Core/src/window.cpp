@@ -142,7 +142,7 @@ namespace CompWolf
 	window::window(graphics_environment* environment, gpu_connection* gpu, window_settings settings) : _settings(settings)
 	{
 		if (_settings.pixel_size.first <= 0 || _settings.pixel_size.second <= 0)
-			_settings.pixel_size = std::make_pair(640, 480);
+			_settings.pixel_size = std::make_pair(480, 480);
 
 		if (_settings.name.empty())
 			_settings.name = "Window";

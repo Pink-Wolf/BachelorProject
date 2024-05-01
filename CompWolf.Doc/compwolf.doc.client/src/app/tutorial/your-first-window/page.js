@@ -29,8 +29,11 @@ int main()
             <FormattedText>
                 With a [[graphics_environment]], you can now create a [[window]]. The [[window]] is defined in the [[windows]]-header.
                 Like the [[graphics_environment]], creating a [[window]] requires a [[window_settings]], which can be used to adjust how the window functions. Creating a [[window]] also requires a [[graphics_environment]].
-                Include the [[windows]] header, and write the following code to create a [[window]]:
+                Write the following code to create a [[window]]:
             </FormattedText>
+            <CodeViewer>
+                {`#include <windows>`}
+            </CodeViewer>
             <CodeViewer>
                 {`CompWolf::window_settings win_settings{
     .name = "Hello World",
@@ -59,7 +62,7 @@ CompWolf::window win(environment, win_settings);`}
                 Congratulations, you have now created a window.
             </FormattedText>
             <hr />
-            <Link href="/tutorial/your-first-triangle">Click here for the next tutorial.</Link>
+            <Link href="/tutorial/your-first-square">Click here for the next tutorial.</Link>
             <h2>Final code</h2>
             <CodeViewer>
                 {`#include <graphics>

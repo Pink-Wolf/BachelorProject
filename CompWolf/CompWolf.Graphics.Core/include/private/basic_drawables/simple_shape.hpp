@@ -30,14 +30,9 @@ namespace CompWolf
 
 	public: // accessors
 		/* Returns the color of this shape. */
-		inline auto& color() noexcept { return _color; }
-		/* Returns the color of this shape. */
-		inline auto& color() const noexcept { return _color; }
-
+		inline auto color() noexcept { return _color.single_data(); }
 		/* Returns the position of this shape. */
-		inline auto& position() noexcept { return _position; }
-		/* Returns the position of this shape. */
-		inline auto& position() const noexcept { return _position; }
+		inline auto position() noexcept { return _position.single_data(); }
 
 	public: // constructors
 		/* Constructs a freed simple_shape, as in one that is invisible. */

@@ -56,12 +56,8 @@
           "briefDescription": "Returns the color of this shape.",
           "overloads": [
             {
-              "declaration": "auto color() noexcept -> gpu_field_buffer<float3>&",
+              "declaration": "auto color() noexcept -> gpu_buffer_single_access<float3>",
               "description": "Returns the color of this shape."
-            },
-            {
-              "declaration": "auto color() const noexcept -> const gpu_field_buffer<float3>&",
-              "description": "Like (1), but const."
             }
           ]
         },
@@ -71,12 +67,8 @@
           "briefDescription": "Returns the position of this shape.",
           "overloads": [
             {
-              "declaration": "auto position() noexcept -> gpu_field_buffer<float2>&",
+              "declaration": "auto position() noexcept -> gpu_buffer_single_access<float2>",
               "description": "Returns the position of this shape."
-            },
-            {
-              "declaration": "auto position() const noexcept -> const gpu_field_buffer<float2>&",
-              "description": "Like (1), but const."
             }
           ]
         }

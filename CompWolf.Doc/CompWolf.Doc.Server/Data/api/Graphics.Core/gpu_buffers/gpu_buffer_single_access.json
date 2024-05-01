@@ -6,8 +6,6 @@
   "briefDescription": "A smart-pointer to a [[base_gpu_buffer]]'s memory.",
   "detailedDescription": "A smart-pointer to a [[base_gpu_buffer]]'s memory. That is, one that on construction gets cpu-access to the buffer's data, and on destruction/freeing releases the access.\nThe buffer this accesses must only contain 1 element.",
 
-  "baseClasses": [ "basic_freeable" ],
-
   "copyable": false,
   "movable": true,
   "constructor": {

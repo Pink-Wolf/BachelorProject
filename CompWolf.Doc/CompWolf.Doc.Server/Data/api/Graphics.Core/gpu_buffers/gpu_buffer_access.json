@@ -13,7 +13,7 @@
     }
   ],
 
-  "baseClasses": [ "basic_freeable", "std::span" ],
+  "baseClasses": [ "std::span" ],
 
   "copyable": false,
   "movable": true,
