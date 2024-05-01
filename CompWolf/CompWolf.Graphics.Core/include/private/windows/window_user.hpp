@@ -1,7 +1,6 @@
 #ifndef COMPWOLF_GRAPHICS_WINDOW_USER_HEADER
 #define COMPWOLF_GRAPHICS_WINDOW_USER_HEADER
 
-#include <freeable>
 #include <event>
 #include "window_rebuild_surface_parameters.hpp"
 
@@ -13,7 +12,7 @@ namespace CompWolf
 	 * If the window is freed, then this is freed first.
 	 * Also contains virtual methods for events related to the window, like when its surface is rebuild.
 	 */
-	class window_user : public virtual freeable
+	class window_user
 	{
 	private: // fields
 		window* _target_window = nullptr;
@@ -36,6 +35,9 @@ namespace CompWolf
 	protected: // virtual
 		/* Invoked after the target window's surface is rebuild. */
 		inline virtual void on_rebuild_surface(window_rebuild_surface_parameters&) {}
+
+		/* Invoked before the target window is being freed. */
+		inline virtual void on_window_freeing() noexcept {}
 
 	public: // constructors
 		/* Constructs a window_user that does not point to any window. */

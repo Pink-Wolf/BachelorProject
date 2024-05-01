@@ -45,6 +45,9 @@ namespace CompWolf
 			, std::vector<base_gpu_buffer*> fields
 		);
 
+	protected: // CompWolf::window_user
+		inline void on_window_freeing() noexcept final { free(); }
+
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
 		{

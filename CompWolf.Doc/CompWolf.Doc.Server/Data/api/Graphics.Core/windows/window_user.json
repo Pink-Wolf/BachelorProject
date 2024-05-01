@@ -6,8 +6,6 @@
   "briefDescription": "Abstract type containing a reference to a window.",
   "detailedDescription": "Abstract type containing a reference to a window.\nIf the window is freed, then this is freed first.\nAlso contains virtual methods for events related to the window, like when its surface is rebuild.",
 
-  "baseClasses": [ "public basic_freeable" ],
-
   "copyable": true,
   "movable": true,
   "constructor": {
@@ -99,6 +97,17 @@
           ],
           "related": [
             "window_rebuild_surface_parameters"
+          ]
+        },
+        {
+          "type": "function",
+          "name": "on_window_freeing",
+          "briefDescription": "Invoked before the target window is being freed.",
+          "overloads": [
+            {
+              "declaration": "virtual void on_window_freeing();",
+              "description": "Invoked before the target window is being freed."
+            }
           ]
         }
       ]

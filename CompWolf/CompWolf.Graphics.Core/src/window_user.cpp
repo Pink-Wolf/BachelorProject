@@ -20,7 +20,7 @@ namespace CompWolf
 		{
 			_freeing_event_key = target_window().freeing.subscribe([this]()
 				{
-					free();
+					on_window_freeing();
 					set_window(nullptr);
 				}
 			);

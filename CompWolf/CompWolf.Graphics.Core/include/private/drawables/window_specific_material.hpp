@@ -71,6 +71,9 @@ namespace CompWolf
 
 		window_specific_material(Private::draw_material_data&, Private::gpu_specific_material&, window&);
 
+	protected: // CompWolf::window_user
+		inline void on_window_freeing() noexcept final { free(); }
+
 	public: // CompWolf::freeable
 		inline auto empty() const noexcept -> bool final
 		{
