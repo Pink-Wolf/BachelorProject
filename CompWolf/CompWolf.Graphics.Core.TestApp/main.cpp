@@ -25,7 +25,7 @@ int main()
     std::random_device randomizer;
     for (std::size_t i = 0; i < 1000; ++i)
     {
-        float max_random_value = static_cast<float>(std::random_device::max());
+        constexpr float max_random_value = static_cast<float>(std::random_device::max());
         squares.emplace_back(win
             , CompWolf::float3({ randomizer() / max_random_value, randomizer() / max_random_value, randomizer() / max_random_value })
             , CompWolf::float2({ randomizer() / max_random_value * 2 - 1, randomizer() / max_random_value * 2 - 1 }));

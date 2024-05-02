@@ -90,22 +90,22 @@ namespace CompWolf
 				.pDynamicStates = dynamicStates.data(),
 			};
 
-			auto descriptorSize = 2 * static_cast<uint32_t>(frames.size());
+			auto descriptorSize = static_cast<uint32_t>(frames.size());
 			VkDescriptorPool descriptorPool;
 			{
 				std::vector<VkDescriptorPoolSize> poolSizes{
 					{
 					.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-					.descriptorCount = descriptorSize,
+					.descriptorCount = 2 * descriptorSize,
 					},
 					{
 					.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-					.descriptorCount = descriptorSize,
+					.descriptorCount = 2 * descriptorSize,
 					}
 				};
 				VkDescriptorPoolCreateInfo createInfo{
 					.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-					.maxSets = descriptorSize,
+					.maxSets = 2 * descriptorSize,
 					.poolSizeCount = static_cast<uint32_t>(poolSizes.size()),
 					.pPoolSizes = poolSizes.data(),
 				};
