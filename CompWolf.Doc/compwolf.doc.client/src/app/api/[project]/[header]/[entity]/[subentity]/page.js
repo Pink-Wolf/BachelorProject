@@ -1,7 +1,9 @@
-import { getEntity } from "@/lib/api/Entity";
+import { getOverview, getEntity } from "@/lib/api/Entity";
 import EntityViewer from "@/lib/api/EntityViewer";
+import betterEncodeURIComponent from "@/lib/betterEncodeURIComponent";
 
 export default async function SubEntityPage({ params }) {
+    if (params.project === "%5Bproject%5D") return <div />
     let project = decodeURIComponent(params.project)
     let header = decodeURIComponent(params.header)
     let entity = decodeURIComponent(params.entity)
@@ -32,4 +34,23 @@ export default async function SubEntityPage({ params }) {
     }
 
     return <EntityViewer data={data} />
+}
+
+export async function generateStaticParams() {
+    const overview = await getOverview()
+
+    return overview.projects.map(project =>
+        project.headers.map(header =>
+            header.entities.map(entity =>
+                entity.members.map(member => {
+                    return {
+                        project: betterEncodeURIComponent(project.name),
+                        header: betterEncodeURIComponent(header.name),
+                        entity: betterEncodeURIComponent(entity.name),
+                        subentity: betterEncodeURIComponent(member.name),
+                    }
+                })
+            )
+        )
+    ).flat(Infinity)
 }

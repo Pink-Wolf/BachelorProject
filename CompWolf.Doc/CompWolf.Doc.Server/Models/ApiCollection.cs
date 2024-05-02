@@ -1,9 +1,14 @@
 ﻿namespace CompWolf.Doc.Server.Models
 {
+    public class SimpleApiMember
+    {
+        public string Name { get; set; } = null!;
+    }
     public class SimpleApiEntity
     {
         public string Name { get; set; } = null!;
         public string BriefDescription { get; set; } = null!;
+        public SimpleApiMember[] Members { get; set; } = null!;
     }
     public class SimpleApiHeader
     {

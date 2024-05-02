@@ -12,4 +12,7 @@
     <None Remove="src\app\api\[project]\[header]\[entity]\NewFolder\**" />
     <TypeScriptConfiguration Remove="src\app\api\[project]\[header]\[entity]\NewFolder\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="public\" />
+  </ItemGroup>
 </Project>

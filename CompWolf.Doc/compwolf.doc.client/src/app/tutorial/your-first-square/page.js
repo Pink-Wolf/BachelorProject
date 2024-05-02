@@ -1,8 +1,8 @@
-import { CodeViewer, SimpleReference } from "@/lib/CodeComponents";
+import { CodeViewer } from "@/lib/CodeComponents";
 import FormattedText from "@/lib/FormattedText";
 import Link from "next/link";
 
-export default function Home() {
+export default function YourFirstSquare() {
     return (
         <div>
             <h1>Your First Square</h1>
@@ -36,9 +36,9 @@ export default function Home() {
             <h1>Red square</h1>
             <FormattedText>
                 [[drawable]] objects may have some buffers with for example their position or color. A [[basic_square]] has both.
-                The square's color can be gotten with its method color(). This returns a smart-pointer (a pointer that automatically frees its access when destroyed) to the color.
+                The square&apos;s color can be gotten with its method color(). This returns a smart-pointer (a pointer that automatically frees its access when destroyed) to the color.
                 The pointer must be destroyed to allow the gpu to read the new color of the square.
-                The square's color is made out of red, green, and blue; so to set the color to for example red, we must set its color to (1, 0, 0).
+                The square&apos;s color is made out of red, green, and blue; so to set the color to for example red, we must set its color to (1, 0, 0).
                 The square is currently just white. Get the color and change it to red. Do this inside a pair of curly brackets so the smart pointer is destroyed afterwards:
             </FormattedText>
             <CodeViewer>

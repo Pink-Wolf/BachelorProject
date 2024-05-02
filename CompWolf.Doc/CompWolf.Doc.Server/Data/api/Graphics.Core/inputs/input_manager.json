@@ -4,7 +4,7 @@
   "declaration": "class input_manager;",
   "namespace": "CompWolf",
   "briefDescription": "Manages inputs from a user, like a keyboard key being pressed.",
-  "detailedDescription": "Manages inputs from a user, like a keyboard key being pressed.\nThis should be constructed by [[window]]s, and accessed through their inputs-method.",
+  "detailedDescription": "Manages inputs from a user, like a keyboard key being pressed.\nThis should be constructed by [[window]]s, and accessed through [[window::inputs]].",
 
   "baseClasses": [ "basic_freeable" ],
 

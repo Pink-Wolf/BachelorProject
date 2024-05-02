@@ -86,8 +86,16 @@ export async function getEntity(project, header, name) {
 export async function getOverview() {
     return await getJson(`${DATABASE_URL}api/overview`)
 }
+
 export async function getPathTo(name) {
     const overview = await getOverview()
+
+    let memberSplitterIndex = name.indexOf("::")
+    let isMember = memberSplitterIndex >= 0;
+    let memberName = !isMember ? "" : name.substring(memberSplitterIndex + 2, name.length);
+    if (isMember) {
+        name = name.substring(0, memberSplitterIndex)
+    }
 
     var path = undefined
     overview.projects?.find(project => {
@@ -95,7 +103,8 @@ export async function getPathTo(name) {
         project.headers?.find(header => {
             if (header.name === name) path = `${project.name}/${header.name}/`
             header.entities?.find(entity => {
-                if (entity.name === name) path = `${project.name}/${header.name}/${entity.name}/`
+                if (entity.name === name) path = `${project.name}/${header.name}/${entity.name}/${memberName}`
+
                 return (path !== undefined)
             })
             return (path !== undefined)

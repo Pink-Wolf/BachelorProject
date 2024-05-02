@@ -1,8 +1,8 @@
-import { CodeViewer, SimpleReference } from "@/lib/CodeComponents";
+import { CodeViewer } from "@/lib/CodeComponents";
 import FormattedText from "@/lib/FormattedText";
 import Link from "next/link";
 
-export default function Home() {
+export default function YourFirstWindow() {
     return (
         <div>
             <h1>Your First Window</h1>

@@ -1,4 +1,5 @@
 ﻿using CompWolf.Doc.Server.Models;
+using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 
@@ -52,6 +53,52 @@ namespace CompWolf.Doc.Server.Data
             var doc = await JsonDocument.ParseAsync(stream);
             return doc.RootElement.GetProperty("briefDescription").GetString();
         }
+        public async Task<SimpleApiMember[]> GetMembers(string path)
+        {
+            var result = Array.Empty<SimpleApiMember>();
+
+            var entityName = Path.GetFileNameWithoutExtension(path)!;
+
+            using var stream = File.OpenRead(path);
+            var doc = await JsonDocument.ParseAsync(stream);
+
+            bool hasConstructor = doc.RootElement.TryGetProperty("constructor", out _);
+
+            if (doc.RootElement.TryGetProperty("memberGroups", out JsonElement memberGroups))
+            {
+                int memberCount = hasConstructor ? 1 : 0;
+                foreach (var memberGroup in memberGroups.EnumerateArray())
+                {
+                    memberCount += memberGroup.GetProperty("items").GetArrayLength();
+                }
+                result = new SimpleApiMember[memberCount];
+                int memberI = 0;
+
+                if (hasConstructor)
+                {
+                    result[memberI] = new SimpleApiMember()
+                    {
+                        Name = entityName,
+                    };
+                    ++memberI;
+                }
+
+                foreach (var memberGroup in memberGroups.EnumerateArray())
+                {
+                    foreach (var member in memberGroup.GetProperty("items").EnumerateArray())
+                    {
+                        result[memberI] = new SimpleApiMember()
+                        {
+                            Name = member.GetProperty("name").GetString()!,
+                        };
+
+                        ++memberI;
+                    }
+
+                }
+            }
+            return result;
+        }
         public async Task<ApiCollection> GetOverviewAsync()
         {
             ApiCollection collection = new()
@@ -65,10 +112,13 @@ namespace CompWolf.Doc.Server.Data
                         Entities = Directory.GetFiles(headerDirectory).Select(entityPath => new SimpleApiEntity()
                         {
                             Name = Path.GetFileNameWithoutExtension(entityPath)!,
+                            BriefDescription = entityPath,
                         }).ToArray(),
                     }).ToArray(),
                 }).ToArray(),
             };
+
+            List<Task<SimpleApiMember[]>> tasks = [];
             foreach (var project in collection.Projects)
             {
                 project.BriefDescription = await GetBriefDescriptionAsync($"{ApiPath}{project.Name}.json") ?? "";
@@ -77,10 +127,31 @@ namespace CompWolf.Doc.Server.Data
                     header.BriefDescription = await GetBriefDescriptionAsync($"{ApiPath}{project.Name}/{header.Name}.json") ?? "";
                     foreach (var entity in header.Entities)
                     {
+                        var filePath = entity.BriefDescription;
+
                         entity.BriefDescription = await GetBriefDescriptionAsync($"{ApiPath}{project.Name}/{header.Name}/{entity.Name}.json") ?? "";
+
+                        var entityName = entity.Name;
+                        tasks.Add(GetMembers(filePath));
                     }
                 }
             }
+
+            {
+                var taskIterator = tasks.GetEnumerator();
+                foreach (var project in collection.Projects)
+                {
+                    foreach (var header in project.Headers)
+                    {
+                        foreach (var entity in header.Entities)
+                        {
+                            taskIterator.MoveNext();
+                            entity.Members = await taskIterator.Current;
+                        }
+                    }
+                }
+            }
+
             return collection;
         }
     }
