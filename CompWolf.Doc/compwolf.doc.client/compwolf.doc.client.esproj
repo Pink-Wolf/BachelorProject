@@ -9,7 +9,9 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="out\**" />
     <None Remove="src\app\api\[project]\[header]\[entity]\NewFolder\**" />
+    <TypeScriptConfiguration Remove="out\**" />
     <TypeScriptConfiguration Remove="src\app\api\[project]\[header]\[entity]\NewFolder\**" />
   </ItemGroup>
   <ItemGroup>
