@@ -62,7 +62,7 @@ CompWolf::window win(environment, win_settings);`}
                 Congratulations, you have now created a window.
             </FormattedText>
             <hr />
-            <Link href="/tutorial/your-first-square">Click here for the next tutorial.</Link>
+            <Link href="your-first-square">Click here for the next tutorial.</Link>
             <h2>Final code</h2>
             <CodeViewer>
                 {`#include <graphics>

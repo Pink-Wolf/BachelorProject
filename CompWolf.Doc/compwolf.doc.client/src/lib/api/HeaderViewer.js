@@ -7,7 +7,7 @@ export default function HeaderViewer({ data }) {
 	return (
 		<section>
 			<small>
-				<p id="Project">In project <Reference path={data.project}>{data.project}</Reference></p>
+				<p id="Project">In project <Reference path={`/api/${data.project}`}>{data.project}</Reference></p>
 			</small>
 			<h1 id="Declaration">
 				<Declaration>{`<${data.header}>`}</Declaration>
@@ -20,7 +20,7 @@ export default function HeaderViewer({ data }) {
 				{data.entities.map((x, i) => {
 					return (
 						<li key={i}>
-							<Reference path={`${data.project}/${data.header}/${x.name}`}>{x.name}</Reference>: <FormattedText>{x.briefDescription}</FormattedText>
+							<Reference path={`/api/${data.project}/${data.header}/${x.name}`}>{x.name}</Reference>: <FormattedText>{x.briefDescription}</FormattedText>
 						</li>
 					)
 				})}

@@ -5,7 +5,7 @@ import { getPathTo } from "./api/Entity";
 
 export function Reference({ path, children }) {
 	return (
-		<Link href={"/api/" + path}>
+		<Link href={path}>
 			<code>
 				{children}
 			</code>

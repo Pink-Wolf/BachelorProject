@@ -5,8 +5,8 @@ export default function Home() {
         <div>
             Welcome to the CompWolf docs.
             <ul>
-                <li><Link href="api/Graphics.Core">API docs</Link></li>
-                <li><Link href="tutorial">Tutorials</Link></li>
+                <li><Link href="/api/Graphics.Core">API docs</Link></li>
+                <li><Link href="/tutorial">Tutorials</Link></li>
             </ul>
             
         </div>

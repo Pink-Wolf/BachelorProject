@@ -8,7 +8,7 @@ export default function ClassViewer({ data }) {
 
 	function MemberReference({ name }) {
 		return (
-			<Reference path={`${data.project}/${data.header}/${data.name}/${name}`}>
+			<Reference path={`/api/${data.project}/${data.header}/${data.name}/${name}`}>
 				{name}
 			</Reference>
 		)
@@ -74,7 +74,7 @@ export default function ClassViewer({ data }) {
 					<tbody>
 						<tr hidden={!data.hasOwnProperty("constructor")}>
 							<td>
-								<Reference path={`${data.project}/${data.header}/${data.name}/${data.name}`}>
+								<Reference path={`/api/${data.project}/${data.header}/${data.name}/${data.name}`}>
 									(constructors)
 								</Reference>
 							</td>

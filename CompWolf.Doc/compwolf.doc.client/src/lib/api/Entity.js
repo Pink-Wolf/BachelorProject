@@ -98,11 +98,11 @@ export async function getPathTo(name) {
 
     var path = undefined
     overview.projects?.find(project => {
-        if (project.name === name) path = `${project.name}/`
+        if (project.name === name) path = `/api/${project.name}/`
         project.headers?.find(header => {
-            if (header.name === name) path = `${project.name}/${header.name}/`
+            if (header.name === name) path = `/api/${project.name}/${header.name}/`
             header.entities?.find(entity => {
-                if (entity.name === name) path = `${project.name}/${header.name}/${entity.name}/${memberName}`
+                if (entity.name === name) path = `/api/${project.name}/${header.name}/${entity.name}/${memberName}`
 
                 return (path !== undefined)
             })
@@ -110,6 +110,11 @@ export async function getPathTo(name) {
         })
         return (path !== undefined)
     })
+
+    if (path === undefined) {
+        console.log(`Could not find path to ${name}`)
+        return "/"
+    }
 
     return path
 }

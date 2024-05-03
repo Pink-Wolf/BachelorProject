@@ -15,9 +15,9 @@ export default function BaseEntityViewer({ data, top, children }) {
 				{`${data.namespace}${is_owned ? `::${data.owner}` : ``}::${data.name}`}
 			</h1>
 			<small>
-				<p id="Project">In project <Reference path={data.project}>{data.project}</Reference></p>
-				<p id="Header">Defined in header <Reference path={`${data.project}/${data.header}`}>&lt;{data.header}&gt;</Reference></p>
-				<p id="Owner" hidden={!is_owned}>Member of <Reference path={`${data.project}/${data.header}/${data.owner}`}>{data.owner}</Reference></p>
+				<p id="Project">In project <Reference path={`/api/data.project`}>{data.project}</Reference></p>
+				<p id="Header">Defined in header <Reference path={`/api/${data.project}/${data.header}`}>&lt;{data.header}&gt;</Reference></p>
+				<p id="Owner" hidden={!is_owned}>Member of <Reference path={`/api/${data.project}/${data.header}/${data.owner}`}>{data.owner}</Reference></p>
 			</small>
 
 			{top}
