@@ -3,6 +3,7 @@ const DATABASE_URL = "http://localhost:5042/"
 async function getJson(path) {
     const response = await fetch(path, {
         method: 'GET',
+        cache: (process.env.NODE_ENV == "development") ? `no-cache` : `default`,
         headers: {
             'Content-Type': 'application/json',
         },
@@ -43,7 +44,7 @@ export async function getEntity(project, header, name) {
         name: name,
         example: (entity.example === undefined) ? undefined : await getExample(entity.example)
     }
-    switch (entity.type) {
+    switch (returnVal.type) {
         case `class`:
             if (returnVal.hasOwnProperty("constructor")) {
                 if (returnVal.copyable && returnVal.movable) {

@@ -13,7 +13,7 @@ export default async function EntityPage({ params }) {
     return <EntityViewer data={data} />
 }
 
-export async function generateStaticParams({ params }) {
+export async function generateStaticParams() {
     const overview = await getOverview()
 
     return overview.projects.map(project =>
