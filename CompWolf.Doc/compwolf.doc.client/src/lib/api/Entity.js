@@ -10,17 +10,6 @@ async function getJson(path) {
     if (!response.ok) return null
     return await response.json()
 }
-async function getText(path) {
-    const response = await fetch(path, {
-        method: 'GET',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'text/plain',
-        },
-    })
-    if (!response.ok) return null
-    return await response.text()
-}
 
 export async function getExample(name) {
     const example = await getJson(`${DATABASE_URL}examples/${name}`)
