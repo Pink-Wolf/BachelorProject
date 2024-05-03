@@ -33,7 +33,7 @@ export default function YourFirstSquare() {
             <FormattedText>
                 If we run the program now, the square should be visible.
             </FormattedText>
-            <h1>Red square</h1>
+            <h2>Red square</h2>
             <FormattedText>
                 [[drawable]] objects may have some buffers with for example their position or color. A [[basic_square]] has both.
                 The square&apos;s color can be gotten with its method color(). This returns a smart-pointer (a pointer that automatically frees its access when destroyed) to the color.
