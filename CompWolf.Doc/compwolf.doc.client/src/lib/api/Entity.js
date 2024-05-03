@@ -3,7 +3,6 @@ const DATABASE_URL = "http://localhost:5042/"
 async function getJson(path) {
     const response = await fetch(path, {
         method: 'GET',
-        cache: 'no-cache',
         headers: {
             'Content-Type': 'application/json',
         },
