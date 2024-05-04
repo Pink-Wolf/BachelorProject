@@ -1,0 +1,122 @@
+﻿{
+  "type": "class",
+
+  "declaration": "template <typename ParameterType = void> class event;",
+  "namespace": "CompWolf",
+  "briefDescription": "An implementation of the observer pattern.",
+  "detailedDescription": "Allows functions and functors to \"subscribe\" to this; this can then be invoked to invoke all subscribers.",
+
+  "templateParameters": [
+    {
+      "name": "ParameterType",
+      "description": "The type of object to pass to subscribers; subscribers must have this as their only parameter.\nIf void, passes nothing to subscribers; subscribers must then have no parameters.\nConsider making this a reference type to minimize data copying."
+    }
+  ],
+
+  "copyable": true,
+  "movable": true,
+  "constructor": {
+    "overloads": [
+      {
+        "declaration": "event() noexcept;",
+        "description": "Constructs an event."
+      },
+      {
+        "declaration": "event(const event&) noexcept;",
+        "description": "event is copyable."
+      },
+      {
+        "declaration": "event(event&&) noexcept;",
+        "description": "event is movable."
+      }
+    ]
+  },
+  "memberGroups": [
+    {
+      "name": "Type Definitions",
+      "items": [
+        {
+          "type": "alias",
+          "name": "input_shader_type",
+          "declaration": "using input_shader_type = InputShaderType;",
+          "briefDescription": "The type of shader run for each input/vertex of the model.",
+          "detailedDescription": "The type of shader run for each input/vertex of the model.\nAs in the vertex shader that the material's graphics-pipeline uses."
+        },
+        {
+          "type": "alias",
+          "name": "pixel_shader_type",
+          "declaration": "using pixel_shader_type = PixelShaderType;",
+          "briefDescription": "The type of shader run for each pixel drawn.",
+          "detailedDescription": "The type of shader run for each pixel drawn.\nAs in the fragment shader that the material's graphics-pipeline uses."
+        },
+        {
+          "type": "alias",
+          "name": "shader_field_types",
+          "declaration": "using shader_field_types = merge_type_value_pairs_by_value<input_shader_type::typename field_types, pixel_shader_type::typename field_types>;",
+          "briefDescription": "The fields of the material's shaders.",
+          "detailedDescription": "A collection of [[type_value_pair]]s, denoting the material's shaders' fields' type and binding position.\nIf multiple shaders share fields, then they are NOT repeated here."
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "type": "function",
+          "name": "subscribe",
+          "briefDescription": "Subscribes the given functor to the event.",
+          "overloads": [
+            {
+              "declaration": "auto subscribe(value_type) const noexcept -> key_type",
+              "description": "Subscribes the given functor to the event.\nReturns a key to identify the functor if you later wishes to unsubscribe it from the event."
+            }
+          ],
+          "related": [ "event::unsubscribe" ]
+        },
+        {
+          "type": "function",
+          "name": "unsubscribe",
+          "briefDescription": "Unsubscribes the given functor from the event.",
+          "overloads": [
+            {
+              "declaration": "void unsubscribe(key_type) const noexcept",
+              "description": "Unsubscribes the functor represented by the given key from the event.\nThe key was generated when the functor was being subscribed."
+            }
+          ],
+          "related": [ "event::subscribe" ]
+        }
+      ]
+    },
+    {
+      "name": "Operators",
+      "items": [
+        {
+          "type": "function",
+          "name": "operator()",
+          "briefDescription": "Invokes all subscribed functions/functors.",
+          "overloads": [
+            {
+              "declaration": "operator()(parameter_type) const",
+              "description": "Invokes all subscribed functions/functors, passing along the given value to them."
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "invoke",
+          "briefDescription": "Invokes all subscribed functions/functors.",
+          "overloads": [
+            {
+              "declaration": "invoke(parameter_type) const",
+              "description": "Invokes all subscribed functions/functors, passing along the given value to them."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "related": [
+    "input_shader",
+    "shader"
+  ]
+}

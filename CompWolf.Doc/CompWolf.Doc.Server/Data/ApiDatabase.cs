@@ -50,7 +50,16 @@ namespace CompWolf.Doc.Server.Data
         {
             if (File.Exists(path) is false) return null;
             using var stream = File.OpenRead(path);
-            var doc = await JsonDocument.ParseAsync(stream);
+            JsonDocument doc;
+            try
+            {
+                doc = await JsonDocument.ParseAsync(stream);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Error while trying to get brief description from \"{path}\"");
+                throw;
+            }
             return doc.RootElement.GetProperty("briefDescription").GetString();
         }
         public async Task<SimpleApiMember[]> GetMembers(string path)
@@ -60,7 +69,16 @@ namespace CompWolf.Doc.Server.Data
             var entityName = Path.GetFileNameWithoutExtension(path)!;
 
             using var stream = File.OpenRead(path);
-            var doc = await JsonDocument.ParseAsync(stream);
+            JsonDocument doc;
+            try
+            {
+                doc = await JsonDocument.ParseAsync(stream);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Error while trying to get members from \"{path}\"");
+                throw;
+            }
 
             bool hasConstructor = doc.RootElement.TryGetProperty("constructor", out _);
 
