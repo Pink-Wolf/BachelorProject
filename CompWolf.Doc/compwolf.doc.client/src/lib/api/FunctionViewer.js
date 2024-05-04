@@ -18,7 +18,7 @@ export default function FunctionViewer({ data }) {
 							</li>
 						)
 					})}
-					{data.name !== data.owner}
+					{data.name !== data.owners[data.owners.length - 1]}
 				</ol>
 				<p id="Description">
 					<FormattedText>{data.detailedDescription ?? ""}</FormattedText>

@@ -42,6 +42,7 @@ export async function getEntity(project, header, name) {
         project: project,
         header: header,
         name: name,
+        owners: [],
         example: (entity.example === undefined) ? undefined : await getExample(entity.example)
     }
     switch (returnVal.type) {
@@ -64,12 +65,8 @@ export async function getEntity(project, header, name) {
                     returnVal.constructor.detailedDescription = `${returnVal.name} is not copyable nor movable.`
                 }
             }
-
-            return returnVal
         default: return returnVal
     }
-
-    
 }
 
 export async function getOverview() {
@@ -81,7 +78,7 @@ export async function getPathTo(name) {
 
     let memberSplitterIndex = name.indexOf("::")
     let isMember = memberSplitterIndex >= 0;
-    let memberName = !isMember ? "" : name.substring(memberSplitterIndex + 2, name.length);
+    let memberName = !isMember ? "" : name.substring(memberSplitterIndex + 2, name.length).replace("::", "/");
     if (isMember) {
         name = name.substring(0, memberSplitterIndex)
     }

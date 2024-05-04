@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace CompWolf.Doc.Server.Data
 {
@@ -62,13 +63,59 @@ namespace CompWolf.Doc.Server.Data
             }
             return doc.RootElement.GetProperty("briefDescription").GetString();
         }
-        public async Task<SimpleApiMember[]> GetMembers(string path)
+        public async Task<SimpleApiMember[]> GetMembers(string entityName, JsonElement entity)
         {
             var result = Array.Empty<SimpleApiMember>();
 
-            var entityName = Path.GetFileNameWithoutExtension(path)!;
+            if (entity.TryGetProperty("constructor", out _))
+            {
+                result =
+                [
+                    .. result,
+                    new SimpleApiMember()
+                    {
+                        Name = entityName,
+                        Members = [],
+                    }
+                ];
+            }
 
-            using var stream = File.OpenRead(path);
+            if (entity.TryGetProperty("memberGroups", out JsonElement memberGroups))
+            {
+                int resultI = result.Length;
+                {
+                    int memberCount = 0;
+                    foreach (var memberGroup in memberGroups.EnumerateArray())
+                    {
+                        memberCount += memberGroup.GetProperty("items").GetArrayLength();
+                    }
+
+                    result =
+                    [
+                        .. result,
+                        .. new SimpleApiMember[memberCount]
+                    ];
+                }
+
+                foreach (var memberGroup in memberGroups.EnumerateArray())
+                {
+                    foreach (var member in memberGroup.GetProperty("items").EnumerateArray())
+                    {
+                        var memberName = member.GetProperty("name").GetString()!;
+                        result[resultI] = new SimpleApiMember()
+                        {
+                            Name = memberName,
+                            Members = await GetMembers(memberName, member),
+                        };
+                        ++resultI;
+                    }
+                }
+            }
+            return result;
+        }
+        public async Task<SimpleApiMember[]> GetMembers(string entityName, string filePath)
+        {
+            using var stream = File.OpenRead(filePath);
             JsonDocument doc;
             try
             {
@@ -76,46 +123,11 @@ namespace CompWolf.Doc.Server.Data
             }
             catch (Exception)
             {
-                Console.WriteLine($"Error while trying to get members from \"{path}\"");
+                Console.WriteLine($"Error while trying to get members from \"{filePath}\"");
                 throw;
             }
 
-            bool hasConstructor = doc.RootElement.TryGetProperty("constructor", out _);
-
-            if (doc.RootElement.TryGetProperty("memberGroups", out JsonElement memberGroups))
-            {
-                int memberCount = hasConstructor ? 1 : 0;
-                foreach (var memberGroup in memberGroups.EnumerateArray())
-                {
-                    memberCount += memberGroup.GetProperty("items").GetArrayLength();
-                }
-                result = new SimpleApiMember[memberCount];
-                int memberI = 0;
-
-                if (hasConstructor)
-                {
-                    result[memberI] = new SimpleApiMember()
-                    {
-                        Name = entityName,
-                    };
-                    ++memberI;
-                }
-
-                foreach (var memberGroup in memberGroups.EnumerateArray())
-                {
-                    foreach (var member in memberGroup.GetProperty("items").EnumerateArray())
-                    {
-                        result[memberI] = new SimpleApiMember()
-                        {
-                            Name = member.GetProperty("name").GetString()!,
-                        };
-
-                        ++memberI;
-                    }
-
-                }
-            }
-            return result;
+            return await GetMembers(entityName, doc.RootElement);
         }
         public async Task<ApiCollection> GetOverviewAsync()
         {
@@ -149,8 +161,7 @@ namespace CompWolf.Doc.Server.Data
 
                         entity.BriefDescription = await GetBriefDescriptionAsync($"{ApiPath}{project.Name}/{header.Name}/{entity.Name}.json") ?? "";
 
-                        var entityName = entity.Name;
-                        tasks.Add(GetMembers(filePath));
+                        tasks.Add(GetMembers(entity.Name, filePath));
                     }
                 }
             }

@@ -8,7 +8,12 @@ export default function ClassViewer({ data }) {
 
 	function MemberReference({ name }) {
 		return (
-			<Reference path={`/api/${data.project}/${data.header}/${data.name}/${name}`}>
+			<Reference path={`/api/
+			${data.project}/
+			${data.header}/
+			${(data.owners ?? []).map(x => `${x}/`).join()}
+			${data.name}/
+			${name}`}>
 				{name}
 			</Reference>
 		)

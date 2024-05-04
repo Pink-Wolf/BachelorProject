@@ -7,17 +7,16 @@ export default function BaseEntityViewer({ data, top, children }) {
 	if (data == undefined) return <p>{`404: Could not get the entity's data.`}</p>
 
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
-	const is_owned = (data.owner != undefined)
 
 	return (
 		<section>
 			<h1 id="Path">
-				{`${data.namespace}${is_owned ? `::${data.owner}` : ``}::${data.name}`}
+				{[data.namespace, ...data.owners, data.name].join("::")}
 			</h1>
 			<small>
-				<p id="Project">In project <Reference path={`/api/data.project`}>{data.project}</Reference></p>
+				<p id="Project">In project <Reference path={`/api/${data.project}`}>{data.project}</Reference></p>
 				<p id="Header">Defined in header <Reference path={`/api/${data.project}/${data.header}`}>&lt;{data.header}&gt;</Reference></p>
-				<p id="Owner" hidden={!is_owned}>Member of <Reference path={`/api/${data.project}/${data.header}/${data.owner}`}>{data.owner}</Reference></p>
+				<p id="Owner" hidden={!data.owners.length}>Member of <Reference path={`/api/${data.project}/${data.header}/${data.owners.join("/")}`}>{data.owners.join("::")}</Reference></p>
 			</small>
 
 			{top}

@@ -3,6 +3,7 @@
     public class SimpleApiMember
     {
         public string Name { get; set; } = null!;
+        public SimpleApiMember[] Members { get; set; } = null!;
     }
     public class SimpleApiEntity
     {
