@@ -19,11 +19,11 @@ namespace CompWolf
 	private: // fields
 		bool _not_empty = false;
 
-		std::map<char, event<key_parameter>> _char_pressed;
-		event<key_parameter> _any_char_pressed;
+		std::map<char, event<key_parameter&>> _char_pressed;
+		event<key_parameter&> _any_char_pressed;
 
-		std::map<char, event<key_parameter>> _char_released;
-		event<key_parameter> _any_char_released;
+		std::map<char, event<key_parameter&>> _char_released;
+		event<key_parameter&> _any_char_released;
 
 	public: // accessors
 		/* Gets an event for when the a key representing the given character is beginning to be held down.

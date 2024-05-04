@@ -17,7 +17,12 @@ namespace CompWolf
 		{
 			vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, Private::to_vulkan(material().vulkan_pipeline()));
 
-			auto& [width, height] = target_window().pixel_size().value();
+			uint32_t width, height;
+			{
+				auto& size = target_window().pixel_size().value();
+				width = static_cast<uint32_t>(size.x());
+				height = static_cast<uint32_t>(size.y());
+			}
 			VkViewport viewport{
 				.x = .0f,
 				.y = .0f,
@@ -31,8 +36,8 @@ namespace CompWolf
 			VkRect2D renderArea{
 				.offset = {0, 0},
 				.extent = {
-					.width = static_cast<uint32_t>(width),
-					.height = static_cast<uint32_t>(height),
+					.width = width,
+					.height = height,
 				},
 			};
 			vkCmdSetScissor(command, 0, 1, &renderArea);

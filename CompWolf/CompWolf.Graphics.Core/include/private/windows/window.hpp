@@ -13,6 +13,7 @@
 #include "gpu_programs"
 #include <functional>
 #include "inputs"
+#include <dimensions>
 
 namespace CompWolf
 {
@@ -32,9 +33,9 @@ namespace CompWolf
 		window_swapchain _swapchain;
 
 		std::vector<gpu_program> _frame_drawing_programs;
-		event<draw_code_parameters> _drawing_code;
+		event<draw_code_parameters&> _drawing_code;
 
-		value_event_wrapper<std::pair<int, int>> _pixel_size;
+		listenable<int2> _pixel_size;
 
 		enum class draw_event_type
 		{
@@ -46,9 +47,9 @@ namespace CompWolf
 
 	public:
 		/* Event invoked before the window's surface is rebuild, for example because the size of the window changed. */
-		event<window_rebuild_surface_parameters> rebuilding_surface;
+		event<window_rebuild_surface_parameters&> rebuilding_surface;
 		/* Event invoked after the window's surface is rebuild, for example because the size of the window changed. */
-		event<window_rebuild_surface_parameters> rebuild_surface;
+		event<window_rebuild_surface_parameters&> rebuild_surface;
 
 	private: // event handlers
 		void frame_drawing_program_code(std::size_t frame_index, const gpu_program_code_parameters&);
@@ -62,7 +63,7 @@ namespace CompWolf
 		/* Returns the width and height of the window, in pixels.
 		 * This size does not include any border around the window.
 		 */
-		inline auto& pixel_size() const noexcept { return _pixel_size.const_wrapper(); }
+		inline auto& pixel_size() const noexcept { return _pixel_size; }
 
 		/* Returns whether the window is not freed. */
 		inline auto running() const noexcept { return !empty(); }
@@ -79,7 +80,7 @@ namespace CompWolf
 		void update_image();
 
 		/* The key used to identify some drawing-code added to a window with add_draw_code. */
-		using draw_code_key = event<draw_code_parameters>::key_type;
+		using draw_code_key = event<draw_code_parameters&>::key_type;
 		/* Adds the given code to be run when the window's image is being updated.
 		 * Returns a key used to identify the piece of code.
 		 */

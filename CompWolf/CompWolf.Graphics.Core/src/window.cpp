@@ -29,8 +29,8 @@ namespace CompWolf
 		uint32_t width, height;
 		{
 			auto& size = pixel_size().value();
-			width = static_cast<uint32_t>(size.first);
-			height = static_cast<uint32_t>(size.second);
+			width = static_cast<uint32_t>(size.x());
+			height = static_cast<uint32_t>(size.y());
 		}
 
 		VkRenderPassBeginInfo renderpassInfo{
@@ -125,7 +125,7 @@ namespace CompWolf
 		_swapchain.free();
 		_surface.free();
 
-		_settings.pixel_size = std::make_pair(width, height);
+		_settings.pixel_size = { width, height };
 
 		_surface = window_surface(_settings, _glfw_window, nullptr, &old_gpu);
 		_swapchain = window_swapchain(_settings, _glfw_window, _surface);
@@ -134,28 +134,28 @@ namespace CompWolf
 		event_args.swapchain = &_swapchain;
 		rebuild_surface(event_args);
 
-		_pixel_size.set(std::make_pair(width, height));
+		_pixel_size.set_value(int2({ width, height }));
 	}
 
 	/******************************** constructors ********************************/
 
 	window::window(graphics_environment* environment, gpu_connection* gpu, window_settings settings) : _settings(settings)
 	{
-		if (_settings.pixel_size.first <= 0 || _settings.pixel_size.second <= 0)
-			_settings.pixel_size = std::make_pair(480, 480);
+		if (_settings.pixel_size.x() <= 0 || _settings.pixel_size.y() <= 0)
+			_settings.pixel_size = int2({ 480, 480 });
 
 		if (_settings.name.empty())
 			_settings.name = "Window";
 
 		try
 		{
-			_pixel_size = _settings.pixel_size;
+			_pixel_size.set_value(_settings.pixel_size);
 
 			{
 				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-				auto glfwWindow = glfwCreateWindow(_pixel_size.value().first, _pixel_size.value().second
+				auto glfwWindow = glfwCreateWindow(_pixel_size.value().x(), _pixel_size.value().y()
 					, _settings.name.data()
 					, nullptr, nullptr);
 				if (!glfwWindow)

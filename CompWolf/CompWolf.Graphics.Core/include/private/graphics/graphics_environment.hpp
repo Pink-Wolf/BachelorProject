@@ -77,9 +77,9 @@ namespace CompWolf
 		 */
 		void update();
 		/* Event invoked before any other logic in the environment's update-method. */
-		event<graphics_environment_update_parameter> updating;
+		event<graphics_environment_update_parameter&> updating;
 		/* Event invoked after all other logic in the environment's update-method. */
-		event<graphics_environment_update_parameter> updated;
+		event<graphics_environment_update_parameter&> updated;
 
 	public: // constructor
 		/* Constructs a freed environment, as in one without any logic.

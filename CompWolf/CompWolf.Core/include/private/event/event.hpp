@@ -8,113 +8,108 @@
 
 namespace CompWolf
 {
-	/* An implementation of the observer pattern whose observers are callable objects.
-	 * That is to say, callable objects like functions and lambdas can be "subscribed" to an event,
-	 * and the event can then be invoked to invoke all subscribed objects.
-	 * @typeparam ParameterType The type of object to pass to the observers, or void to not pass any (beside the event itself).
+	/* Allows functions and functors to "subscribe" to this; this can then be invoked to invoke all subscribers.
+	 * @typeparam ParameterType The type of object to pass to subscribers; subscribers must have this as their only parameter.
+	 * If void, passes nothing to subscribers; subscribers must then have no parameters.
+	 * Consider making this a reference type to minimize data copying.
 	 */
 	template <typename ParameterType = void>
 	class event
 	{
-	public:
-		/* The type of object passed to observers. */
-		using parameter_type = std::remove_cvref_t<ParameterType>;
-		using parameter_reference = std::add_lvalue_reference_t<ParameterType>;
+	public: // type definitions
+		/* The parameter type of the event's subscribers. */
+		using parameter_type = ParameterType;
+		/* The type of functor that can subscribe to the event. */
+		using value_type = std::function<void(parameter_type)>;
+		/* The type of object used to represent a subscriber. */
+		using key_type = std::vector<value_type>::size_type;
 
-		/* The type of callable object that can listen to this event. */
-		using value_type = std::function<void(parameter_reference)>;
-		/* The type of callable object that can listen to this event, as a reference type. */
-		using reference = value_type&;
-		/* The type of callable object that can listen to this event, as a const reference type. */
-		using const_reference = const value_type&;
-	private:
-		using internal_container = std::vector<value_type>;
-	public:
-		/* The type used to identify a specific event. */
-		using key_type = internal_container::size_type;
+	private: // fields
+		mutable std::vector<value_type> _observers;
 
-	private:
-		/* A vector of observers, and possibly some empty functions. */
-		internal_container _observers;
-
-	public:
-		/* Subscribes the given object to the event. */
-		key_type subscribe(value_type observer) noexcept(std::is_nothrow_move_constructible_v<value_type>)
+	public: // modifiers
+		/* Subscribes the given functor to the event.
+		 * @returns a key to identify the functor if you later wishes to unsubscribe it from the event.
+		 */
+		key_type subscribe(value_type observer) noexcept
 		{
 			auto key = _observers.size();
 			_observers.emplace_back(std::move(observer));
 			return key;
 		}
-		/* Unsubscribes the given object from the event. */
+		/* Unsubscribes the functor represented by the given key from the event.
+		 * The key was generated when the functor subscribed to the event.
+		 */
 		void unsubscribe(key_type observer_key) noexcept
 		{
 			_observers[observer_key] = value_type();
 		}
 
-		/* Invokes all subscribed objects, passing the given parameters to each. */
-		void invoke(parameter_reference parameter) const
+	public: // operators
+		/* Invokes all subscribed functions/functors, passing along the given value to them. */
+		void invoke(parameter_type parameter) const
 		{
-			for (auto& observer : internal_container(_observers)) // copy vector so it cannot be modified during loop
+			for (auto& observer : std::vector<value_type>(_observers)) // copy vector so it cannot be modified during loop
 			{
 				if (observer == nullptr) continue;
-				observer(parameter);
+				observer(static_cast<std::add_rvalue_reference_t<parameter_type>>(parameter)); // turn non-reference to xvalue
 			}
 		}
-		/* Invokes all subscribed objects, passing the given parameters to each. */
-		inline void operator()(parameter_reference parameter) const
+		/* Invokes all subscribed functions/functors, passing along the given value to them. */
+		inline void operator()(parameter_type parameter) const
 		{
-			invoke(parameter);
+			invoke(static_cast<std::add_rvalue_reference_t<parameter_type>>(parameter)); // turn non-reference to xvalue
 		}
 	};
 
+	/* Allows functions and functors to "subscribe" to this; this can then be invoked to invoke all subscribers.
+	 * @typeparam ParameterType The type of object to pass to subscribers; subscribers must have this as their only parameter.
+	 * If void, passes nothing to subscribers; subscribers must then have no parameters.
+	 * Consider making this a reference type to minimize data copying.
+	 */
 	template <>
 	class event<void>
 	{
-	public:
-		/* The type of object passed to observers. */
+	public: // type definitions
+		/* Void, to signal that this event passes no data long to its subscribers when invoked. */
 		using parameter_type = void;
-		using parameter_reference = void;
+		/* The type of functor that can subscribe to the event. */
+		using value_type = std::function<void(parameter_type)>;
+		/* The type of object used to represent a subscriber. */
+		using key_type = std::vector<value_type>::size_type;
 
-		/* The type of callable object that can listen to this event. */
-		using value_type = std::function<void()>;
-		/* The type of callable object that can listen to this event, as a reference type. */
-		using reference = value_type&;
-		/* The type of callable object that can listen to this event, as a const reference type. */
-		using const_reference = const value_type&;
-	private:
-		using internal_container = std::vector<value_type>;
-	public:
-		/* The type used to identify a specific event. */
-		using key_type = internal_container::size_type;
+	private: // fields
+		mutable std::vector<value_type> _observers;
 
-	private:
-		/* A vector of observers, and possibly some empty functions. */
-		internal_container _observers;
-
-	public:
-		/* Subscribes the given object to the event. */
-		key_type subscribe(value_type observer) noexcept(std::is_nothrow_move_constructible_v<value_type>)
+	public: // modifiers
+		/* Subscribes the given functor to the event.
+		 * @returns a key to identify the functor if you later wishes to unsubscribe it from the event.
+		 */
+		key_type subscribe(value_type observer) noexcept
 		{
 			auto key = _observers.size();
 			_observers.emplace_back(std::move(observer));
 			return key;
 		}
-		/* Unsubscribes the given object from the event. */
+		/* Unsubscribes the functor represented by the given key from the event.
+		 * The key was generated when the functor subscribed to the event.
+		 */
 		void unsubscribe(key_type observer_key) noexcept
 		{
 			_observers[observer_key] = value_type();
 		}
 
-		/* Invokes all subscribed objects, passing the given parameters to each. */
+	public: // operators
+		/* Invokes all subscribed functions/functors, passing along the given value to them. */
 		void invoke() const
 		{
-			for (auto& observer : internal_container(_observers)) // copy vector so it cannot be modified during loop
+			for (auto& observer : std::vector<value_type>(_observers)) // copy vector so it cannot be modified during loop
 			{
 				if (observer == nullptr) continue;
 				observer();
 			}
 		}
-		/* Invokes all subscribed objects, passing the given parameters to each. */
+		/* Invokes all subscribed functions/functors, passing along the given value to them. */
 		inline void operator()() const
 		{
 			invoke();

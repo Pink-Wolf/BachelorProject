@@ -84,12 +84,12 @@
           "briefDescription": "Returns the size of the window, in pixels.",
           "overloads": [
             {
-              "declaration": "auto pixel_size() const noexcept -> const_value_event_wrapper<std::pair<int, int>>&",
+              "declaration": "auto pixel_size() const noexcept -> const listenable<int2>&",
               "description": "Returns the width and height of the window, in pixels.\nThis size does not include any border around the window."
             }
           ],
           "related": [
-            "const_value_event_wrapper"
+            "listenable"
           ]
         },
         {

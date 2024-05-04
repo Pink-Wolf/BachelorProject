@@ -3,8 +3,8 @@
 
   "declaration": "template <typename ValueType> class listenable;",
   "namespace": "CompWolf",
-  "briefDescription": "Contains a value and [[event]] for when the value changes.",
-  "detailedDescription": "Contains a value and [[event]] that is invoked when the value changes.",
+  "briefDescription": "Contains a value and an [[event]] for when the value changes.",
+  "detailedDescription": "Contains a value and an [[event]] that is invoked when the value changes.",
 
   "templateParameters": [
     {
@@ -18,15 +18,15 @@
   "constructor": {
     "overloads": [
       {
-        "declaration": "template <typename... Parameters> listenable(Parameters&&... args) noexcept;",
+        "declaration": "template <typename... Parameters> listenable(Parameters&&...);",
         "description": "Constructs a listenable, where the value is constructed from the given arguments."
       },
       {
-        "declaration": "listenable(const listenable&) noexcept;",
+        "declaration": "listenable(const listenable&);",
         "description": "listenable is copyable."
       },
       {
-        "declaration": "listenable(listenable&&) noexcept;",
+        "declaration": "listenable(listenable&&);",
         "description": "listenable is movable."
       }
     ]
@@ -45,16 +45,50 @@
         {
           "type": "alias",
           "name": "reference_type",
-          "declaration": "using reference_type = std::add_lvalue_reference<value_type>;",
+          "declaration": "using reference_type = std::add_lvalue_reference_t<value_type>;",
           "briefDescription": "The type used to pass the value by reference.",
           "detailedDescription": "The type used to pass the value by reference."
         },
         {
           "type": "alias",
           "name": "const_reference_type",
-          "declaration": "using const_reference_type = std::add_const<reference_type>;",
+          "declaration": "using const_reference_type = std::add_const_t<reference_type>;",
           "briefDescription": "The type used to pass the value by const reference.",
           "detailedDescription": "The type used to pass the value by const reference."
+        },
+        {
+          "type": "class",
+          "name": "update_parameters",
+          "declaration": "struct update_parameters;",
+          "briefDescription": "Parameter for [[listenable::value_updated]].",
+          "detailedDescription": "Aggregate type used by [[listenable::value_updated]].",
+
+          "memberGroups": [
+            {
+              "items": [
+                {
+                  "type": "variable",
+                  "name": "old_value",
+                  "declaration": "listenable::const_reference_type old_value;",
+                  "briefDescription": "The value before it is/was updated.",
+                  "detailedDescription": "The value before it is/was updated.\nFor [[listenable::value_updating]], the actual value; for [[listenable::value_updated]], a copy of the old value."
+                },
+                {
+                  "type": "variable",
+                  "name": "new_value",
+                  "declaration": "listenable::const_reference_type new_value;",
+                  "briefDescription": "The value after it is/was updated.",
+                  "detailedDescription": "The value after it is/was updated.\nFor [[listenable::value_updating]], a copy of the new value; for [[listenable::value_updated]], the actual value."
+                }
+              ]
+            }
+          ],
+
+          "copyable": true,
+          "movable": true,
+          "related": [
+            "listenable"
+          ]
         }
       ]
     },
@@ -70,45 +104,6 @@
               "declaration": "auto value() const noexcept -> const_reference_type",
               "description": "Returns the value."
             }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Events",
-      "items": [
-        {
-          "type": "class",
-          "name": "update_parameters",
-          "declaration": "struct update_parameters;",
-          "briefDescription": "Parameter for [[listenable::value_updated]].",
-          "detailedDescription": "Aggregate type used by [[listenable::value_updated]].",
-
-          "memberGroups": [
-            {
-              "items": [
-                {
-                  "type": "variable",
-                  "name": "old_value",
-                  "declaration": "const_reference old_value;",
-                  "briefDescription": "The value before it is/was updated.",
-                  "detailedDescription": "The value before it is/was updated.\nFor [[listenable::value_updating]], the actual value; for [[listenable::value_updated]], a copy of the old value."
-                },
-                {
-                  "type": "variable",
-                  "name": "new_value",
-                  "declaration": "const_reference new_value;",
-                  "briefDescription": "The value after it is/was updated.",
-                  "detailedDescription": "The value after it is/was updated.\nFor [[listenable::value_updating]], a copy of the new value; for [[listenable::value_updated]], the actual value."
-                }
-              ]
-            }
-          ],
-
-          "copyable": true,
-          "movable": true,
-          "related": [
-            "listenable"
           ]
         },
         {
@@ -147,6 +142,22 @@
           "related": [
             "event",
             "listenable::update_parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Modifiers",
+      "items": [
+        {
+          "type": "function",
+          "name": "set_value",
+          "briefDescription": "Sets the value.",
+          "overloads": [
+            {
+              "declaration": "template<typename InputType> auto set_value(InputType&&) -> const_reference_type",
+              "description": "Sets the value to the given input."
+            }
           ]
         }
       ]

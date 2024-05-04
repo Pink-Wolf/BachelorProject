@@ -22,7 +22,7 @@ namespace CompWolf
 		Private::base_gpu_vkBuffer_buffer* _inputs;
 		std::vector<base_gpu_buffer*> _fields;
 
-		event<draw_code_parameters>::key_type _draw_code_key;
+		event<draw_code_parameters&>::key_type _draw_code_key;
 
 	public: // accessors
 		/* Returns the material used to draw the drawable object. */

@@ -17,7 +17,7 @@ namespace CompWolf
 	private: // fields
 		window* _target_window = nullptr;
 		event<void>::key_type _freeing_event_key;
-		event<window_rebuild_surface_parameters>::key_type _rebuilding_event_key;
+		event<window_rebuild_surface_parameters&>::key_type _rebuilding_event_key;
 
 	public: // accessors
 		/* The window that the object targets. */

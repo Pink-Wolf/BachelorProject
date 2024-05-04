@@ -148,8 +148,8 @@ namespace CompWolf
 			uint32_t width, height;
 			{
 				auto& size = target_window().pixel_size().value();
-				width = static_cast<uint32_t>(size.first);
-				height = static_cast<uint32_t>(size.second);
+				width = static_cast<uint32_t>(size.x());
+				height = static_cast<uint32_t>(size.y());
 			}
 			VkViewport viewport{
 				.x = 0.f,

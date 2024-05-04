@@ -51,8 +51,8 @@ namespace CompWolf
 		uint32_t width, height;
 		{
 			auto size = settings.pixel_size;
-			width = static_cast<uint32_t>(size.first);
-			height = static_cast<uint32_t>(size.second);
+			width = static_cast<uint32_t>(size.x());
+			height = static_cast<uint32_t>(size.y());
 		}
 
 		try

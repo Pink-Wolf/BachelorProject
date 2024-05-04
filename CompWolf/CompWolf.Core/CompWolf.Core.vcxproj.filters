@@ -24,7 +24,7 @@
     <ClInclude Include="include\private\event\event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\private\event\value_event_wrapper.hpp">
+    <ClInclude Include="include\private\event\listenable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\private\other\empty_pointer.hpp">

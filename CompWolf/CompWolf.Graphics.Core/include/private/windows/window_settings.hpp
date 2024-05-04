@@ -3,6 +3,7 @@
 
 #include <string_view>
 #include <utility>
+#include <dimensions>
 
 namespace CompWolf
 {
@@ -16,7 +17,7 @@ namespace CompWolf
 		/* The initial width and height of the window, in pixels.
 		 * This size does not include any border around the window.
 		 */
-		std::pair<int, int> pixel_size;
+		int2 pixel_size;
 	};
 }
 

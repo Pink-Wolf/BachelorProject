@@ -176,7 +176,7 @@
     <ClInclude Include="include\private\utility\int_literals.hpp" />
     <ClInclude Include="include\private\value_mutex\shared_value_lock.hpp" />
     <ClInclude Include="include\private\value_mutex\unique_value_lock.hpp" />
-    <ClInclude Include="include\private\event\value_event_wrapper.hpp" />
+    <ClInclude Include="include\private\event\listenable.hpp" />
     <ClInclude Include="include\private\value_mutex\value_mutex.hpp" />
     <ClInclude Include="include\private\other\version_number.hpp" />
     <ClInclude Include="include\value_mutex" />
