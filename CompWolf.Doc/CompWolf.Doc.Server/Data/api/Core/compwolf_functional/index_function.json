@@ -114,7 +114,7 @@
           "overloads": [
             {
               "declaration": "auto operator()([...]) -> result_type",
-              "description": "Invokes the contained function, passing along the index_function's counter and the given arguments.\nThe parameter types for this is the types in [[argument_types_excluding_counter]]"
+              "description": "Invokes the contained function, passing along the index_function's counter and the given arguments.\nThe parameter types for this is the types in [[index_function::argument_types_excluding_counter]]"
             }
           ]
         },
@@ -125,7 +125,7 @@
           "overloads": [
             {
               "declaration": "auto invoke([...]) -> result_type",
-              "description": "Invokes the contained function, passing along the index_function's counter and the given arguments.\nThe parameter types for this is the types in [[argument_types_excluding_counter]]"
+              "description": "Invokes the contained function, passing along the index_function's counter and the given arguments.\nThe parameter types for this is the types in [[index_function::argument_types_excluding_counter]]"
             }
           ]
         }
