@@ -100,7 +100,7 @@
           "briefDescription": "Invokes all subscribed functions/functors.",
           "overloads": [
             {
-              "declaration": "operator()(parameter_type) const",
+              "declaration": "void operator()(parameter_type) const",
               "description": "Invokes all subscribed functions/functors, passing along the given value to them."
             }
           ]
@@ -111,7 +111,7 @@
           "briefDescription": "Invokes all subscribed functions/functors.",
           "overloads": [
             {
-              "declaration": "invoke(parameter_type) const",
+              "declaration": "void invoke(parameter_type) const",
               "description": "Invokes all subscribed functions/functors, passing along the given value to them."
             }
           ]
