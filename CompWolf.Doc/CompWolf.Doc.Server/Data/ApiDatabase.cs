@@ -13,7 +13,7 @@ namespace CompWolf.Doc.Server.Data
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
-        public static string DataPath => "data/";
+        public static string DataPath => "Data/";
         public static string ApiPath => $"{DataPath}api/";
         public static string ExamplePath => $"{DataPath}examples/";
 

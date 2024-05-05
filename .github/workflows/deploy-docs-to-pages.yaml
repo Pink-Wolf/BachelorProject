@@ -1,0 +1,66 @@
+# Based on https://github.com/actions/starter-workflows/blob/main/pages/nextjs.yml
+
+name: Deploy Docs to Pages
+
+on:
+  push:
+    branches: main
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-docs:
+    name: Build Docs
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+    - name: Build Database Server
+      run: dotnet build CompWolf.Doc/CompWolf.Doc.Server/
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        cache: 'npm'
+        cache-dependency-path: 'CompWolf.Doc/compwolf.doc.client/package-lock.json'
+    - name: Setup pages
+      uses: actions/configure-pages@v5
+      with:
+        static_site_generator: next
+    - name: Restore Cache
+      uses: actions/cache@v4
+      with:
+        path: .next/cache
+        key: docs-${{hashFiles('CompWolf.Doc/compwolf.doc.client/package-lock.json')}}-${{hashFiles('CompWolf.Doc/compwolf.doc.client/src/**')}}
+        restore-keys: docs-${{hashFiles('CompWolf.Doc/compwolf.doc.client/package-lock.json')}}
+    - name: Install dependencies
+      run: npm ci
+      working-directory: CompWolf.Doc/compwolf.doc.client/
+    - name: Build Docs Client
+      uses: BerniWittmann/background-server-action@v1
+      with:
+        start: dotnet run --project CompWolf.Doc/CompWolf.Doc.Server/
+        command: npm run build --prefix CompWolf.Doc/compwolf.doc.client/
+    - name: Upload Docs
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: CompWolf.Doc/compwolf.doc.client/out/
+
+  deploy:
+    name: Deploy Docs to Pages
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.output.page_url}}
+    runs-on: ubuntu-latest
+    needs: build-docs
+    steps:
+      - name: Deploy Pages
+        uses: actions/deploy-pages@v4

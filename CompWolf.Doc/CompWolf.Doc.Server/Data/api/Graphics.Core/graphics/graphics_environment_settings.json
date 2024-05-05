@@ -30,8 +30,8 @@
           "type": "variable",
           "name": "internal_debug_callback",
           "declaration": "std::function<void(std::string)> internal_debug_callback;",
-          "briefDescription": "Should be left empty; used to debug CompWolf.Graphics.Core.",
-          "detailedDescription": "Should almost always be left empty.\nIf non-empty, sets up internal debugging-logic used to debug CompWolf.Graphics.Core itself; Debug-messages are then passed to this function. Debug-messages ends with a newline character (and finally \\0)."
+          "briefDescription": "Should be left empty; used to debug [[Graphics.Core]].",
+          "detailedDescription": "Should almost always be left empty.\nIf non-empty, sets up internal debugging-logic used to debug [[Graphics.Core]] itself; Debug-messages are then passed to this function. Debug-messages ends with a newline character (and finally \\0)."
         }
       ]
     }

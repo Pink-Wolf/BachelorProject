@@ -8,7 +8,7 @@ async function getJson(path) {
             'Content-Type': 'application/json',
         },
     })
-    if (!response.ok) return null
+    if (!response.ok) throw new Error(`Could not get data from ${path}\n${response.status}: ${response.statusText}`)
     return await response.json()
 }
 

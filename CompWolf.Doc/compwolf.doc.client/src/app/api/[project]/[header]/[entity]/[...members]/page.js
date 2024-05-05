@@ -43,7 +43,7 @@ function getMembers(entity, members) {
     return (members ?? []).map(member => {
         let data = {
             ...entity,
-            members: [...entity.members, member.name]
+            members: [...entity.members, betterEncodeURIComponent(member.name)]
         }
         return [
             data,

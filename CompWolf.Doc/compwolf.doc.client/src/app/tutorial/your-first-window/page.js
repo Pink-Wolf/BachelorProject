@@ -6,7 +6,7 @@ export default function YourFirstWindow() {
     return (
         <div>
             <h1>Your First Window</h1>
-            <FormattedText>This tutorial will go over how to create a window using the library [[CompWolf.Graphics.Core]].</FormattedText>
+            <FormattedText>This tutorial will go over how to create a window using the library [[Graphics.Core]].</FormattedText>
             <h2>graphics_environment</h2>
             <FormattedText>
                 Most features of CompWolf.Graphics requires a [[graphics_environment]] to work. The [[graphics_environment]] is defined in the [[graphics]]-header.
