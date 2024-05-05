@@ -5,86 +5,89 @@
 #include <concepts>
 #include <utility>
 #include "compwolf_type_traits"
+#include "freeable"
 
 namespace CompWolf
 {
-	/* A wrapper for a callable object, which passes the amount of times this has been called along to the wrapped object.
-	 * @typeparam FunctionSignature The signature of the functions the index_function wraps, for example "void(int)".
+	/* Function wrapper like std::function, which contains a counter for the amount of times this is invoked, and passes that along as the first argument to the contained function/functor.
+	 * @typeparam FunctionSignature The signature of the contained function, like void(int, bool).
+	 * This must have int as its first argument.
 	 */
 	template <typename FunctionSignature>
 	class index_function
 	{
-		// Using is_same_v to make the assertion a type-dependent expression.
-		static_assert(std::is_same_v<FunctionSignature, FunctionSignature>, "Tried defining an index_function with a signature it could not understand. Its type parameter must be of a form like \"void(int)\"");
+		static_assert(dependent_false<FunctionSignature>, "Tried defining an index_function with a signature it could not understand. Its type parameter must be of a form like \"void(int, bool)\"");
+		
+	public: // constructors (included for IDE and name lookup support)
+		/* Constructs a freed index_function, as in one that cannot be called. */
+		index_function() noexcept = default;
+		index_function(const index_function&) = default;
+		auto operator=(const index_function&) -> index_function& = default;
+		index_function(index_function&&) = default;
+		auto operator=(index_function&&) -> index_function& = default;
+
+		/* Constructs a freed index_function, as in one that cannot be called. */
+		inline index_function(std::nullptr_t) noexcept : index_function() {}
+
+		/* Constructs an index_function containing the given function. */
+		template<typename FunctionType>
+			requires std::constructible_from<std::function<FunctionSignature>, FunctionType>
+		inline index_function(FunctionType&& function)
+			noexcept(std::is_nothrow_constructible_v<std::function<FunctionSignature>, FunctionType>)
+		{}
 	};
 	template<typename ReturnType, typename... ParameterTypes>
-	class index_function<ReturnType(ParameterTypes...)>
+	class index_function<ReturnType(int, ParameterTypes...)> : basic_freeable
 	{
-	private:
-		using function_type = std::function<ReturnType(int, ParameterTypes...)>;
-		function_type _function;
+	public: // type definitions
+		/* The return type of the contained function. */
+		using result_type = ReturnType;
+		/* The parameter types of the contained function, including the counter that index_function provides, in a type_list. */
+		using argument_types = type_list<int, ParameterTypes...>;
+		/* The parameter types of the index_function, not including the counter that index_function passes to its contained function, in a type_list. */
+		using argument_types_excluding_counter = type_list<ParameterTypes...>;
+
+	private: // fields
+		std::function<ReturnType(int, ParameterTypes...)> _function;
 		int _counter = 0;
 
-	public:
-		/* Creates an empty index_function. */
-		inline index_function() noexcept = default;
+	public: // accessors
+		/* Gets the amount of times the function has been called. */
+		inline auto& counter() noexcept { return _counter; }
+		/* Gets the amount of times the function has been called. */
+		inline auto counter() const noexcept { return _counter; }
 
-		/* Creates a index_function with the given callable object. */
-		template<typename... InputTypes>
-			requires std::constructible_from<function_type, InputTypes...>
-		inline index_function(InputTypes... inputs)
-			noexcept(std::is_nothrow_constructible_v<function_type, InputTypes...>)
-			: _function(inputs...) {}
+	public: // modifiers
+		/* Resets the index_function's counter to 0, making it think its function has been called 0 times so far. */
+		inline void reset_counter() noexcept { counter() = 0; }
 
-		/* Sets the callable object the index_function contains. */
-		template<typename InputType>
-			requires std::assignable_from<function_type&, InputType>
-		inline auto operator =(InputType new_function)
-			noexcept(std::is_nothrow_assignable_v<function_type&, InputType>)
-			-> index_function
-		{
-			_function = new_function;
-		}
-
-		/* Swaps what callable function the index_function has with another, as well as how many times they have been invoked. */
-		void swap(index_function& other) noexcept
-		{
-			_function.swap(other._function);
-			_counter.swap(other._counter);
-		}
-
-		/* Whether the index_function is empty, as in containing no callable object. */
-		inline explicit operator bool() const noexcept
-		{
-			return static_cast<bool>(_function);
-		}
-
-		/* Invokes the contained object with the given arguments. */
-		ReturnType operator()(ParameterTypes... arguments)
+	public: // operators
+		/* Invokes the contained function, passing along the index_function's counter and the given arguments. */
+		inline ReturnType invoke(ParameterTypes... arguments)
 		{
 			auto index = _counter++; // index equals the counter before it was incremented
-
-			if (std::is_void_v<ReturnType>)
-				_function(index, arguments...);
-			else
-				return _function(index, arguments...);
+			return _function(index, arguments...);
 		}
+		/* Invokes the contained function, passing along the index_function's counter and the given arguments. */
+		inline ReturnType operator()(ParameterTypes... arguments) { return invoke(arguments...); }
 
-		/* Returns the amount of times the index_function has been invoked. */
-		inline int get_counter() noexcept { return _counter; }
-		/* Tells the index_function that it has been invoked the given amount of times.
-		 * @return The amount of times the index_function thought it had been invoked.
-		 */
-		inline int set_counter(int new_count) noexcept
-		{
-			auto old = _counter;
-			_counter = new_count;
-			return old;
-		}
-		/* Tells the index_function that it has not been invoked yet.
-		 * @return The amount of times the index_function thought it had been invoked.
-		 */
-		inline int reset_counter() noexcept { return set_counter(0); }
+	public: // constructors
+		/* Constructs a freed index_function, as in one that cannot be called. */
+		index_function() noexcept = default;
+		index_function(const index_function&) = default;
+		auto operator=(const index_function&) -> index_function& = default;
+		index_function(index_function&&) = default;
+		auto operator=(index_function&&) -> index_function& = default;
+
+		/* Constructs a freed index_function, as in one that cannot be called. */
+		inline index_function(std::nullptr_t) noexcept : index_function() {}
+
+		/* Constructs an index_function containing the given function. */
+		template<typename FunctionType>
+			requires std::constructible_from<std::function<ReturnType(int, ParameterTypes...)>, FunctionType>
+		inline index_function(FunctionType&& function)
+			noexcept(std::is_nothrow_constructible_v<std::function<ReturnType(int, ParameterTypes...)>, FunctionType>)
+			: _function(std::forward<FunctionType>(function)) {}
 	};
 }
 
