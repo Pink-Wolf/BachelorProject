@@ -1,1 +1,0 @@
-self.__SSG_MANIFEST=new Set(["\u002Fapi\u002F[project]","\u002Fapi\u002F[project]\u002F[header]","\u002Fapi\u002F[project]\u002F[header]\u002F[entity]","\u002Fapi\u002F[project]\u002F[header]\u002F[entity]\u002F[subentity]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
