@@ -23,9 +23,6 @@ jobs:
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
-    - name: Build Database Server
-      run: dotnet build CompWolf.Doc/CompWolf.Doc.Server/
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -35,20 +32,26 @@ jobs:
       uses: actions/configure-pages@v5
       with:
         static_site_generator: next
-    - name: Restore Cache
+        
+    - name: Restore client Cache
       uses: actions/cache@v4
       with:
-        path: .next/cache
-        key: docs-${{hashFiles('CompWolf.Doc/compwolf.doc.client/package-lock.json')}}-${{hashFiles('CompWolf.Doc/compwolf.doc.client/src/**')}}
-        restore-keys: docs-${{hashFiles('CompWolf.Doc/compwolf.doc.client/package-lock.json')}}
-    - name: Install dependencies
+        path: CompWolf.Doc/compwolf.doc.client/.next/cache
+        key: client-${{hashFiles('CompWolf.Doc/compwolf.doc.client/package-lock.json')}}-${{hashFiles('CompWolf.Doc/compwolf.doc.client/src/**')}}
+        restore-keys: |
+          client-${{hashFiles('CompWolf.Doc/compwolf.doc.client/package-lock.json')}}-
+      
+    - name: Build Database Server
+      run: dotnet build CompWolf.Doc/CompWolf.Doc.Server/
+    - name: Install Docs Client Dependencies
       run: npm ci
       working-directory: CompWolf.Doc/compwolf.doc.client/
+
+    - name: Start Database Server
+      run: dotnet run --project CompWolf.Doc/CompWolf.Doc.Server/ &
     - name: Build Docs Client
-      uses: BerniWittmann/background-server-action@v1
-      with:
-        start: dotnet run --project CompWolf.Doc/CompWolf.Doc.Server/
-        command: npm run build --prefix CompWolf.Doc/compwolf.doc.client/
+      run: npm run build
+      working-directory: CompWolf.Doc/compwolf.doc.client/
     - name: Upload Docs
       uses: actions/upload-pages-artifact@v3
       with:
