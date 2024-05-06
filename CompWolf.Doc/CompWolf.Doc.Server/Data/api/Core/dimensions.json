@@ -1,0 +1,4 @@
+﻿{
+  "briefDescription": "Contains [[dimension]], used to create simple math-vectors and matrixes of other types.",
+  "detailedDescription": "Contains [[dimension]], used to create simple math-vectors and matrixes of other types.\n\nAlso defines all vectors from size 2-4, and all matrixes from size 2x2 to 4x4, for:\n-float\n-double\n-int\n-bool\nThese vectors and matrixes are named [element-type][size]."
+}
