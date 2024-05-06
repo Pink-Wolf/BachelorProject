@@ -81,6 +81,8 @@ export async function getPathTo(name) {
     let memberName = !isMember ? "" : name.substring(memberSplitterIndex + 2, name.length).replace("::", "/");
     if (isMember) {
         name = name.substring(0, memberSplitterIndex)
+
+        if (name == `std`) return undefined
     }
 
     var path = undefined
@@ -100,7 +102,6 @@ export async function getPathTo(name) {
 
     if (path === undefined) {
         console.log(`Could not find path to ${name}`)
-        return "/"
     }
 
     return path

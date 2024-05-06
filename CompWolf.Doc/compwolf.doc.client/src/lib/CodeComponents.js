@@ -5,11 +5,15 @@ import { getPathTo } from "./api/Entity";
 
 export function Reference({ path, children }) {
 	return (
-		<Link href={path}>
-			<code>
+		path
+			? <Link href={path}>
+				<code>
+					{children}
+				</code>
+			</Link>
+			: <code>
 				{children}
 			</code>
-		</Link>
 	)
 }
 export async function SimpleReference({ name }) {
