@@ -11,6 +11,9 @@ CompWolf::graphics_environment environment;
 
 int main()
 {
+    std::random_device randomizer;
+    constexpr float max_random_value = static_cast<float>(std::random_device::max());
+
     CompWolf::graphics_environment_settings environment_settings;
 
     environment = CompWolf::graphics_environment(environment_settings);
@@ -21,11 +24,9 @@ int main()
     CompWolf::window win(environment, win_settings);
 
     std::vector<CompWolf::basic_square> squares;
-    squares.reserve(1000);
-    std::random_device randomizer;
-    for (std::size_t i = 0; i < 1000; ++i)
+    squares.reserve(25'000);
+    for (std::size_t i = 0; i < 25'000; ++i)
     {
-        constexpr float max_random_value = static_cast<float>(std::random_device::max());
         squares.emplace_back(win
             , CompWolf::float3({ randomizer() / max_random_value, randomizer() / max_random_value, randomizer() / max_random_value })
             , CompWolf::float2({ randomizer() / max_random_value * 2 - 1, randomizer() / max_random_value * 2 - 1 }));
@@ -44,6 +45,16 @@ int main()
         {
             time = clock.now();
             total_time = std::chrono::duration<double>(time - start_time).count();
+        }
+
+        for (auto& square : squares)
+        {
+            auto pos = square.position();
+            auto delta_pos = CompWolf::float2({ randomizer() / max_random_value * 2 - 1, randomizer() / max_random_value * 2 - 1 });
+            delta_pos.x() /= 100;
+            delta_pos.y() /= 100;
+            pos->x() += delta_pos.x();
+            pos->y() += delta_pos.y();
         }
 
         win.update_image();

@@ -23,7 +23,7 @@ namespace CompWolf
 		constexpr auto at(IndexTypes&&... indices) -> super::reference
 		{
 			std::size_t index_array[]{ static_cast<std::size_t>(std::forward<IndexTypes>(indices))... };
-			constexpr std::size_t index_array_size = sizeof(index_array) / sizeof(std::size_t);
+			constexpr std::size_t index_array_size = sizeof...(IndexTypes);
 			if constexpr (index_array_size == 0) return super::at(0);
 			else
 			{

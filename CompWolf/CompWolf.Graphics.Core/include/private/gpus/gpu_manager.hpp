@@ -18,7 +18,7 @@ namespace CompWolf
 		/* The individual connections to each gpu. */
 		std::vector<gpu_connection> _gpus;
 		/* The amount of thread families the various GPUs have together. */
-		std::size_t _thread_count;
+		std::size_t _thread_count = 0;
 
 	public: // accessors
 		/* Returns the individual connections to each gpu. */

@@ -91,7 +91,7 @@ namespace CompWolf
 				auto width = this->width() < source_line->size() ? this->width() : source_line->size();
 				for (int x = 0; x < width; ++x, ++source_pixel)
 				{
-					new (&destination[y * this->width() + x]) (pixel_type) (std::move(*source_pixel));
+					new (&destination[y * this->width() + x]) (pixel_type) (*source_pixel);
 				}
 			}
 		}
