@@ -2,10 +2,9 @@ import Style from "@/styles/EntityViewer.css";
 
 import { CodeViewer, Reference, SimpleReference } from "../CodeComponents";
 import FormattedText from "../FormattedText";
+import betterEncodeURIComponent from "../betterEncodeURIComponent";
 
 export default function BaseEntityViewer({ data, top, children }) {
-	if (data == undefined) return <p>{`404: Could not get the entity's data.`}</p>
-
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
 
 	return (
@@ -16,7 +15,7 @@ export default function BaseEntityViewer({ data, top, children }) {
 			<small>
 				<p id="Project">In project <Reference path={`/api/${data.project}`}>{data.project}</Reference></p>
 				<p id="Header">Defined in header <Reference path={`/api/${data.project}/${data.header}`}>&lt;{data.header}&gt;</Reference></p>
-				<p id="Owner" hidden={!data.owners.length}>Member of <Reference path={`/api/${data.project}/${data.header}/${data.owners.join("/")}`}>{data.owners.join("::")}</Reference></p>
+				<p id="Owner" hidden={!data.owners.length}>Member of <Reference path={`/api/${data.project}/${data.header}/${data.owners.map(x => betterEncodeURIComponent(x)).join("/")}`}>{data.owners.join("::")}</Reference></p>
 			</small>
 
 			{top}
@@ -32,9 +31,9 @@ export default function BaseEntityViewer({ data, top, children }) {
 
 			<section hidden={!data.example} id="Example">
 				<h2>Example</h2>
-				<p>
+				<div>
 					<FormattedText>{data.example?.description}</FormattedText>
-				</p>
+				</div>
 				<CodeViewer>
 					{data.example?.code}
 				</CodeViewer>

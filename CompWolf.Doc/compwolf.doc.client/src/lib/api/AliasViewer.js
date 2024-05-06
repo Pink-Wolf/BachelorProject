@@ -11,9 +11,9 @@ export default function AliasViewer({ data }) {
 				<big id="Declaration">
 					<Declaration>{data.declaration}</Declaration>
 				</big>
-				<p id="Description">
+				<div id="Description">
 					<FormattedText>{data.detailedDescription}</FormattedText>
-				</p>
+				</div>
 			</Fragment>
 		}>
 

@@ -1,3 +1,5 @@
+import betterEncodeURIComponent from "../betterEncodeURIComponent"
+
 const DATABASE_URL = "http://localhost:5042/"
 
 async function getJson(path) {
@@ -78,7 +80,7 @@ export async function getPathTo(name) {
 
     let memberSplitterIndex = name.indexOf("::")
     let isMember = memberSplitterIndex >= 0;
-    let memberName = !isMember ? "" : name.substring(memberSplitterIndex + 2, name.length).replace("::", "/");
+    let memberName = !isMember ? "" : name.substring(memberSplitterIndex + 2, name.length).split("::").map(x => betterEncodeURIComponent(x)).join("/");
     if (isMember) {
         name = name.substring(0, memberSplitterIndex)
 
@@ -91,7 +93,7 @@ export async function getPathTo(name) {
         project.headers?.find(header => {
             if (header.name === name) path = `/api/${project.name}/${header.name}/`
             header.entities?.find(entity => {
-                if (entity.name === name) path = `/api/${project.name}/${header.name}/${entity.name}/${memberName}`
+                if (entity.name === name) path = `/api/${project.name}/${header.name}/${betterEncodeURIComponent(entity.name)}/${memberName}`
 
                 return (path !== undefined)
             })
@@ -102,6 +104,7 @@ export async function getPathTo(name) {
 
     if (path === undefined) {
         console.log(`Could not find path to ${name}`)
+        return undefined
     }
 
     return path

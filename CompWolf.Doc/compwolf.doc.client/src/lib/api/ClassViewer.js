@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Declaration, Reference, SimpleReference } from "../CodeComponents";
 import FormattedText from "../FormattedText";
 import BaseEntityViewer from "./BaseEntityViewer";
+import betterEncodeURIComponent from "../betterEncodeURIComponent";
 
 export default function ClassViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
@@ -11,9 +12,9 @@ export default function ClassViewer({ data }) {
 			<Reference path={`/api/
 			${data.project}/
 			${data.header}/
-			${(data.owners ?? []).map(x => `${x}/`).join()}
-			${data.name}/
-			${name}`}>
+			${(data.owners ?? []).map(x => `${betterEncodeURIComponent(x)}/`).join()}
+			${betterEncodeURIComponent(data.name)}/
+			${betterEncodeURIComponent(name)}`}>
 				{name}
 			</Reference>
 		)
@@ -38,9 +39,9 @@ export default function ClassViewer({ data }) {
 				<big id="Declaration">
 					<Declaration>{data.declaration}</Declaration>
 				</big>
-				<p id="Description">
+				<div id="Description">
 					<FormattedText>{data.detailedDescription}</FormattedText>
-				</p>
+				</div>
 			</Fragment>
 		}>
 			<section hidden={is_empty(data.templateParameters)}>
@@ -79,7 +80,7 @@ export default function ClassViewer({ data }) {
 					<tbody>
 						<tr hidden={!data.hasOwnProperty("constructor")}>
 							<td>
-								<Reference path={`/api/${data.project}/${data.header}/${data.name}/${data.name}`}>
+								<Reference path={`/api/${data.project}/${data.header}/${betterEncodeURIComponent(data.name)}/${betterEncodeURIComponent(data.name)}`}>
 									(constructors)
 								</Reference>
 							</td>
@@ -93,9 +94,9 @@ export default function ClassViewer({ data }) {
 									<tr>
 										<td colSpan="2" hidden={x.name === undefined && x.description === undefined}>
 											<h3>{x.name}</h3>
-											<p>
+											<div>
 												<FormattedText>{x.description}</FormattedText>
-											</p>
+											</div>
 										</td>
 									</tr>
 									{x.items.map((x, i) => {

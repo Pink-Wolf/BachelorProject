@@ -1,8 +1,9 @@
 import "@/styles/globals.css"
 import Link from "next/link";
 import { getOverview } from "@/lib/api/Entity";
-import MenuTree from "../lib/MenuTree";
-import { Reference } from "../lib/CodeComponents";
+import MenuTree from "@/lib/MenuTree";
+import { Reference } from "@/lib/CodeComponents";
+import betterEncodeURIComponent from "@/lib/betterEncodeURIComponent";
 
 export const dynamic = 'force-static'
 
@@ -31,14 +32,14 @@ async function HeaderMenu() {
                                 name: header.name,
                                 items: header.entities.map(entity => {
                                     return {
-                                        name: entity.name,
+                                        name: betterEncodeURIComponent(entity.name),
                                     }
                                 }),
                             }
                         }),
                         Display: ({ children, path }) => Reference({
                             path: `${path}`,
-                            children: children,
+                            children: decodeURIComponent(children),
                         }),
                     }
                 }),

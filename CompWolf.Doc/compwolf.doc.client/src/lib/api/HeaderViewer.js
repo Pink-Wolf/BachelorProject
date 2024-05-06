@@ -1,5 +1,6 @@
 import { Declaration, Reference } from "../CodeComponents";
 import FormattedText from "../FormattedText";
+import betterEncodeURIComponent from "../betterEncodeURIComponent";
 
 export default function HeaderViewer({ data }) {
 	const is_empty = (x) => { return x == undefined || x.length == 0 }
@@ -20,7 +21,7 @@ export default function HeaderViewer({ data }) {
 				{data.entities.map((x, i) => {
 					return (
 						<li key={i}>
-							<Reference path={`/api/${data.project}/${data.header}/${x.name}`}>{x.name}</Reference>: <FormattedText>{x.briefDescription}</FormattedText>
+							<Reference path={`/api/${data.project}/${data.header}/${betterEncodeURIComponent(x.name)}`}>{x.name}</Reference>: <FormattedText>{x.briefDescription}</FormattedText>
 						</li>
 					)
 				})}
