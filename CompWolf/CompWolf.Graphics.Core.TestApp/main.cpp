@@ -24,8 +24,8 @@ int main()
     CompWolf::window win(environment, win_settings);
 
     std::vector<CompWolf::basic_square> squares;
-    squares.reserve(25'000);
-    for (std::size_t i = 0; i < 25'000; ++i)
+    squares.reserve(1'000);
+    for (std::size_t i = 0; i < 1'000; ++i)
     {
         squares.emplace_back(win
             , CompWolf::float3({ randomizer() / max_random_value, randomizer() / max_random_value, randomizer() / max_random_value })
