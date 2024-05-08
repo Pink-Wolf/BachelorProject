@@ -75,7 +75,7 @@ namespace CompWolf
 
 	struct transparent_color;
 	/* A color made out of a mix of red, green, and blue. */
-	struct opaque_color : dimensions<single_color, 3>
+	struct opaque_color : public dimensional_array<single_color, 3>
 	{
 		/* Returns the amount of red used to make the color. */
 		inline constexpr auto& r() { return x(); }
@@ -99,7 +99,7 @@ namespace CompWolf
 
 		/* Constructs a color from mixing the given amount of red, green, and blue. */
 		inline constexpr opaque_color(single_color r, single_color g, single_color b) noexcept
-			: dimensions<single_color, 3>({ r, g, b }) {}
+			: dimensional_array<single_color, 3>({ r, g, b }) {}
 		/* Constructs a color from mixing the given amount of red, green, and blue.
 		 * The values in initializer_list are red, green, and blue respectively.
 		 */
@@ -125,7 +125,7 @@ namespace CompWolf
 		constexpr operator transparent_color() const;
 	};
 	/* A color made out of a mix of red, green, and blue, and an alpha specifying how much one can see through the color. */
-	struct transparent_color : dimensions<single_color, 4>
+	struct transparent_color : public dimensional_array<single_color, 4>
 	{
 		/* Returns the amount of red used to make the color. */
 		inline constexpr auto& r() { return x(); }
@@ -153,7 +153,7 @@ namespace CompWolf
 
 		/* Constructs a color from mixing the given amount of red, green, and blue, and with the given transparency. */
 		inline constexpr transparent_color(single_color r, single_color g, single_color b, single_color alpha = 1._scolor) noexcept
-			: dimensions<single_color, 4>({ r, g, b, alpha }) {}
+			: dimensional_array<single_color, 4>({ r, g, b, alpha }) {}
 		/* Constructs a color from mixing the given amount of red, green, and blue, and with the given transparency.
 		 * The values in initializer_list are red, green, blue, and alpha respectively.
 		 */

@@ -3,6 +3,7 @@ import BaseEntityViewer from "./BaseEntityViewer";
 import ClassViewer from "./ClassViewer";
 import EnumViewer from "./EnumViewer";
 import FunctionViewer from "./FunctionViewer";
+import MacroViewer from "./MacroViewer";
 import VariableViewer from "./VariableViewer";
 
 export default function EntityViewer({ data }) {
@@ -13,6 +14,7 @@ export default function EntityViewer({ data }) {
 		case `variable`: return <VariableViewer data={data} />
 		case `enum`: return <EnumViewer data={data} />
 		case `alias`: return <AliasViewer data={data} />
+		case `macro`: return <MacroViewer data={data} />
 		default: return <BaseEntityViewer />
     }
 }

@@ -4,96 +4,129 @@
 #include "compwolf_utility"
 #include <array>
 #include "compwolf_type_traits"
+#include <initializer_list>
 #include <concepts>
+#include <stdexcept>
 
 namespace CompWolf
 {
-	template <typename Type, std::size_t... Dimensions>
-		requires ((Dimensions > 0) && ...)
-	struct dimensions : public std::array<Type, (Dimensions * ...)>
+	/* A math-vector, matrix, or higher dimension array of numbers.
+	 * That is, a 1- or multidimensional array, where the amount of values in template argument SizeInDimensions is the amount of dimensions of the array.
+	 * 
+	 * @typeparam ValueType The type of value contained by the dimension.
+	 * 
+	 * @typeparam SizeInDimensions If this contains a single number, then dimensional_array is a math-vector/array, with the given size.
+	 * If this contains 2 numbers, then dimensional_array is a matrix/2d array, with the given amount of rows and column.
+	 * If this contains x numbers, then the pattern follows: dimensional_array is an x-dimensional array, with the given amount of elements in each dimension.
+	 * All values must be positive.
+	 */
+	template <typename ValueType, std::size_t... SizeInDimensions>
+		requires ((SizeInDimensions > 0) && ...)
+	struct dimensional_array : public std::array<ValueType, (SizeInDimensions * ...)>
 	{
-	private:
-		using super = std::array<Type, (Dimensions * ...)>;
-	public:
+	private: // type definitions
+		using super_array = std::array<ValueType, (SizeInDimensions * ...)>;
 
-		static constexpr std::array<std::size_t, size_of<Dimensions...>> dimension_sizes{ Dimensions... };
+	private: // fields
+		static constexpr std::size_t _size_in_dimension[]{ SizeInDimensions... };
 
-		template <typename... IndexTypes>
-			requires (std::constructible_from<std::size_t, IndexTypes&&> && ...)
-		constexpr auto at(IndexTypes&&... indices) -> super::reference
+	public: // accessors
+		/* Gets the amount of elements the dimensional_array contains in the given dimension.
+		 * @throws std::domain_error if the given value is not within [0; amount of dimensions[.
+		 */
+		static constexpr inline auto size_in_dimension(std::size_t i)
 		{
-			std::size_t index_array[]{ static_cast<std::size_t>(std::forward<IndexTypes>(indices))... };
-			constexpr std::size_t index_array_size = sizeof...(IndexTypes);
-			if constexpr (index_array_size == 0) return super::at(0);
-			else
+			if (i > sizeof...(SizeInDimensions)) throw std::out_of_range("dimensions::size_in_dimension was given a value not within [0; amount of dimensions[.");
+			return _size_in_dimension[i];
+		}
+
+		/* If the dimension is a vector, gets the element at the given index.
+		 * If the dimension is a matrix, gets the element at the given column and row.
+		 * This pattern follows for higher-dimensional array.
+		 * 
+		 * If this is given fewer indices than the dimensional_array has dimensions, for example at(1) for a matrix, then the remaining indices are assumed to be 0.
+		 * 
+		 * @throws std::out_of_range if the given indices points to an element outside of the dimensional_array.
+		 */
+		constexpr auto at(std::initializer_list<std::size_t> indices) -> super_array::reference
+		{
+			std::size_t index_sum = 0;
+			std::size_t index_count = 0;
+			for (auto i = indices.begin(); i != indices.end(); ++i, ++index_count)
 			{
-				std::size_t index = index_array[0];
-				for (std::size_t i = 1; i < index_array_size; ++i) index += index_array[i] * dimension_sizes[i - 1];
-				return super::at(index);
+				auto& index = *i;
+				index_sum += index * ((index_count == 0) ? 1 : size_in_dimension(index_count - 1));
 			}
+			return super_array::at(index_sum);
+		}
+		/* If the dimension is a vector, gets the element at the given index.
+		 * If the dimension is a matrix, gets the element at the given column and row.
+		 * This pattern follows for higher-dimensional array.
+		 *
+		 * If this is given fewer indices than the dimensional_array has dimensions, for example at(1) for a matrix, then the remaining indices are assumed to be 0.
+		 *
+		 * @throws std::out_of_range if the given indices points to an element outside of the dimensional_array.
+		 */
+		constexpr inline auto at(std::initializer_list<std::size_t> indices) const -> super_array::const_reference
+		{
+			return const_cast<dimensional_array*>(this)->at(indices);
 		}
 		
-		template <typename... IndexTypes>
-			requires (std::constructible_from<std::size_t, IndexTypes&&> && ...)
-		constexpr inline auto at(IndexTypes&&... indices) const -> super::const_reference
-		{
-			return const_cast<dimensions*>(this)->at(indices...);
-		}
-
 	private:
-		template <typename... IndexTypes>
-			requires (std::constructible_from<std::size_t, IndexTypes&&> && ...)
-		static bool constexpr has_index(IndexTypes&&... indices)
+		static consteval auto has_element_at(std::initializer_list<std::size_t> indices) noexcept -> bool
 		{
-			std::size_t index_array[]{ static_cast<std::size_t>(std::forward<IndexTypes>(indices))... };
-			constexpr std::size_t index_array_size = sizeof(index_array) / sizeof(std::size_t);
-			if (index_array_size > dimension_sizes.size()) return false;
-			for (std::size_t i = 0; i < index_array_size; ++i) if (index_array[i] >= dimension_sizes[i]) return false;
+			std::size_t index_count = 0;
+			for (auto i = indices.begin(); i != indices.end(); ++i, ++index_count)
+			{
+				auto index = *i;
+				if (index_count >= sizeof...(SizeInDimensions)) return false;
+				if (index >= size_in_dimension(index_count)) return false;
+			}
 			return true;
 		}
 	public:
-#define COMPWOLF_DIMENSIONS_DEFINE_GETTER(getter, index)				\
-		constexpr inline auto getter() noexcept -> Type&				\
-			requires (has_index index)									\
-		{																\
-			return at index;											\
-		}																\
-																		\
-		constexpr inline auto getter() const noexcept -> const Type&	\
-			requires (has_index index)									\
-		{																\
-			return at index;											\
-		}																\
+#define COMPWOLF_DIMENSIONS_DEFINE_GETTER(getter, index)		\
+		constexpr inline auto& getter() noexcept				\
+			requires (has_element_at index)						\
+		{														\
+			return at index;									\
+		}														\
+																\
+		constexpr inline auto& getter() const noexcept			\
+			requires (has_element_at index)						\
+		{														\
+			return at index;									\
+		}														\
 
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(x, (0));
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(y, (1));
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(z, (2));
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(w, (3));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(x, ({ 0 }));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(y, ({ 1 }));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(z, ({ 2 }));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(w, ({ 3 }));
 
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(xx, (0, 0)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(xy, (0, 1)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(xz, (0, 2)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(xw, (0, 3));
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(yx, (1, 0)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(yy, (1, 1)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(yz, (1, 2)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(yw, (1, 3));
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(zx, (2, 0)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(zy, (2, 1)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(zz, (2, 2)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(zw, (2, 3));
-		COMPWOLF_DIMENSIONS_DEFINE_GETTER(wx, (3, 0)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(wy, (3, 1)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(wz, (3, 2)); COMPWOLF_DIMENSIONS_DEFINE_GETTER(ww, (3, 3));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(xx, ({ 0, 0 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(xy, ({ 0, 1 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(xz, ({ 0, 2 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(xw, ({ 0, 3 }));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(yx, ({ 1, 0 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(yy, ({ 1, 1 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(yz, ({ 1, 2 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(yw, ({ 1, 3 }));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(zx, ({ 2, 0 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(zy, ({ 2, 1 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(zz, ({ 2, 2 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(zw, ({ 2, 3 }));
+		COMPWOLF_DIMENSIONS_DEFINE_GETTER(wx, ({ 3, 0 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(wy, ({ 3, 1 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(wz, ({ 3, 2 })); COMPWOLF_DIMENSIONS_DEFINE_GETTER(ww, ({ 3, 3 }));
 	};
 
-#define COMPWOLF_DIMENSION_TYPE(type)			\
-	using type##2 = dimensions<type, 2>;		\
-	using type##3 = dimensions<type, 3>;		\
-	using type##4 = dimensions<type, 4>;		\
-	using type##2x2 = dimensions<type, 2, 2>;	\
-	using type##2x3 = dimensions<type, 2, 3>;	\
-	using type##2x4 = dimensions<type, 2, 4>;	\
-	using type##3x2 = dimensions<type, 3, 2>;	\
-	using type##3x3 = dimensions<type, 3, 3>;	\
-	using type##3x4 = dimensions<type, 3, 4>;	\
-	using type##4x2 = dimensions<type, 4, 2>;	\
-	using type##4x3 = dimensions<type, 4, 3>;	\
-	using type##4x4 = dimensions<type, 4, 4>	\
+#define COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES(type)	\
+	using type##2 = dimensional_array<type, 2>;			\
+	using type##3 = dimensional_array<type, 3>;			\
+	using type##4 = dimensional_array<type, 4>;			\
+	using type##2x2 = dimensional_array<type, 2, 2>;	\
+	using type##2x3 = dimensional_array<type, 2, 3>;	\
+	using type##2x4 = dimensional_array<type, 2, 4>;	\
+	using type##3x2 = dimensional_array<type, 3, 2>;	\
+	using type##3x3 = dimensional_array<type, 3, 3>;	\
+	using type##3x4 = dimensional_array<type, 3, 4>;	\
+	using type##4x2 = dimensional_array<type, 4, 2>;	\
+	using type##4x3 = dimensional_array<type, 4, 3>;	\
+	using type##4x4 = dimensional_array<type, 4, 4>		\
 
-	COMPWOLF_DIMENSION_TYPE(float);
-	COMPWOLF_DIMENSION_TYPE(double);
-	COMPWOLF_DIMENSION_TYPE(int);
-	COMPWOLF_DIMENSION_TYPE(bool);
+	COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES(float);
+	COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES(double);
+	COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES(int);
+	COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES(bool);
 }
 
 #endif // ! COMPWOLF_DIMENSIONS_HEADER
