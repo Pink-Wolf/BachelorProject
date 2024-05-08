@@ -113,12 +113,12 @@
           "briefDescription": "Returns the data_handle received from the allocator's alloc_data-method.",
           "overloads": [
             {
-              "declaration": "auto vulkan_data() const noexcept -> gpu_buffer_allocator::data_handle;",
+              "declaration": "auto vulkan_data() const noexcept -> base_gpu_buffer_allocator::data_handle;",
               "description": "Returns the data_handle received from the allocator's alloc_data-method."
             }
           ],
           "related": [
-            "gpu_buffer_allocator"
+            "base_gpu_buffer_allocator"
           ]
         },
         {
