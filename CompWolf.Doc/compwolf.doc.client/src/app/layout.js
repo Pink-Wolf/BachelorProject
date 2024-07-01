@@ -44,7 +44,10 @@ async function HeaderMenu() {
                     }
                 }),
                 Display: ({ }) => <Link href="/api/">API</Link>,
-            }
+            },
+            {
+                Display: ({ }) => <Link href="/standards/">API standards</Link>,
+            },
         ],
         pathPrefix: `/`,
     }

@@ -1,4 +1,0 @@
-﻿{
-  "briefDescription": "Contains various general logic.",
-  "detailedDescription": "Contains various general logic, like a [[type_list]] and an implementation of the observer pattern with [[event]]."
-}

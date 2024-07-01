@@ -1,8 +1,0 @@
-﻿{
-  "type": "alias",
-
-  "namespace": "CompWolf",
-  "declaration": "using shader_int = uint32_t;",
-  "briefDescription": "An unsigned integer of correct size to be send to the gpu.",
-  "detailedDescription": "An int or uint in for example the shader language glsl is 32 bits. This is a 32 bit int to match.\n\nThere exists [[dimensions]]-versions of [[shader_int]] defined using [[COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES]]."
-}

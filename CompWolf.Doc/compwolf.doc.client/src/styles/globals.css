@@ -63,3 +63,9 @@ blockquote {
     --activeSecondaryBackground: #AA0;
     background: var(--background);
 }
+
+table, table > * > * > * {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-color: var(--secondaryBackground);
+}

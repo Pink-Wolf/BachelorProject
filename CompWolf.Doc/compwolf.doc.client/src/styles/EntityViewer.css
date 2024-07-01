@@ -3,11 +3,6 @@
     tab-size: 4;
 }
 
-.memberTable, .memberTable > * > * > * {
-    border: 1px solid;
-    border-collapse: collapse;
-    border-color: var(--secondaryBackground);
-}
 .memberTable {
     width: 100%;
 }

@@ -1,4 +1,0 @@
-﻿{
-  "briefDescription": "Contains [[event]], an implementation of the observer pattern.",
-  "detailedDescription": "Contains [[event]], an implementation of the observer pattern where functions and functors are observers."
-}

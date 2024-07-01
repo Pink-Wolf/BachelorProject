@@ -1,8 +1,0 @@
-﻿{
-  "type": "macro",
-
-  "namespace": "CompWolf",
-  "declaration": "#define COMPWOLF_DEFINE_DIMENSIONAL_ARRAY_TYPES(type) [...]",
-  "briefDescription": "Defines all vectors from size 2-4, and all matrixes from size 2x2 to 4x4, of the given type, as [[dimensional_array]]s.",
-  "detailedDescription": "Defines all vectors from size 2-4, and all matrixes from size 2x2 to 4x4, of the given type, as [[dimensional_array]]s.\nThese vectors and matrixes are named [type][size], like float2 and float3x4."
-}

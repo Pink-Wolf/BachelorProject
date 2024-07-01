@@ -1,0 +1,40 @@
+{
+  "type": "class",
+
+  "namespace": "CompWolf",
+  "declaration": "class graphics_environment;",
+  "briefDescription": "Manages program-wide logic used by [[Graphics.Core]].",
+  "detailedDescription": "Manages program-wide logic used by [[Graphics.Core]].\nThe environment's update-method should normally be called continually.\nThe thread that constructed the graphics_environment is considered the \"main graphics thread\".",
+  "warnings": [
+    "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
+  ],
+
+  "baseClasses": [ "basic_freeable" ],
+
+  "copyable": false,
+  "movable": true,
+  "constructor": {
+    "warnings": [
+      "It is undefined behaviour to construct or destruct a [[graphics_environment]] on a thread other than the one that started the program."
+    ],
+
+    "overloads": [
+      {
+        "declaration": "graphics_environment() noexcept;",
+        "description": "Constructs a freed environment, as in one that does nothing."
+      },
+      {
+        "declaration": "graphics_environment(graphics_environment_settings);",
+        "description": "Constructs a valid environment, and sets up program-wide logic used by [[Graphics.Core]]."
+      }
+    ],
+    "exceptions": [
+      "Throws std::runtime_error if there was an error during setup due to causes outside of the program.",
+      "Throws std::logic_error if an environment already exists."
+    ],
+
+    "related": [
+      "graphics_environment_settings"
+    ]
+  }
+}
